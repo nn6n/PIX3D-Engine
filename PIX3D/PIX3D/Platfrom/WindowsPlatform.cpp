@@ -1,7 +1,7 @@
 #include "WindowsPlatform.h"
 #include <GLFW/glfw3.h>
 #include <Core/Core.h>
-#include <Core/Application.h>
+#include <Engine/Engine.h>
 #include <Platfrom/GL/GLCommands.h>
 #include <Core/Input.h>
 
@@ -11,19 +11,19 @@ namespace
 
     void WindowResizeCallBack(GLFWwindow* window, int width, int height)
     {
-        auto& App = PIX3D::Application::Get();
-        App.SetWidth(width);
-        App.SetHeight(height);
+        auto App = PIX3D::Engine::GetApplication();
+        App->SetWidth(width);
+        App->SetHeight(height);
         PIX3D::GL::GLCommands::SetViewPort(width, height);
 
-        auto func = PIX3D::Application::Get().GetWindowSizeCallBackFunc();
+        auto func = PIX3D::Engine::GetWindowSizeCallBackFunc();
         if(func)
             func(width, height);
     }
 
     void KeyboardCallBack(GLFWwindow* window, int key, int scancode, int action, int mods)
     { 
-        auto func = PIX3D::Application::Get().GetKeyboardCallBackFuncPtr();
+        auto func = PIX3D::Engine::GetKeyboardCallBackFuncPtr();
         if(func)
             func((PIX3D::KeyCode)key);
     }

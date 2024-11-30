@@ -1,26 +1,26 @@
 #include "Input.h"
-#include "Application.h"
+#include <Engine/Engine.h>
 
 namespace PIX3D
 {
     bool Input::IsKeyPressed(KeyCode keycode)
     {
-        return Application::Get().GetPlatformLayer()->IsKeyPressed((int)keycode);
+        return Engine::GetPlatformLayer()->IsKeyPressed((int)keycode);
     }
 
     bool Input::IsKeyReleased(KeyCode keycode)
     {
-        return Application::Get().GetPlatformLayer()->IsKeyReleased((int)keycode);
+        return Engine::GetPlatformLayer()->IsKeyReleased((int)keycode);
     }
 
     bool Input::IsMouseButtonPressed(MouseButton mousebutton)
     {
-        return Application::Get().GetPlatformLayer()->IsMouseButtonPressed((int)mousebutton);
+        return Engine::GetPlatformLayer()->IsMouseButtonPressed((int)mousebutton);
     }
 
     bool Input::IsMouseButtonReleased(MouseButton mousebutton)
     {
-        return Application::Get().GetPlatformLayer()->IsMouseButtonReleased((int)mousebutton);
+        return Engine::GetPlatformLayer()->IsMouseButtonReleased((int)mousebutton);
     }
 
     void Input::ResetInput()
