@@ -154,7 +154,6 @@
     <ClCompile Include="PIX3D\Core\Application.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PIX3D\Core\Input.cpp" />
-    <ClCompile Include="PIX3D\Engine\Engine.cpp" />
     <ClCompile Include="PIX3D\glad.c" />
     <ClCompile Include="PIX3D\Graphics\Camera3D.cpp" />
     <ClCompile Include="PIX3D\Platfrom\GL\GLCommands.cpp" />
@@ -173,7 +172,7 @@
     <ClInclude Include="PIX3D\Core\Core.h" />
     <ClInclude Include="PIX3D\Core\Input.h" />
     <ClInclude Include="PIX3D\Core\Key.h" />
-    <ClInclude Include="PIX3D\Engine\Engine.h" />
+    <ClInclude Include="PIX3D\Engine\Engine.hpp" />
     <ClInclude Include="PIX3D\Graphics\Camera3D.h" />
     <ClInclude Include="PIX3D\Graphics\GraphicsContext.h" />
     <ClInclude Include="PIX3D\PIX3D.h" />

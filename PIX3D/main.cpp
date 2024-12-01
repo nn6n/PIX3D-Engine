@@ -18,18 +18,16 @@ int main()
 	}
 
 	// Create Application
-	PIX3D::Application* DrawingApp = nullptr;
 	{
 		PIX3D::ApplicationSpecs AppSpecs;
 		AppSpecs.Width = 800;
 		AppSpecs.Height = 600;
 		AppSpecs.Title = "Drawing Application";
 
-		DrawingApp = new PIX3D::Application(AppSpecs);
+		// Run Application
+		PIX3D::Engine::CreateApplication<PIX3D::Application>(AppSpecs);
 	}
 
-	// Run Application
-	PIX3D::Engine::RunApplication(*DrawingApp);
 
 	// Destroy Engine
 	PIX3D::Engine::Destroy();

@@ -13,20 +13,12 @@ namespace PIX3D
 	class Application
 	{
 	public:
-		Application(const ApplicationSpecs& specs)
-			: m_AppSpecs(specs)
-		{}
+		Application() = default;
 
 		virtual ~Application() {}
 		
 		virtual void OnStart() {}
 		virtual void OnUpdate() {}
-
-		void SetWidth(uint32_t width) { m_AppSpecs.Width = width; }
-		void SetHeight(uint32_t height) { m_AppSpecs.Height = height; }
-
-		ApplicationSpecs GetApplicationSpecs() const { return m_AppSpecs; }
 	private:
-		ApplicationSpecs m_AppSpecs;
 	};
 }

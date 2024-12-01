@@ -2,7 +2,7 @@
 #include <Core/Input.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <Engine/Engine.h>
+#include <Engine/Engine.hpp>
 #include <iostream>
 
 namespace
@@ -93,7 +93,7 @@ namespace PIX3D
 
 	glm::mat4 Camera3D::GetProjectionMatrix()
 	{
-		auto AppSpecs = PIX3D::Engine::GetApplication()->GetApplicationSpecs();
+		auto AppSpecs = PIX3D::Engine::GetApplicationSpecs();
 		float AspectRatio = (float)AppSpecs.Width / AppSpecs.Height;
 
 		return glm::perspective(glm::radians(m_CameraData.Fov), AspectRatio, m_CameraData.NearPlane, m_CameraData.FarPlane);

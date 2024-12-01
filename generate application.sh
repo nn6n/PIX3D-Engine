@@ -1,1 +1,1 @@
-python ApplicationCreatorScript.py MyApplication "PIX3D"
+python ApplicationCreatorScript.py MyApp "PIX3D"

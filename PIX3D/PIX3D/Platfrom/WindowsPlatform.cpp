@@ -1,9 +1,6 @@
 #include "WindowsPlatform.h"
-#include <GLFW/glfw3.h>
-#include <Core/Core.h>
-#include <Engine/Engine.h>
+#include <Engine/Engine.hpp>
 #include <Platfrom/GL/GLCommands.h>
-#include <Core/Input.h>
 
 namespace
 {
@@ -12,8 +9,8 @@ namespace
     void WindowResizeCallBack(GLFWwindow* window, int width, int height)
     {
         auto App = PIX3D::Engine::GetApplication();
-        App->SetWidth(width);
-        App->SetHeight(height);
+        //App->SetWidth(width);
+        //App->SetHeight(height);
         PIX3D::GL::GLCommands::SetViewPort(width, height);
 
         auto func = PIX3D::Engine::GetWindowSizeCallBackFunc();

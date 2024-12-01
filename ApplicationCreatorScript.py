@@ -189,6 +189,7 @@ def create_project_filters_file(filters_path):
 def create_main_cpp(main_cpp_path):
     """Create a basic main.cpp file."""
     main_content = """
+
 /*
 * Copyright (c) 2024 Karim Hamdallah
 */
@@ -206,19 +207,13 @@ int main()
 		PIX3D::Engine::Init(EngineSpecs);
 	}
 
-	// Create Application
-	PIX3D::Application* DrawingApp = nullptr;
-	{
-		PIX3D::ApplicationSpecs AppSpecs;
-		AppSpecs.Width = 800;
-		AppSpecs.Height = 600;
-		AppSpecs.Title = "Drawing Application";
-
-		DrawingApp = new PIX3D::Application(AppSpecs);
-	}
-
 	// Run Application
-	PIX3D::Engine::RunApplication(*DrawingApp);
+	PIX3D::ApplicationSpecs specs;
+	specs.Width = 800;
+	specs.Height = 600;
+	specs.Title = "My App";
+	
+	PIX3D::Engine::CreateApplication<PIX3D::Application>(specs);
 
 	// Destroy Engine
 	PIX3D::Engine::Destroy();
