@@ -3,6 +3,60 @@ import uuid
 import argparse
 import xml.etree.ElementTree as ET
 
+def update_solution_file(solution_path, project_name, project_path, project_guid):
+    """
+    Update the solution file to include the new project and set it as startup project
+    """
+    with open(solution_path, 'r') as f:
+        solution_content = f.read()
+
+    # Check if project is already in the solution
+    if f'Project("{{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}}") = "{project_name}"' in solution_content:
+        print(f"Project {project_name} already exists in the solution.")
+        return
+
+    # Prepare project reference
+    project_reference = f'''
+Project("{{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}}") = "{project_name}", "{os.path.relpath(project_path, os.path.dirname(solution_path))}", "{{{project_guid}}}"
+EndProject
+'''
+
+    # Find where to insert the new project reference (before Global section)
+    global_index = solution_content.find('Global')
+    updated_solution = (
+        solution_content[:global_index] + 
+        project_reference + 
+        solution_content[global_index:]
+    )
+
+    # Update ProjectConfigurationPlatforms section
+    platforms_pattern = r'(GlobalSection\(ProjectConfigurationPlatforms\) = postSolution)(.*?)(EndGlobalSection)'
+    platforms_match = re.search(platforms_pattern, updated_solution, re.DOTALL)
+    
+    if platforms_match:
+        platforms_content = platforms_match.group(2)
+        new_platforms_content = platforms_content + f'''
+        {{{project_guid}}}.Debug|x64.ActiveCfg = Debug|x64
+        {{{project_guid}}}.Debug|x64.Build.0 = Debug|x64
+        {{{project_guid}}}.Release|x64.ActiveCfg = Release|x64
+        {{{project_guid}}}.Release|x64.Build.0 = Release|x64
+'''
+        updated_solution = updated_solution.replace(
+            platforms_match.group(0), 
+            f'{platforms_match.group(1)}{new_platforms_content}{platforms_match.group(3)}'
+        )
+
+    # Set the new project as startup project
+    solution_lines = updated_solution.split('\n')
+    for i, line in enumerate(solution_lines):
+        if line.strip().startswith('GlobalSection(SolutionProperties) = preSolution'):
+            solution_lines.insert(i+1, f'\t\tSolutionGUID = {{{project_guid}}}')
+            break
+
+    # Write the updated solution file
+    with open(solution_path, 'w') as f:
+        f.write('\n'.join(solution_lines))
+
 def get_project_guid(vcxproj_path):
     """
     Extract the project GUID from an existing .vcxproj file
@@ -30,6 +84,10 @@ def create_visual_studio_project(project_name, engine_project_path, output_direc
     """
     # Convert engine project path to absolute path
     engine_project_path = os.path.abspath(engine_project_path)
+    
+    # Determine solution path in the parent directory of the main solution
+    solution_path = os.path.join(output_directory, f"{project_name}.sln")
+
     # Create project directory
     project_dir = os.path.join(output_directory, project_name)
     os.makedirs(project_dir, exist_ok=True)
@@ -41,8 +99,7 @@ def create_visual_studio_project(project_name, engine_project_path, output_direc
     engine_vcxproj_path = os.path.join(engine_project_path, "PIX3D.vcxproj")
     engine_project_guid = get_project_guid(engine_vcxproj_path)
 
-    # Create solution file
-    solution_path = os.path.join(project_dir, f"{project_name}.sln")
+    # Create solution file outside the project folder
     create_solution_file(solution_path, project_name, project_guid, engine_project_path, engine_project_guid)
 
     # Create project file
@@ -57,22 +114,23 @@ def create_visual_studio_project(project_name, engine_project_path, output_direc
     source_dir = os.path.join(project_dir, "src")
     os.makedirs(source_dir, exist_ok=True)
     main_cpp_path = os.path.join(source_dir, "main.cpp")
-    create_main_cpp(main_cpp_path)
+    create_main_cpp(main_cpp_path, project_name)
+
+    # Update the main solution file to include the new project
+    update_solution_file(solution_path, project_name, project_path, project_guid)
 
     print(f"Project '{project_name}' created successfully in {project_dir}")
+    print(f"Solution file created at: {solution_path}")
 
 def create_solution_file(solution_path, project_name, project_guid, engine_project_path, engine_project_guid):
     """Create a Visual Studio solution file with engine project reference."""
-    # Get the engine project filename
-    engine_project_filename = os.path.basename(engine_project_path) + ".vcxproj"
-    
     solution_content = f"""
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.0.0
-Project("{{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}}") = "{project_name}", "{project_name}.vcxproj", "{{{project_guid}}}"
+Project("{{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}}") = "{project_name}", "{project_name}/{project_name}.vcxproj", "{{{project_guid}}}"
 EndProject
-Project("{{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}}") = "PIX3D", "../{os.path.basename(engine_project_path)}/PIX3D.vcxproj", "{{{engine_project_guid}}}"
+Project("{{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}}") = "PIX3D", "{os.path.relpath(engine_project_path, os.path.dirname(solution_path))}/PIX3D.vcxproj", "{{{engine_project_guid}}}"
 EndProject
 Global
     GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -233,8 +291,8 @@ def create_project_filters_file(filters_path):
     with open(filters_path, 'w') as f:
         f.write(filters_content)
 
-def create_main_cpp(main_cpp_path):
-    """Create a basic main.cpp file."""
+def create_main_cpp(main_cpp_path, project_name):
+    """Create a basic main.cpp file with the project name embedded in specs.Title."""
     main_content = """
 /*
 * Copyright (c) 2024 Karim Hamdallah
@@ -256,7 +314,7 @@ int main()
     PIX3D::ApplicationSpecs specs;
     specs.Width = 800;
     specs.Height = 600;
-    specs.Title = "My App";
+    specs.Title = "{project_name}";  // Embedded project name here
     
     PIX3D::Engine::CreateApplication<PIX3D::Application>(specs);
 
@@ -266,6 +324,9 @@ int main()
     return 0;
 }
 """
+    # Replace `{project_name}` with the actual value of the project_name variable
+    main_content = main_content.replace("{project_name}", project_name)
+
     with open(main_cpp_path, 'w') as f:
         f.write(main_content)
 
