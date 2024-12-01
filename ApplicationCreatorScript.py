@@ -1,22 +1,53 @@
 import os
 import uuid
 import argparse
+import xml.etree.ElementTree as ET
+
+def get_project_guid(vcxproj_path):
+    """
+    Extract the project GUID from an existing .vcxproj file
+    """
+    try:
+        tree = ET.parse(vcxproj_path)
+        root = tree.getroot()
+        ns = {'ns': 'http://schemas.microsoft.com/developer/msbuild/2003'}
+        
+        # Find the ProjectGuid element
+        project_guid_elem = root.find(".//ns:ProjectGuid", namespaces=ns)
+        
+        if project_guid_elem is not None:
+            # Remove curly braces and return uppercase GUID
+            return project_guid_elem.text.strip('{}').upper()
+        
+    except Exception as e:
+        print(f"Could not extract GUID from {vcxproj_path}: {e}")
+        # Fallback to generating a new GUID if extraction fails
+        return str(uuid.uuid4()).upper()
 
 def create_visual_studio_project(project_name, engine_project_path, output_directory):
     """
     Create a new Visual Studio C++ project with references to an existing game engine project.
     """
+    # Convert engine project path to absolute path
+    engine_project_path = os.path.abspath(engine_project_path)
     # Create project directory
     project_dir = os.path.join(output_directory, project_name)
     os.makedirs(project_dir, exist_ok=True)
 
+    # Generate project GUID
+    project_guid = str(uuid.uuid4()).upper()
+    
+    # Get engine project GUID
+    engine_vcxproj_path = os.path.join(engine_project_path, "PIX3D.vcxproj")
+    engine_project_guid = get_project_guid(engine_vcxproj_path)
+
     # Create solution file
     solution_path = os.path.join(project_dir, f"{project_name}.sln")
-    create_solution_file(solution_path, project_name)
+    create_solution_file(solution_path, project_name, project_guid, engine_project_path, engine_project_guid)
 
     # Create project file
     project_path = os.path.join(project_dir, f"{project_name}.vcxproj")
-    create_project_file(project_path, project_name, engine_project_path)
+    create_project_file(project_path, project_name, project_guid, engine_project_path, engine_project_guid)
 
     # Create project filters file
     filters_path = os.path.join(project_dir, f"{project_name}.vcxproj.filters")
@@ -30,13 +61,18 @@ def create_visual_studio_project(project_name, engine_project_path, output_direc
 
     print(f"Project '{project_name}' created successfully in {project_dir}")
 
-def create_solution_file(solution_path, project_name):
-    """Create a basic Visual Studio solution file."""
+def create_solution_file(solution_path, project_name, project_guid, engine_project_path, engine_project_guid):
+    """Create a Visual Studio solution file with engine project reference."""
+    # Get the engine project filename
+    engine_project_filename = os.path.basename(engine_project_path) + ".vcxproj"
+    
     solution_content = f"""
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.0.0
-Project("{{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}}") = "{project_name}", "{project_name}.vcxproj", "{{PROJECT_GUID}}"
+Project("{{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}}") = "{project_name}", "{project_name}.vcxproj", "{{{project_guid}}}"
+EndProject
+Project("{{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}}") = "PIX3D", "../{os.path.basename(engine_project_path)}/PIX3D.vcxproj", "{{{engine_project_guid}}}"
 EndProject
 Global
     GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,26 +80,31 @@ Global
         Release|x64 = Release|x64
     EndGlobalSection
     GlobalSection(ProjectConfigurationPlatforms) = postSolution
-        {{PROJECT_GUID}}.Debug|x64.ActiveCfg = Debug|x64
-        {{PROJECT_GUID}}.Debug|x64.Build.0 = Debug|x64
-        {{PROJECT_GUID}}.Release|x64.ActiveCfg = Release|x64
-        {{PROJECT_GUID}}.Release|x64.Build.0 = Release|x64
+        {{{project_guid}}}.Debug|x64.ActiveCfg = Debug|x64
+        {{{project_guid}}}.Debug|x64.Build.0 = Debug|x64
+        {{{project_guid}}}.Release|x64.ActiveCfg = Release|x64
+        {{{project_guid}}}.Release|x64.Build.0 = Release|x64
+        {{{engine_project_guid}}}.Debug|x64.ActiveCfg = Debug|x64
+        {{{engine_project_guid}}}.Debug|x64.Build.0 = Debug|x64
+        {{{engine_project_guid}}}.Release|x64.ActiveCfg = Release|x64
+        {{{engine_project_guid}}}.Release|x64.Build.0 = Release|x64
+    EndGlobalSection
+    GlobalSection(ProjectDependencies) = postSolution
+        {{{project_guid}}} = {{{engine_project_guid}}}
     EndGlobalSection
     GlobalSection(SolutionProperties) = preSolution
         HideSolutionNode = FALSE
     EndGlobalSection
 EndGlobal
-""".replace("{{PROJECT_GUID}}", str(uuid.uuid4()).upper())
+"""
 
     with open(solution_path, 'w') as f:
         f.write(solution_content)
 
-def create_project_file(project_path, project_name, engine_project_path):
+def create_project_file(project_path, project_name, project_guid, engine_project_path, engine_project_guid):
     """Create a Visual Studio project file with engine reference."""
-    # Get absolute paths
-    current_dir = os.getcwd()
-    engine_project_abs_path = os.path.abspath(engine_project_path)
-    vendor_path = os.path.abspath('Vendor')
+    # Calculate vendor and library paths relative to engine project
+    vendor_path = os.path.abspath(os.path.join(engine_project_path, '..', 'Vendor'))
     glfw_lib_path = os.path.abspath(os.path.join(vendor_path, 'glfw', 'lib'))
 
     project_content = f"""<?xml version="1.0" encoding="utf-8"?>
@@ -81,7 +122,7 @@ def create_project_file(project_path, project_name, engine_project_path):
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{{{str(uuid.uuid4()).upper()}}}</ProjectGuid>
+    <ProjectGuid>{{{project_guid}}}</ProjectGuid>
     <RootNamespace>{project_name}</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -113,12 +154,12 @@ def create_project_file(project_path, project_name, engine_project_path):
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>{engine_project_abs_path}\PIX3D;{vendor_path}\glm;{vendor_path}\glfw\include;$(IncludePath)</IncludePath>
+    <IncludePath>{engine_project_path}\PIX3D;{vendor_path}\glm;{vendor_path}\glfw\include;$(IncludePath)</IncludePath>
     <LibraryPath>{glfw_lib_path};$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>{engine_project_abs_path}\PIX3D;{vendor_path}\glm;{vendor_path}\glfw\include;$(IncludePath)</IncludePath>
+    <IncludePath>{engine_project_path}\PIX3D;{vendor_path}\glm;{vendor_path}\glfw\include;$(IncludePath)</IncludePath>
     <LibraryPath>{glfw_lib_path};$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -158,6 +199,11 @@ def create_project_file(project_path, project_name, engine_project_path):
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../{os.path.basename(engine_project_path)}/PIX3D.vcxproj">
+      <Project>{{{engine_project_guid}}}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
@@ -166,6 +212,7 @@ def create_project_file(project_path, project_name, engine_project_path):
     with open(project_path, 'w') as f:
         f.write(project_content)
 
+# The rest of the functions remain the same as in the previous version
 def create_project_filters_file(filters_path):
     """Create a basic project filters file."""
     filters_content = """<?xml version="1.0" encoding="utf-8"?>
@@ -189,36 +236,34 @@ def create_project_filters_file(filters_path):
 def create_main_cpp(main_cpp_path):
     """Create a basic main.cpp file."""
     main_content = """
-
 /*
 * Copyright (c) 2024 Karim Hamdallah
 */
 
 #include <PIX3D.h>
 
-
 int main()
 {
-	// Init Engine
-	{
-		PIX3D::EngineSpecs EngineSpecs;
-		EngineSpecs.API = PIX3D::GraphicsAPI::OPENGL;
+    // Init Engine
+    {
+        PIX3D::EngineSpecs EngineSpecs;
+        EngineSpecs.API = PIX3D::GraphicsAPI::OPENGL;
 
-		PIX3D::Engine::Init(EngineSpecs);
-	}
+        PIX3D::Engine::Init(EngineSpecs);
+    }
 
-	// Run Application
-	PIX3D::ApplicationSpecs specs;
-	specs.Width = 800;
-	specs.Height = 600;
-	specs.Title = "My App";
-	
-	PIX3D::Engine::CreateApplication<PIX3D::Application>(specs);
+    // Run Application
+    PIX3D::ApplicationSpecs specs;
+    specs.Width = 800;
+    specs.Height = 600;
+    specs.Title = "My App";
+    
+    PIX3D::Engine::CreateApplication<PIX3D::Application>(specs);
 
-	// Destroy Engine
-	PIX3D::Engine::Destroy();
+    // Destroy Engine
+    PIX3D::Engine::Destroy();
 
-	return 0;
+    return 0;
 }
 """
     with open(main_cpp_path, 'w') as f:
