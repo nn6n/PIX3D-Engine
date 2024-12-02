@@ -57,6 +57,15 @@
     <ClCompile Include="PIX3D\Platfrom\GL\GLPipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PIX3D\Platfrom\GL\GLFramebuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PIX3D\Platfrom\GL\Renderer2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PIX3D\Platfrom\GL\GLRenderpass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PIX3D\Platfrom\Platform.h">
@@ -122,9 +131,25 @@
     <ClInclude Include="PIX3D\PIX3D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PIX3D\Platfrom\GL\GLFramebuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PIX3D\Utils\stb_write.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PIX3D\Platfrom\GL\Renderer2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PIX3D\Platfrom\GL\GLRenderpass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\gl shaders\pos_vertex.vert" />
     <None Include="res\gl shaders\pos_fragment.frag" />
+    <None Include="res\gl shaders\smooth_circle.vert" />
+    <None Include="res\gl shaders\smooth_circle.frag" />
+    <None Include="res\gl shaders\screen_quad.vert" />
+    <None Include="res\gl shaders\screen_quad.frag" />
   </ItemGroup>
 </Project>

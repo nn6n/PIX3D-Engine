@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include <stdint.h>
 #include <string>
 
@@ -21,5 +22,9 @@ namespace PIX3D
 
 		virtual bool IsMouseButtonPressed(int mousebutton) { return false; }
 		virtual bool IsMouseButtonReleased(int mousebutton) { return false; }
+
+		// Plaform Utils
+		// Image Utils
+		virtual void ExportImagePNG(const std::string& path, uint32_t width, uint32_t height, const std::vector<uint8_t>& pixels, uint32_t bpp = 4) { }
 	};
 }

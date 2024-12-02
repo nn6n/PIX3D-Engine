@@ -7,6 +7,8 @@
 #include <Core/Core.h>
 #include <Core/Input.h>
 #include <Graphics/GraphicsContext.h>
+#include <Platfrom/GL/Renderer2D.h>
+#include <Platfrom/GL/GLRenderpass.h>
 #include <memory>
 #include <functional>
 #include <GLFW/glfw3.h>
@@ -41,7 +43,7 @@ namespace PIX3D
 		static void CreateApplication(const ApplicationSpecs& specs)
 		{
 			// Create Application
-			s_Application = new T();
+			s_Application = (PIX3D::Application*)new T();
 			s_AppSpecs = specs;
 
 			// Platform Layer
@@ -61,6 +63,9 @@ namespace PIX3D
 			    {
 			    	s_GraphicsContext = new GL::GLGraphicsContext();
 			    	s_GraphicsContext->Init(s_Platform->GetNativeWindowHandel());
+
+					GL::PixelRenderer2D::Init();
+					GL::GLRenderpass::Init();
 			    }break;
 			    
 			    case GraphicsAPI::VULKAN:

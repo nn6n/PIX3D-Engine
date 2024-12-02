@@ -119,6 +119,20 @@ namespace PIX3D
             glUniform1f(Location, value);
         }
 
+        void GLShader::SetVec3(const std::string& name, const glm::vec3& value) const
+        {
+            GLint Location = glGetUniformLocation(m_ProgramID, name.c_str());
+            PIX_ASSERT_MSG(Location >= 0, "Unknown Uniform");
+            glUniform3f(Location, value.x, value.y, value.z);
+        }
+
+        void GLShader::SetVec4(const std::string& name, const glm::vec4& value) const
+        {
+            GLint Location = glGetUniformLocation(m_ProgramID, name.c_str());
+            PIX_ASSERT_MSG(Location >= 0, "Unknown Uniform");
+            glUniform4f(Location, value.x, value.y, value.z, value.w);
+        }
+
         void GLShader::SetMat4(const std::string& name, const glm::mat4& matrix) const
         {
             GLint Location = glGetUniformLocation(m_ProgramID, name.c_str());

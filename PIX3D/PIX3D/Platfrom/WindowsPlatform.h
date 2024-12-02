@@ -21,6 +21,8 @@ namespace PIX3D
 		virtual bool IsMouseButtonPressed(int mousebutton) override;
 		virtual bool IsMouseButtonReleased(int mousebutton) override;
 
+		virtual void ExportImagePNG(const std::string& path, uint32_t width, uint32_t height, const std::vector<uint8_t>& pixels, uint32_t bpp = 4) override;
+
 	private:
 		void* m_NativeWindowHandel = nullptr;
 	};

@@ -14,7 +14,6 @@ namespace PIX3D
 	{
 	public:
 		Application() = default;
-
 		virtual ~Application() {}
 		
 		virtual void OnStart() {}

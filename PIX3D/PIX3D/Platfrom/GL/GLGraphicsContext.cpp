@@ -19,6 +19,9 @@ namespace PIX3D
 			int w, h;
 			glfwGetWindowSize((GLFWwindow*)NativeWindowHandle, &w, &h);
 			glViewport(0, 0, w, h);
+
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		}
 
 		void GLGraphicsContext::SwapBuffers(void* NativeWindowHandle)

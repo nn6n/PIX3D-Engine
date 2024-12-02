@@ -2,6 +2,9 @@
 #include <Engine/Engine.hpp>
 #include <Platfrom/GL/GLCommands.h>
 
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include <Utils/stb_write.h>
+
 namespace
 {
     bool FirstMouse = true;
@@ -109,5 +112,14 @@ namespace PIX3D
     {
         bool released = glfwGetMouseButton((GLFWwindow*)m_NativeWindowHandel, mousebutton) == GLFW_RELEASE;
         return released;
+    }
+
+    void WindowsPlatformLayer::ExportImagePNG(const std::string& path, uint32_t width, uint32_t height, const std::vector<uint8_t>& pixels, uint32_t bpp)
+    {
+        // Save pixel data to PNG using stb_image_write
+        if (stbi_write_png(path.c_str(), width, height, bpp, pixels.data(), width * bpp))
+            std::cout << "Saved framebuffer to " << path << std::endl;
+        else
+            PIX_ASSERT_MSG(false, "Failed to save image!");
     }
 }
