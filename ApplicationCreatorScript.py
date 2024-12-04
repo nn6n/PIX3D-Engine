@@ -1,6 +1,7 @@
 import os
 import uuid
 import argparse
+import shutil
 import xml.etree.ElementTree as ET
 
 def update_solution_file(solution_path, project_name, project_path, project_guid):
@@ -103,8 +104,9 @@ def create_visual_studio_project(project_name, engine_project_path, output_direc
     create_solution_file(solution_path, project_name, project_guid, engine_project_path, engine_project_guid)
 
     # Create project file
+    project_dir = os.path.join(output_directory, project_name)
     project_path = os.path.join(project_dir, f"{project_name}.vcxproj")
-    create_project_file(project_path, project_name, project_guid, engine_project_path, engine_project_guid)
+    create_project_file(project_path, project_name, project_guid, engine_project_path, engine_project_guid, project_dir)
 
     # Create project filters file
     filters_path = os.path.join(project_dir, f"{project_name}.vcxproj.filters")
@@ -115,6 +117,21 @@ def create_visual_studio_project(project_name, engine_project_path, output_direc
     os.makedirs(source_dir, exist_ok=True)
     main_cpp_path = os.path.join(source_dir, "main.cpp")
     create_main_cpp(main_cpp_path, project_name)
+    
+    # Determine the location of the ImGui folder in the vendor directory
+    _vendor_path = os.path.abspath(os.path.join(engine_project_path, '..', 'Vendor'))
+    imgui_folder_path = os.path.join(_vendor_path, "imgui")
+
+    # Determine the destination path in the application project
+    application_imgui_path = os.path.join(project_dir, "imgui")
+
+    # Create the destination folder if it doesn't exist
+    os.makedirs(application_imgui_path, exist_ok=True)
+
+    # Copy the ImGui folder and its contents
+    shutil.copytree(imgui_folder_path, application_imgui_path, dirs_exist_ok=True)
+
+    print(f"ImGui folder copied from {imgui_folder_path} to {application_imgui_path}")
 
     # Update the main solution file to include the new project
     update_solution_file(solution_path, project_name, project_path, project_guid)
@@ -159,7 +176,7 @@ EndGlobal
     with open(solution_path, 'w') as f:
         f.write(solution_content)
 
-def create_project_file(project_path, project_name, project_guid, engine_project_path, engine_project_guid):
+def create_project_file(project_path, project_name, project_guid, engine_project_path, engine_project_guid, proj_dir):
     """Create a Visual Studio project file with engine reference."""
     # Calculate vendor and library paths relative to engine project
     vendor_path = os.path.abspath(os.path.join(engine_project_path, '..', 'Vendor'))
@@ -212,12 +229,12 @@ def create_project_file(project_path, project_name, project_guid, engine_project
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>{engine_project_path}\PIX3D;{vendor_path}\glm;{vendor_path}\glfw\include;$(IncludePath)</IncludePath>
+    <IncludePath>{engine_project_path}\PIX3D;{vendor_path}\glm;{vendor_path}\glfw\include;{proj_dir}\imgui;$(IncludePath)</IncludePath>
     <LibraryPath>{glfw_lib_path};$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>{engine_project_path}\PIX3D;{vendor_path}\glm;{vendor_path}\glfw\include;$(IncludePath)</IncludePath>
+    <IncludePath>{engine_project_path}\PIX3D;{vendor_path}\glm;{vendor_path}\glfw\include;{proj_dir}\imgui;$(IncludePath)</IncludePath>
     <LibraryPath>{glfw_lib_path};$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

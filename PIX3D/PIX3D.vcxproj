@@ -71,19 +71,19 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)\Vendor\glm;$(SolutionDir)\Vendor\glad\include;$(SolutionDir)\Vendor\Mono\include;$(SolutionDir)\PIX3D\PIX3D;$(SolutionDir)\Vendor\glfw\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\PIX3D\imgui;$(SolutionDir)\Vendor\glm;$(SolutionDir)\Vendor\glad\include;$(SolutionDir)\Vendor\Mono\include;$(SolutionDir)\PIX3D\PIX3D;$(SolutionDir)\Vendor\glfw\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\Vendor\Mono\lib;$(SolutionDir)\Vendor\glfw\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(SolutionDir)\Vendor\glm;$(SolutionDir)\Vendor\glad\include;$(SolutionDir)\Vendor\Mono\include;$(SolutionDir)\PIX3D\PIX3D;$(SolutionDir)\Vendor\glfw\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\PIX3D\imgui;$(SolutionDir)\Vendor\glm;$(SolutionDir)\Vendor\glad\include;$(SolutionDir)\Vendor\Mono\include;$(SolutionDir)\PIX3D\PIX3D;$(SolutionDir)\Vendor\glfw\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\Vendor\Mono\lib;$(SolutionDir)\Vendor\glfw\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)\Vendor\glm;$(SolutionDir)\Vendor\glad\include;$(SolutionDir)\Vendor\Mono\include;$(SolutionDir)\PIX3D\PIX3D;$(SolutionDir)\Vendor\glfw\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\PIX3D\imgui;$(SolutionDir)\Vendor\glm;$(SolutionDir)\Vendor\glad\include;$(SolutionDir)\Vendor\Mono\include;$(SolutionDir)\PIX3D\PIX3D;$(SolutionDir)\Vendor\glfw\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\Vendor\Mono\lib;$(SolutionDir)\Vendor\glfw\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)\Vendor\glm;$(SolutionDir)\Vendor\glad\include;$(SolutionDir)\Vendor\Mono\include;$(SolutionDir)\PIX3D\PIX3D;$(SolutionDir)\Vendor\glfw\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\PIX3D\imgui;$(SolutionDir)\Vendor\glm;$(SolutionDir)\Vendor\glad\include;$(SolutionDir)\Vendor\Mono\include;$(SolutionDir)\PIX3D\PIX3D;$(SolutionDir)\Vendor\glfw\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\Vendor\Mono\lib;$(SolutionDir)\Vendor\glfw\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -151,6 +151,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="imgui\imgui.cpp" />
+    <ClCompile Include="imgui\imgui_demo.cpp" />
+    <ClCompile Include="imgui\imgui_draw.cpp" />
+    <ClCompile Include="imgui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="imgui\imgui_tables.cpp" />
+    <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="PIX3D\Core\Application.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PIX3D\Core\Input.cpp" />
@@ -167,9 +174,19 @@
     <ClCompile Include="PIX3D\Platfrom\GL\GLVertexArray.cpp" />
     <ClCompile Include="PIX3D\Platfrom\GL\GLVertexBuffer.cpp" />
     <ClCompile Include="PIX3D\Platfrom\GL\Renderer2D.cpp" />
+    <ClCompile Include="PIX3D\Platfrom\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="PIX3D\Platfrom\WindowsPlatform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="imgui\imconfig.h" />
+    <ClInclude Include="imgui\imgui.h" />
+    <ClInclude Include="imgui\imgui_impl_glfw.h" />
+    <ClInclude Include="imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="imgui\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="imgui\imgui_internal.h" />
+    <ClInclude Include="imgui\imstb_rectpack.h" />
+    <ClInclude Include="imgui\imstb_textedit.h" />
+    <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="PIX3D\Core\Application.h" />
     <ClInclude Include="PIX3D\Core\Buffer.hpp" />
     <ClInclude Include="PIX3D\Core\Core.h" />
@@ -191,6 +208,7 @@
     <ClInclude Include="PIX3D\Platfrom\GL\GLVertexArray.h" />
     <ClInclude Include="PIX3D\Platfrom\GL\GLVertexBuffer.h" />
     <ClInclude Include="PIX3D\Platfrom\GL\Renderer2D.h" />
+    <ClInclude Include="PIX3D\Platfrom\ImGui\ImGuiLayer.h" />
     <ClInclude Include="PIX3D\Platfrom\Platform.h" />
     <ClInclude Include="PIX3D\Platfrom\WindowsPlatform.h" />
     <ClInclude Include="PIX3D\Utils\FileWatcher.hpp" />

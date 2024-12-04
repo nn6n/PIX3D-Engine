@@ -15,7 +15,7 @@ void main()
     // Compute distance from the center
     float distanceFromCenter = length(in_coords);
 
-    if(distanceFromCenter >= 1.05) discard;
+    if(distanceFromCenter >= 1.0) discard;
 
     FragColor = color;
 }

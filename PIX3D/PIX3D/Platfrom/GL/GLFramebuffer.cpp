@@ -55,6 +55,9 @@ namespace PIX3D
 
         void GLFramebuffer::Resize(uint32_t width, uint32_t height)
         {
+            if (width == 0 || height == 0)
+                return;
+
             m_Specs.Width = width;
             m_Specs.Height = height;
 

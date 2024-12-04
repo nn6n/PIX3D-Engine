@@ -14,8 +14,8 @@ int main()
 
     // Run Application
     PIX3D::ApplicationSpecs specs;
-    specs.Width = 800;
-    specs.Height = 600;
+    specs.Width = 1024;
+    specs.Height = 768;
     specs.Title = "DrawingApplication";
     
     PIX3D::Engine::CreateApplication<DrawinApplication>(specs);

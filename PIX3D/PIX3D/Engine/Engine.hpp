@@ -12,6 +12,7 @@
 #include <memory>
 #include <functional>
 #include <GLFW/glfw3.h>
+#include <Platfrom/ImGui/ImGuiLayer.h>
 
 namespace PIX3D
 {
@@ -66,6 +67,7 @@ namespace PIX3D
 
 					GL::PixelRenderer2D::Init();
 					GL::GLRenderpass::Init();
+					ImGuiLayer::Init();
 			    }break;
 			    
 			    case GraphicsAPI::VULKAN:
@@ -96,7 +98,9 @@ namespace PIX3D
 				// Poll Events
 				s_Platform->PollEvents();
 
+				ImGuiLayer::BeginDraw();
 				s_Application->OnUpdate();
+				ImGuiLayer::EndDraw();
 
 				s_GraphicsContext->SwapBuffers(s_Platform->GetNativeWindowHandel());
 
@@ -131,6 +135,13 @@ namespace PIX3D
 
 		inline static ApplicationSpecs GetApplicationSpecs() { return s_AppSpecs; }
 
+		inline static void CloseApplication() { glfwSetWindowShouldClose((GLFWwindow*)s_Platform->GetNativeWindowHandel(), 1); }
+
+		inline static float GetDeltaTime() { return s_DeltaTime; }
+		inline static float GetFps() { return 1/s_DeltaTime; }
+
+		inline static void SetWindowWidth(uint32_t width) { s_AppSpecs.Width = width; }
+		inline static void SetWindowHeight(uint32_t height) { s_AppSpecs.Height = height; }
 	private:
 		// Engine Specs
 		inline static EngineSpecs s_EngineSpecs;

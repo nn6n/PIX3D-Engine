@@ -2,9 +2,16 @@
 #include <vector>
 #include <stdint.h>
 #include <string>
+#include <filesystem>
 
 namespace PIX3D
 {
+	enum class FileDialougeFilter
+	{
+		PNG
+	};
+
+
 	class PlatformLayer
 	{
 	public:
@@ -26,5 +33,9 @@ namespace PIX3D
 		// Plaform Utils
 		// Image Utils
 		virtual void ExportImagePNG(const std::string& path, uint32_t width, uint32_t height, const std::vector<uint8_t>& pixels, uint32_t bpp = 4) { }
+
+		// Dialogue
+		virtual std::filesystem::path OpenDialogue(FileDialougeFilter Filter) { return std::filesystem::path(); }
+		virtual std::filesystem::path SaveDialogue(FileDialougeFilter Filter) { return std::filesystem::path(); }
 	};
 }
