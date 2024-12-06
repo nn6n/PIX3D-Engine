@@ -7,7 +7,8 @@
 #include <Core/Core.h>
 #include <Core/Input.h>
 #include <Graphics/GraphicsContext.h>
-#include <Platfrom/GL/Renderer2D.h>
+#include <Platfrom/GL/GLPixelRenderer2D.h>
+#include <Platfrom/GL/GLPixelBatchRenderer2D.h>
 #include <Platfrom/GL/GLRenderpass.h>
 #include <memory>
 #include <functional>
@@ -65,7 +66,8 @@ namespace PIX3D
 			    	s_GraphicsContext = new GL::GLGraphicsContext();
 			    	s_GraphicsContext->Init(s_Platform->GetNativeWindowHandel());
 
-					GL::PixelRenderer2D::Init();
+					GL::GLPixelRenderer2D::Init();
+					GL::GLPixelBatchRenderer2D::Init();
 					GL::GLRenderpass::Init();
 					ImGuiLayer::Init();
 			    }break;
@@ -98,6 +100,7 @@ namespace PIX3D
 				// Poll Events
 				s_Platform->PollEvents();
 
+				GL::GLPixelBatchRenderer2D::ResetDrawCalls();
 				ImGuiLayer::BeginDraw();
 				s_Application->OnUpdate();
 				ImGuiLayer::EndDraw();
@@ -107,8 +110,15 @@ namespace PIX3D
 				Input::ResetInput();
 			}
 		}
+
 		static void Destroy()
 		{
+			GL::GLPixelRenderer2D::Destory();
+			GL::GLPixelBatchRenderer2D::Destory();
+			GL::GLRenderpass::Destroy();
+			ImGuiLayer::Destroy();
+
+
 			delete s_Platform;
 			delete s_Application;
 			delete s_GraphicsContext;
@@ -138,7 +148,7 @@ namespace PIX3D
 		inline static void CloseApplication() { glfwSetWindowShouldClose((GLFWwindow*)s_Platform->GetNativeWindowHandel(), 1); }
 
 		inline static float GetDeltaTime() { return s_DeltaTime; }
-		inline static float GetFps() { return 1/s_DeltaTime; }
+		inline static float GetFps() { return 1.0f / s_DeltaTime; }
 
 		inline static void SetWindowWidth(uint32_t width) { s_AppSpecs.Width = width; }
 		inline static void SetWindowHeight(uint32_t height) { s_AppSpecs.Height = height; }

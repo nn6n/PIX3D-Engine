@@ -31,6 +31,12 @@ namespace PIX3D
 			glBufferData(GL_ARRAY_BUFFER, buffer.GetSize(), buffer.GetData(), ToGL(usage));
 		}
 
+		void GLVertexBuffer::Update(const PIX3D::BufferData& buffer)
+		{
+			glBindBuffer(GL_ARRAY_BUFFER, m_Handle);
+			glBufferSubData(GL_ARRAY_BUFFER, 0, buffer.GetSize(), buffer.GetData());
+		}
+
 		void GLVertexBuffer::Destroy()
 		{
 			glDeleteBuffers(1, &m_Handle);

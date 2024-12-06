@@ -13,6 +13,7 @@ namespace PIX3D
 		public:
 			void Create();
 			void Fill(const PIX3D::BufferData& buffer, GLVertexBufferUsage usage = GLVertexBufferUsage::STATIC_DRAW);
+			void Update(const PIX3D::BufferData& buffer);
 			void Destroy();
 		};
 	}

@@ -60,7 +60,7 @@
     <ClCompile Include="PIX3D\Platfrom\GL\GLFramebuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PIX3D\Platfrom\GL\Renderer2D.cpp">
+    <ClCompile Include="PIX3D\Platfrom\GL\GLPixelRenderer2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PIX3D\Platfrom\GL\GLRenderpass.cpp">
@@ -88,6 +88,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PIX3D\Platfrom\ImGui\ImGuiLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PIX3D\Platfrom\GL\GLPixelBatchRenderer2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PIX3D\Platfrom\GL\GLDynamicVertexBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -161,7 +167,7 @@
     <ClInclude Include="PIX3D\Utils\stb_write.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PIX3D\Platfrom\GL\Renderer2D.h">
+    <ClInclude Include="PIX3D\Platfrom\GL\GLPixelRenderer2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PIX3D\Platfrom\GL\GLRenderpass.h">
@@ -197,6 +203,12 @@
     <ClInclude Include="PIX3D\Platfrom\ImGui\ImGuiLayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PIX3D\Platfrom\GL\GLPixelBatchRenderer2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PIX3D\Platfrom\GL\GLDynamicVertexBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\gl shaders\pos_vertex.vert" />
@@ -205,5 +217,7 @@
     <None Include="res\gl shaders\smooth_circle.frag" />
     <None Include="res\gl shaders\screen_quad.vert" />
     <None Include="res\gl shaders\screen_quad.frag" />
+    <None Include="res\gl shaders\pixel_batch_renderer.vert" />
+    <None Include="res\gl shaders\pixel_batch_renderer.frag" />
   </ItemGroup>
 </Project>

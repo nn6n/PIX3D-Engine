@@ -1,6 +1,7 @@
 #pragma once
 #include "GLVertexBuffer.h"
 #include "GLIndexBuffer.h"
+#include "GLDynamicVertexBuffer.h"
 
 namespace PIX3D
 {
@@ -28,7 +29,7 @@ namespace PIX3D
 			void AddVertexAttrib(const GLVertexAttrib& attrib, uint32_t vertexbufferbindingindex = 0);
 			void Bind();
 		private:
-			std::vector<GLVertexBuffer> m_VertexBuffers;
+			uint32_t m_VertexBufferIndex = 0;
 		};
 	}
 }

@@ -112,6 +112,11 @@ namespace PIX3D
             glUseProgram(m_ProgramID);
         }
 
+        void GLShader::Destroy()
+        {
+            glDeleteProgram(m_ProgramID);
+        }
+
         void GLShader::SetFloat(const std::string & name, float value) const
         {
             GLint Location = glGetUniformLocation(m_ProgramID, name.c_str());

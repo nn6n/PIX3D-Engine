@@ -38,8 +38,7 @@ namespace PIX3D
 
 		void GLVertexArray::AddVertexBuffer(GLVertexBuffer& vertexbuffer, uint32_t stride)
 		{
-			glVertexArrayVertexBuffer(m_Handle, m_VertexBuffers.size(), vertexbuffer.GetHandle(), 0, stride);
-			m_VertexBuffers.push_back(vertexbuffer);
+			glVertexArrayVertexBuffer(m_Handle, m_VertexBufferIndex++, vertexbuffer.GetHandle(), 0, stride);
 		}
 
 		void GLVertexArray::AddVertexAttrib(const GLVertexAttrib& attrib, uint32_t vertexbufferbindingindex)

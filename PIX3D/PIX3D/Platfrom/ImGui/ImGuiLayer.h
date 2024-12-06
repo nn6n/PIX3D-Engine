@@ -6,6 +6,7 @@ namespace PIX3D
 	{
 	public:
 		static void Init();
+		static void Destroy();
 		static void BeginDraw();
 		static void EndDraw();
 
