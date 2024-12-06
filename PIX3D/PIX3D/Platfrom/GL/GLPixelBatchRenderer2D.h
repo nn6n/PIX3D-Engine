@@ -25,6 +25,7 @@ namespace PIX3D
 			static void Init();
 			static void Begin();
 			static void End();
+			static void Destory();
 			static void DrawCircle_TopLeft(const glm::vec2& position, float size, const glm::vec4& color);
 			static void DrawQuad_TopLeft(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color);
 

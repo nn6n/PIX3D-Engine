@@ -84,5 +84,48 @@ namespace PIX3D
 
             return pixels;
         }
+
+        std::vector<uint32_t> GLFramebuffer::GetPixelsUint32()
+        {
+            // Create a 1D vector to hold the pixel data
+            std::vector<uint32_t> pixels(m_Specs.Width * m_Specs.Height);
+
+            // Bind the framebuffer
+            glBindFramebuffer(GL_FRAMEBUFFER, m_Handle);
+
+            // Read the pixels from the framebuffer (assume RGBA, 4 bytes per pixel)
+            glReadPixels(0, 0, m_Specs.Width, m_Specs.Height, GL_RGBA, GL_UNSIGNED_BYTE, pixels.data());
+
+            // Unbind the framebuffer
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+            return pixels;
+        }
+
+        void GLFramebuffer::SetPixelsUint32(const std::vector<uint32_t>& pixels)
+        {
+            // Validate input dimensions
+            if (pixels.size() != m_Specs.Width * m_Specs.Height)
+            {
+                PIX_ASSERT_MSG(false, "Pixel array size does not match framebuffer dimensions.");
+            }
+
+            // Bind the framebuffer's texture (assuming color attachment is at GL_COLOR_ATTACHMENT0)
+            glBindFramebuffer(GL_FRAMEBUFFER, m_Handle);
+
+            // Upload the pixel data to the framebuffer's texture (glTexSubImage2D updates a portion of the texture)
+            glTexSubImage2D(
+                GL_TEXTURE_2D,            // Target
+                0,                        // Level of detail
+                0, 0,                     // Offset (x, y)
+                m_Specs.Width, m_Specs.Height, // Dimensions
+                GL_RGBA,                  // Format
+                GL_UNSIGNED_BYTE,         // Data type
+                pixels.data()             // Data
+            );
+
+            // Unbind the framebuffer
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        }
 	}
 }

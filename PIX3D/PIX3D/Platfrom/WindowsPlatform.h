@@ -7,7 +7,7 @@ namespace PIX3D
 	{
 	public:
 		WindowsPlatformLayer() = default;
-		virtual ~WindowsPlatformLayer() {}
+		virtual ~WindowsPlatformLayer();
 
 		virtual void CreatWindow(uint32_t width, uint32_t height, const char* title) override;
 		virtual void PollEvents() override;

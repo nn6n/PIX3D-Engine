@@ -26,6 +26,8 @@ namespace PIX3D
 			void Resize(uint32_t width, uint32_t height);
 
 			std::vector<uint8_t> GetPixels(uint32_t bpp = 4);
+			std::vector<uint32_t> GetPixelsUint32();
+			void SetPixelsUint32(const std::vector<uint32_t>& pixels);
 
 			GLFramebufferSpecification GetFramebufferSpecs() { return m_Specs; }
 

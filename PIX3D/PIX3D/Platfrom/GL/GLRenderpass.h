@@ -11,6 +11,7 @@ namespace PIX3D
 		{
 		public:
 			static void Init();
+			static void Destroy();
 			static void ShowScreenRectPass(GLFramebuffer& framebuffer);
 		private:
 			// Screen Quad Pass

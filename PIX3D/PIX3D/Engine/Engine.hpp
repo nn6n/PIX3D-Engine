@@ -110,8 +110,15 @@ namespace PIX3D
 				Input::ResetInput();
 			}
 		}
+
 		static void Destroy()
 		{
+			GL::GLPixelRenderer2D::Destory();
+			GL::GLPixelBatchRenderer2D::Destory();
+			GL::GLRenderpass::Destroy();
+			ImGuiLayer::Destroy();
+
+
 			delete s_Platform;
 			delete s_Application;
 			delete s_GraphicsContext;

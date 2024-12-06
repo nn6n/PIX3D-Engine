@@ -3,6 +3,12 @@
 
 class DrawinApplication : public PIX3D::Application
 {
+	enum ApplicationRendererMode
+	{
+		SOFTWARE_RENDERER,
+		HARDWARE_RENDERER
+	};
+
 	struct BrushDot
 	{
 		glm::vec2 position;
@@ -17,6 +23,9 @@ public:
 	virtual void OnStart() override;
 	virtual void OnUpdate() override;
 	virtual void OnResize(uint32_t width, uint32_t height) override;
+
+private:
+	void DrawCircleAroundMouse(std::vector<uint32_t>& pixels, const glm::vec2 & mousePos, uint32_t width, uint32_t height, uint32_t radius);
 private:
 	PIX3D::GL::GLFramebuffer m_Framebuffer;
 	std::vector<BrushDot> m_Dots;
@@ -26,4 +35,5 @@ private:
 	glm::vec4 m_BrushColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 	bool m_TakeScreenShoot = false;
 	glm::vec2 m_MousePosition;
+	ApplicationRendererMode m_RenderMode = HARDWARE_RENDERER;
 };

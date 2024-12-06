@@ -59,6 +59,14 @@ namespace PIX3D
             }
 		}
 
+        void GLRenderpass::Destroy()
+        {
+            s_ScreenQuadVertexArray.Destroy();
+            s_ScreenQuadVertexBuffer.Destroy();
+            s_ScreenQuadIndexBuffer.Destroy();
+            s_ScreenQuadShader.Destroy();
+        }
+
         void GLRenderpass::ShowScreenRectPass(GLFramebuffer& framebuffer)
         {
             // bind Texture

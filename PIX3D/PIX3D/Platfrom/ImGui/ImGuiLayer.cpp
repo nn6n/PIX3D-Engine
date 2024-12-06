@@ -86,6 +86,13 @@ void PIX3D::ImGuiLayer::Init()
 		SetDarkThemeColors();
 }
 
+void PIX3D::ImGuiLayer::Destroy()
+{
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
+}
+
 void PIX3D::ImGuiLayer::BeginDraw()
 {
 	// Start the Dear ImGui frame

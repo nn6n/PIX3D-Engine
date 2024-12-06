@@ -76,6 +76,14 @@ namespace PIX3D
         {
         }
 
+        void GLPixelRenderer2D::Destory()
+        {
+            s_SmoothCircleVertexArray.Destroy();
+            s_SmoothCircleVertexBuffer.Destroy();
+            s_SmoothCircleIndexBuffer.Destroy();
+            s_SmoothCircleShader.Destroy();
+        }
+
         void GLPixelRenderer2D::DrawSmoothCircle_TopLeft(float x, float y, float size, glm::vec4 color)
         {
 

@@ -57,28 +57,50 @@ void DrawinApplication::OnUpdate()
 
 
 	// Garphics
-
-	m_Framebuffer.Begin();
-
-	PIX3D::GL::GLCommands::ClearFlag(PIX3D::GL::ClearFlags::COLOR_DEPTH);
-	PIX3D::GL::GLCommands::Clear(0.2f, 0.2f, 0.2f, 1.0f);
-
-	// draw dots
-
-
-	PIX3D::GL::GLPixelBatchRenderer2D::Begin();
 	
-	PIX3D::GL::GLPixelBatchRenderer2D::DrawCircle_TopLeft({ m_MousePosition.x, m_MousePosition.y }, m_BrushSize, m_BrushColor);
-	
-	for (auto& dot : m_Dots)
+	if (m_RenderMode == HARDWARE_RENDERER)
 	{
-		PIX3D::GL::GLPixelBatchRenderer2D::DrawCircle_TopLeft(dot.position, dot.size, dot.color);
+
+		m_Framebuffer.Begin();
+
+		PIX3D::GL::GLCommands::ClearFlag(PIX3D::GL::ClearFlags::COLOR_DEPTH);
+		PIX3D::GL::GLCommands::Clear(0.2f, 0.2f, 0.2f, 1.0f);
+
+		// draw dots
+
+
+		PIX3D::GL::GLPixelBatchRenderer2D::Begin();
+
+		PIX3D::GL::GLPixelBatchRenderer2D::DrawCircle_TopLeft({ m_MousePosition.x, m_MousePosition.y }, m_BrushSize, m_BrushColor);
+
+		for (auto& dot : m_Dots)
+		{
+			PIX3D::GL::GLPixelBatchRenderer2D::DrawCircle_TopLeft(dot.position, dot.size, dot.color);
+		}
+
+		PIX3D::GL::GLPixelBatchRenderer2D::End();
+
+		m_Framebuffer.End();
 	}
-	
-	PIX3D::GL::GLPixelBatchRenderer2D::End();
+	else if(m_RenderMode == SOFTWARE_RENDERER)
+	{
+		auto pixels = m_Framebuffer.GetPixelsUint32();
 
-	m_Framebuffer.End();
+		auto FramebufferSpecs = m_Framebuffer.GetFramebufferSpecs();
+		
+		// clear
+		for (size_t i = 0; i < FramebufferSpecs.Width * FramebufferSpecs.Height; i++)
+		{
+			pixels[i] = 0xFF000000;
+		}
 
+		for (auto& dot : m_Dots)
+		{
+			DrawCircleAroundMouse(pixels, dot.position, FramebufferSpecs.Width, FramebufferSpecs.Height, dot.size);
+		}
+
+		m_Framebuffer.SetPixelsUint32(pixels);
+	}
 	// UI
 
 	PIX3D::ImGuiLayer::StartDockSpace();
@@ -147,7 +169,10 @@ void DrawinApplication::OnUpdate()
 
 		m_MouseOverDrawArea = ImGui::IsWindowHovered();
 
-		ImGui::Image((ImTextureID)m_Framebuffer.GetColorAttachmentHandle(), DrawWidnowSize, { 0, 1 }, { 1, 0 });
+		if(m_RenderMode == HARDWARE_RENDERER)
+			ImGui::Image((ImTextureID)m_Framebuffer.GetColorAttachmentHandle(), DrawWidnowSize, { 0, 1 }, { 1, 0 });
+		else if (m_RenderMode == SOFTWARE_RENDERER)
+			ImGui::Image((ImTextureID)m_Framebuffer.GetColorAttachmentHandle(), DrawWidnowSize, { 0, 0 }, { 1, 1 });
 		
 		ImGui::End();
 		ImGui::PopStyleVar();
@@ -164,4 +189,34 @@ void DrawinApplication::OnResize(uint32_t width, uint32_t height)
 DrawinApplication::~DrawinApplication()
 {
 
+}
+
+void DrawinApplication::DrawCircleAroundMouse(std::vector<uint32_t>& pixels, const glm::vec2& mousePos, uint32_t width, uint32_t height, uint32_t radius)
+{
+	// Circle color (RGBA)
+	uint32_t circleColor = 0xFF00FFFF; // Red with full alpha
+
+	// Calculate the bounds of the rectangle around the mouse (with padding based on radius)
+	int minX = std::max(0, static_cast<int>(mousePos.x) - static_cast<int>(radius));
+	int maxX = std::min(static_cast<int>(width) - 1, static_cast<int>(mousePos.x) + static_cast<int>(radius));
+	int minY = std::max(0, static_cast<int>(mousePos.y) - static_cast<int>(radius));
+	int maxY = std::min(static_cast<int>(height) - 1, static_cast<int>(mousePos.y) + static_cast<int>(radius));
+
+	// Iterate over the rectangle around the mouse position
+	for (int y = minY; y <= maxY; ++y)
+	{
+		for (int x = minX; x <= maxX; ++x)
+		{
+			// Calculate the distance from the current pixel to the mouse position
+			float dx = x - mousePos.x;
+			float dy = y - mousePos.y;
+			float distance = std::sqrt(dx * dx + dy * dy);
+
+			// If the pixel is within the circle radius, color it
+			if (distance <= radius)
+			{
+				pixels[y * width + x] = circleColor;
+			}
+		}
+	}
 }

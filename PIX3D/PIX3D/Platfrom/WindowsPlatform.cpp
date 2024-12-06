@@ -83,6 +83,12 @@ namespace
 
 namespace PIX3D
 {
+    WindowsPlatformLayer::~WindowsPlatformLayer()
+    {
+        glfwDestroyWindow((GLFWwindow*)m_NativeWindowHandel);
+        glfwTerminate();
+    }
+
     void WindowsPlatformLayer::CreatWindow(uint32_t width, uint32_t height, const char* title)
     {
         if (!glfwInit())

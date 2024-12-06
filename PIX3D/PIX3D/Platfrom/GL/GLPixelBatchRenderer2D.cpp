@@ -127,6 +127,14 @@ namespace PIX3D
 			s_TotalBatchCount += s_BatchCount;
 		}
 
+		void GLPixelBatchRenderer2D::Destory()
+		{
+			s_BatchVertexBuffer.Destroy();
+			s_BatchIndexBuffer.Destroy();
+			s_BatchVertexArray.Destroy();
+			s_PixelBatchRendererShader.Destroy();
+		}
+
 		void GLPixelBatchRenderer2D::DrawQuad_TopLeft(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
 		{
 			if (s_BatchCount + 1 > MAX_BATCHED_QUADS)

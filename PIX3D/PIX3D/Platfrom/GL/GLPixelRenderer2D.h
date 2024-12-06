@@ -13,6 +13,7 @@ namespace PIX3D
 			static void Init();
 			static void Begin();
 			static void End();
+			static void Destory();
 
 			static void DrawSmoothCircle_TopLeft(float x, float y, float size, glm::vec4 color);
 		private:
