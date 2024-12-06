@@ -20,10 +20,9 @@ void DrawinApplication::OnStart()
 		specs.SamplesCount = 8;
 		
 		m_Framebuffer.Create(specs);
-
-		std::cout << "press space key to export framebuffer image\n";
 	}
 }
+
 void DrawinApplication::OnUpdate()
 {
 	// Logic
@@ -64,16 +63,19 @@ void DrawinApplication::OnUpdate()
 	PIX3D::GL::GLCommands::ClearFlag(PIX3D::GL::ClearFlags::COLOR_DEPTH);
 	PIX3D::GL::GLCommands::Clear(0.2f, 0.2f, 0.2f, 1.0f);
 
-	PIX3D::GL::PixelRenderer2D::Begin();
+	// draw dots
 
-	PIX3D::GL::PixelRenderer2D::DrawSmoothCircle_TopLeft(m_MousePosition.x, m_MousePosition.y, m_BrushSize, m_BrushColor);
+
+	PIX3D::GL::GLPixelBatchRenderer2D::Begin();
+	
+	PIX3D::GL::GLPixelBatchRenderer2D::DrawCircle_TopLeft({ m_MousePosition.x, m_MousePosition.y }, m_BrushSize, m_BrushColor);
 	
 	for (auto& dot : m_Dots)
 	{
-		PIX3D::GL::PixelRenderer2D::DrawSmoothCircle_TopLeft(dot.position.x, dot.position.y, dot.size, dot.color);
+		PIX3D::GL::GLPixelBatchRenderer2D::DrawCircle_TopLeft(dot.position, dot.size, dot.color);
 	}
-
-	PIX3D::GL::PixelRenderer2D::End();
+	
+	PIX3D::GL::GLPixelBatchRenderer2D::End();
 
 	m_Framebuffer.End();
 
@@ -110,7 +112,12 @@ void DrawinApplication::OnUpdate()
 		auto specs = m_Framebuffer.GetFramebufferSpecs();
 		platform->ExportImagePNG(savepath.string().c_str(), specs.Width, specs.Height, m_Framebuffer.GetPixels());
 	}
+	ImGui::Text("Pixel Batch Renderer Data:");
+	ImGui::Text(std::format("Batch Count: {}", PIX3D::GL::GLPixelBatchRenderer2D::GetTotalBatchCount()).c_str());
+	ImGui::Text(std::format("Draw Calls: {}", PIX3D::GL::GLPixelBatchRenderer2D::GetDrawCalls()).c_str());
 
+	ImGui::Text(std::format("Frame Time: {} ms", PIX3D::Engine::GetDeltaTime() * 1000.0f).c_str());
+	ImGui::Text(std::format("Fps: {}", PIX3D::Engine::GetFps()).c_str());
 
 	ImGui::End();
 	{

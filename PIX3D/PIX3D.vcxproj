@@ -163,7 +163,9 @@
     <ClCompile Include="PIX3D\Core\Input.cpp" />
     <ClCompile Include="PIX3D\glad.c" />
     <ClCompile Include="PIX3D\Graphics\Camera3D.cpp" />
+    <ClCompile Include="PIX3D\Platfrom\GL\GLPixelBatchRenderer2D.cpp" />
     <ClCompile Include="PIX3D\Platfrom\GL\GLCommands.cpp" />
+    <ClCompile Include="PIX3D\Platfrom\GL\GLDynamicVertexBuffer.cpp" />
     <ClCompile Include="PIX3D\Platfrom\GL\GLFramebuffer.cpp" />
     <ClCompile Include="PIX3D\Platfrom\GL\GLGraphicsContext.cpp" />
     <ClCompile Include="PIX3D\Platfrom\GL\GLIndexBuffer.cpp" />
@@ -173,7 +175,7 @@
     <ClCompile Include="PIX3D\Platfrom\GL\GLUniformBuffer.cpp" />
     <ClCompile Include="PIX3D\Platfrom\GL\GLVertexArray.cpp" />
     <ClCompile Include="PIX3D\Platfrom\GL\GLVertexBuffer.cpp" />
-    <ClCompile Include="PIX3D\Platfrom\GL\Renderer2D.cpp" />
+    <ClCompile Include="PIX3D\Platfrom\GL\GLPixelRenderer2D.cpp" />
     <ClCompile Include="PIX3D\Platfrom\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="PIX3D\Platfrom\WindowsPlatform.cpp" />
   </ItemGroup>
@@ -196,7 +198,9 @@
     <ClInclude Include="PIX3D\Graphics\Camera3D.h" />
     <ClInclude Include="PIX3D\Graphics\GraphicsContext.h" />
     <ClInclude Include="PIX3D\PIX3D.h" />
+    <ClInclude Include="PIX3D\Platfrom\GL\GLPixelBatchRenderer2D.h" />
     <ClInclude Include="PIX3D\Platfrom\GL\GLCommands.h" />
+    <ClInclude Include="PIX3D\Platfrom\GL\GLDynamicVertexBuffer.h" />
     <ClInclude Include="PIX3D\Platfrom\GL\GLFramebuffer.h" />
     <ClInclude Include="PIX3D\Platfrom\GL\GLGraphicsContext.h" />
     <ClInclude Include="PIX3D\Platfrom\GL\GLIndexBuffer.h" />
@@ -207,7 +211,7 @@
     <ClInclude Include="PIX3D\Platfrom\GL\GLUniformBuffer.h" />
     <ClInclude Include="PIX3D\Platfrom\GL\GLVertexArray.h" />
     <ClInclude Include="PIX3D\Platfrom\GL\GLVertexBuffer.h" />
-    <ClInclude Include="PIX3D\Platfrom\GL\Renderer2D.h" />
+    <ClInclude Include="PIX3D\Platfrom\GL\GLPixelRenderer2D.h" />
     <ClInclude Include="PIX3D\Platfrom\ImGui\ImGuiLayer.h" />
     <ClInclude Include="PIX3D\Platfrom\Platform.h" />
     <ClInclude Include="PIX3D\Platfrom\WindowsPlatform.h" />
@@ -215,6 +219,8 @@
     <ClInclude Include="PIX3D\Utils\stb_write.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\gl shaders\pixel_batch_renderer.frag" />
+    <None Include="res\gl shaders\pixel_batch_renderer.vert" />
     <None Include="res\gl shaders\pos_fragment.frag" />
     <None Include="res\gl shaders\pos_vertex.vert" />
     <None Include="res\gl shaders\screen_quad.frag" />

@@ -24,6 +24,11 @@ namespace PIX3D
 			return { (void*)data.data(), (uint32_t)(data.size() * sizeof(T)) };
 		}
 
+		static BufferData EmptyBuffer()
+		{
+			return { nullptr, 0 };
+		}
+
 	private:
 		const void* m_Data = nullptr;
 		uint32_t m_Size = 0;
