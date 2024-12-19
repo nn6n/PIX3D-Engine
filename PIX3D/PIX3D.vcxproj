@@ -33,7 +33,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -46,7 +46,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -71,20 +71,20 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)\PIX3D\imgui;$(SolutionDir)\Vendor\glm;$(SolutionDir)\Vendor\glad\include;$(SolutionDir)\Vendor\Mono\include;$(SolutionDir)\PIX3D\PIX3D;$(SolutionDir)\Vendor\glfw\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)\Vendor\Mono\lib;$(SolutionDir)\Vendor\glfw\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\Vendor\assimp\include;$(SolutionDir)\Vendor\tiny gltf;$(SolutionDir)\PIX3D\imgui;$(SolutionDir)\Vendor\glm;$(SolutionDir)\Vendor\glad\include;$(SolutionDir)\Vendor\Mono\include;$(SolutionDir)\PIX3D\PIX3D;$(SolutionDir)\Vendor\glfw\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\Vendor\assimp\bin\windows\Release;$(SolutionDir)\Vendor\Mono\lib;$(SolutionDir)\Vendor\glfw\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(SolutionDir)\PIX3D\imgui;$(SolutionDir)\Vendor\glm;$(SolutionDir)\Vendor\glad\include;$(SolutionDir)\Vendor\Mono\include;$(SolutionDir)\PIX3D\PIX3D;$(SolutionDir)\Vendor\glfw\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)\Vendor\Mono\lib;$(SolutionDir)\Vendor\glfw\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\Vendor\assimp\include;$(SolutionDir)\Vendor\tiny gltf;$(SolutionDir)\PIX3D\imgui;$(SolutionDir)\Vendor\glm;$(SolutionDir)\Vendor\glad\include;$(SolutionDir)\Vendor\Mono\include;$(SolutionDir)\PIX3D\PIX3D;$(SolutionDir)\Vendor\glfw\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\Vendor\assimp\bin\windows\Release;$(SolutionDir)\Vendor\Mono\lib;$(SolutionDir)\Vendor\glfw\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)\PIX3D\imgui;$(SolutionDir)\Vendor\glm;$(SolutionDir)\Vendor\glad\include;$(SolutionDir)\Vendor\Mono\include;$(SolutionDir)\PIX3D\PIX3D;$(SolutionDir)\Vendor\glfw\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)\Vendor\Mono\lib;$(SolutionDir)\Vendor\glfw\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\Vendor\assimp\include;$(SolutionDir)\Vendor\tiny gltf;$(SolutionDir)\PIX3D\imgui;$(SolutionDir)\Vendor\glm;$(SolutionDir)\Vendor\glad\include;$(SolutionDir)\Vendor\Mono\include;$(SolutionDir)\PIX3D\PIX3D;$(SolutionDir)\Vendor\glfw\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\Vendor\assimp\bin\windows\Release;$(SolutionDir)\Vendor\Mono\lib;$(SolutionDir)\Vendor\glfw\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)\PIX3D\imgui;$(SolutionDir)\Vendor\glm;$(SolutionDir)\Vendor\glad\include;$(SolutionDir)\Vendor\Mono\include;$(SolutionDir)\PIX3D\PIX3D;$(SolutionDir)\Vendor\glfw\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)\Vendor\Mono\lib;$(SolutionDir)\Vendor\glfw\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\Vendor\assimp\include;$(SolutionDir)\Vendor\tiny gltf;$(SolutionDir)\PIX3D\imgui;$(SolutionDir)\Vendor\glm;$(SolutionDir)\Vendor\glad\include;$(SolutionDir)\Vendor\Mono\include;$(SolutionDir)\PIX3D\PIX3D;$(SolutionDir)\Vendor\glfw\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\Vendor\assimp\bin\windows\Release;$(SolutionDir)\Vendor\Mono\lib;$(SolutionDir)\Vendor\glfw\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -97,7 +97,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;mono-2.0-sgen.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;mono-2.0-sgen.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -115,7 +115,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;mono-2.0-sgen.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;mono-2.0-sgen.lib;assimp-vc143.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -129,7 +129,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;mono-2.0-sgen.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;mono-2.0-sgen.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -147,7 +147,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;mono-2.0-sgen.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;mono-2.0-sgen.lib;assimp-vc143.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -162,7 +162,9 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PIX3D\Core\Input.cpp" />
     <ClCompile Include="PIX3D\glad.c" />
+    <ClCompile Include="PIX3D\Graphics\Camera2D.cpp" />
     <ClCompile Include="PIX3D\Graphics\Camera3D.cpp" />
+    <ClCompile Include="PIX3D\Graphics\Mesh.cpp" />
     <ClCompile Include="PIX3D\Platfrom\GL\GLPixelBatchRenderer2D.cpp" />
     <ClCompile Include="PIX3D\Platfrom\GL\GLCommands.cpp" />
     <ClCompile Include="PIX3D\Platfrom\GL\GLDynamicVertexBuffer.cpp" />
@@ -170,8 +172,11 @@
     <ClCompile Include="PIX3D\Platfrom\GL\GLGraphicsContext.cpp" />
     <ClCompile Include="PIX3D\Platfrom\GL\GLIndexBuffer.cpp" />
     <ClCompile Include="PIX3D\Platfrom\GL\GLPipeline.cpp" />
+    <ClCompile Include="PIX3D\Platfrom\GL\GLRenderer.cpp" />
     <ClCompile Include="PIX3D\Platfrom\GL\GLRenderpass.cpp" />
     <ClCompile Include="PIX3D\Platfrom\GL\GLShader.cpp" />
+    <ClCompile Include="PIX3D\Platfrom\GL\GLStorageBuffer.cpp" />
+    <ClCompile Include="PIX3D\Platfrom\GL\GLTexture.cpp" />
     <ClCompile Include="PIX3D\Platfrom\GL\GLUniformBuffer.cpp" />
     <ClCompile Include="PIX3D\Platfrom\GL\GLVertexArray.cpp" />
     <ClCompile Include="PIX3D\Platfrom\GL\GLVertexBuffer.cpp" />
@@ -195,8 +200,10 @@
     <ClInclude Include="PIX3D\Core\Input.h" />
     <ClInclude Include="PIX3D\Core\Key.h" />
     <ClInclude Include="PIX3D\Engine\Engine.hpp" />
+    <ClInclude Include="PIX3D\Graphics\Camera2D.h" />
     <ClInclude Include="PIX3D\Graphics\Camera3D.h" />
     <ClInclude Include="PIX3D\Graphics\GraphicsContext.h" />
+    <ClInclude Include="PIX3D\Graphics\Mesh.h" />
     <ClInclude Include="PIX3D\PIX3D.h" />
     <ClInclude Include="PIX3D\Platfrom\GL\GLPixelBatchRenderer2D.h" />
     <ClInclude Include="PIX3D\Platfrom\GL\GLCommands.h" />
@@ -206,8 +213,11 @@
     <ClInclude Include="PIX3D\Platfrom\GL\GLIndexBuffer.h" />
     <ClInclude Include="PIX3D\Platfrom\GL\GLObject.h" />
     <ClInclude Include="PIX3D\Platfrom\GL\GLPipeline.h" />
+    <ClInclude Include="PIX3D\Platfrom\GL\GLRenderer.h" />
     <ClInclude Include="PIX3D\Platfrom\GL\GLRenderpass.h" />
     <ClInclude Include="PIX3D\Platfrom\GL\GLShader.h" />
+    <ClInclude Include="PIX3D\Platfrom\GL\GLStorageBuffer.h" />
+    <ClInclude Include="PIX3D\Platfrom\GL\GLTexture.h" />
     <ClInclude Include="PIX3D\Platfrom\GL\GLUniformBuffer.h" />
     <ClInclude Include="PIX3D\Platfrom\GL\GLVertexArray.h" />
     <ClInclude Include="PIX3D\Platfrom\GL\GLVertexBuffer.h" />
@@ -216,17 +226,20 @@
     <ClInclude Include="PIX3D\Platfrom\Platform.h" />
     <ClInclude Include="PIX3D\Platfrom\WindowsPlatform.h" />
     <ClInclude Include="PIX3D\Utils\FileWatcher.hpp" />
+    <ClInclude Include="PIX3D\Utils\stb_image.h" />
     <ClInclude Include="PIX3D\Utils\stb_write.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\gl shaders\model3d.frag" />
+    <None Include="res\gl shaders\model3d.vert" />
     <None Include="res\gl shaders\pixel_batch_renderer.frag" />
     <None Include="res\gl shaders\pixel_batch_renderer.vert" />
     <None Include="res\gl shaders\pos_fragment.frag" />
     <None Include="res\gl shaders\pos_vertex.vert" />
     <None Include="res\gl shaders\screen_quad.frag" />
     <None Include="res\gl shaders\screen_quad.vert" />
-    <None Include="res\gl shaders\smooth_circle.frag" />
-    <None Include="res\gl shaders\smooth_circle.vert" />
+    <None Include="res\gl shaders\smooth_rounded_quad.frag" />
+    <None Include="res\gl shaders\smooth_rounded_quad.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

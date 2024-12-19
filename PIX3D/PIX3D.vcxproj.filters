@@ -96,6 +96,21 @@
     <ClCompile Include="PIX3D\Platfrom\GL\GLDynamicVertexBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PIX3D\Graphics\Mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PIX3D\Platfrom\GL\GLTexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PIX3D\Platfrom\GL\GLStorageBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PIX3D\Platfrom\GL\GLRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PIX3D\Graphics\Camera2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PIX3D\Platfrom\Platform.h">
@@ -209,15 +224,35 @@
     <ClInclude Include="PIX3D\Platfrom\GL\GLDynamicVertexBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PIX3D\Utils\stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PIX3D\Graphics\Mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PIX3D\Platfrom\GL\GLTexture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PIX3D\Platfrom\GL\GLStorageBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PIX3D\Platfrom\GL\GLRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PIX3D\Graphics\Camera2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\gl shaders\pos_vertex.vert" />
     <None Include="res\gl shaders\pos_fragment.frag" />
-    <None Include="res\gl shaders\smooth_circle.vert" />
-    <None Include="res\gl shaders\smooth_circle.frag" />
     <None Include="res\gl shaders\screen_quad.vert" />
     <None Include="res\gl shaders\screen_quad.frag" />
     <None Include="res\gl shaders\pixel_batch_renderer.vert" />
     <None Include="res\gl shaders\pixel_batch_renderer.frag" />
+    <None Include="res\gl shaders\model3d.vert" />
+    <None Include="res\gl shaders\model3d.frag" />
+    <None Include="res\gl shaders\smooth_rounded_quad.vert" />
+    <None Include="res\gl shaders\smooth_rounded_quad.frag" />
   </ItemGroup>
 </Project>

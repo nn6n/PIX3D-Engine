@@ -20,6 +20,7 @@ namespace
 	{
 		switch (primitive)
 		{
+		case PIX3D::GL::Primitive::LINES: return GL_LINES;
 		case PIX3D::GL::Primitive::LINE_LOOP: return GL_LINE_LOOP;
 		case PIX3D::GL::Primitive::TRIANGLES: return GL_TRIANGLES;
 		default:
@@ -55,6 +56,16 @@ namespace PIX3D
 		void GLCommands::DrawIndexed(Primitive primitive, uint32_t count)
 		{
 			glDrawElements(ToGL(primitive), count, GL_UNSIGNED_INT, nullptr);
+		}
+
+		void GLCommands::DrawIndexedBaseVertex(Primitive primitive, uint32_t count, uint32_t baseindex, uint32_t basevertex)
+		{
+			glDrawElementsBaseVertex(ToGL(primitive), count, GL_UNSIGNED_INT, (void*)(baseindex * sizeof(GLuint)), (GLint)basevertex);
+		}
+
+		void GLCommands::FillPolygon(bool fill)
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, fill ? GL_FILL : GL_LINE);
 		}
 	}
 }

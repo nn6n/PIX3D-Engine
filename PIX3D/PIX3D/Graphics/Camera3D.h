@@ -27,13 +27,13 @@ namespace PIX3D
 	{
 	public:
 		Camera3D() = default;
-		Camera3D(const glm::vec3& position);
+		void Init(const glm::vec3& position);
 		~Camera3D() {}
 
 		void Update(float dt);
 
-		glm::mat4 GetProjectionMatrix();
-		glm::mat4 GetViewMatrix();
+		glm::mat4 GetProjectionMatrix() const;
+		glm::mat4 GetViewMatrix() const;
 
 		CameraData GetCameraData() { return m_CameraData; }
 
@@ -41,7 +41,8 @@ namespace PIX3D
 		CameraData m_CameraData;
 
 		glm::vec3 m_CameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-		glm::vec3 m_CameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+		glm::vec3 m_CameraRight = glm::vec3(0.0f, 0.0f, 0.0f);
+		glm::vec3 m_CameraUp = glm::vec3(0.0f, 0.0f, 0.0f);
 
 	private:
 		glm::vec3 m_TargetPosition;

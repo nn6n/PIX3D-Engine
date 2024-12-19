@@ -17,7 +17,7 @@ namespace PIX3D
 		virtual ~Application() {}
 		
 		virtual void OnStart() {}
-		virtual void OnUpdate() {}
+		virtual void OnUpdate(float dt) {}
 		virtual void OnResize(uint32_t width, uint32_t height) {}
 	private:
 	};

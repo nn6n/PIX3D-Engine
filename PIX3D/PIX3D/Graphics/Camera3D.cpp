@@ -22,7 +22,7 @@ namespace
 
 namespace PIX3D
 {
-	Camera3D::Camera3D(const glm::vec3& position)
+	void Camera3D::Init(const glm::vec3& position)
 	{
 		m_CameraData.Position = position;
 		m_TargetPosition = position;
@@ -31,9 +31,9 @@ namespace PIX3D
 		glm::vec3 CameraDirection = glm::normalize(m_CameraData.Position - CameraTarget);
 
 		glm::vec3 Up = glm::vec3(0.0f, 1.0f, 0.0f);
-		glm::vec3 CameraRight = glm::normalize(glm::cross(Up, CameraDirection));
+		m_CameraRight = glm::normalize(glm::cross(Up, CameraDirection));
 
-		m_CameraUp = glm::cross(CameraDirection, CameraRight);
+		m_CameraUp = glm::cross(CameraDirection, m_CameraRight);
 	}
 
 	void Camera3D::Update(float dt)
@@ -68,15 +68,21 @@ namespace PIX3D
 
 		m_CameraForwardDirection = glm::normalize(m_CameraForwardDirection);
 
+
+		glm::vec3 _up = glm::vec3(0.0f, 1.0f, 0.0f);
+		m_CameraRight = glm::normalize(glm::cross(_up, m_CameraForwardDirection));
+
+		m_CameraUp = glm::cross(m_CameraForwardDirection, m_CameraRight);
+
 		if (Input::IsKeyPressed(PIX3D::KeyCode::A))
-			m_TargetPosition.x -= m_CameraData.Speed * dt;
+			m_TargetPosition += m_CameraRight * m_CameraData.Speed * dt;
 		else if (Input::IsKeyPressed(PIX3D::KeyCode::D))
-			m_TargetPosition.x += m_CameraData.Speed * dt;
+			m_TargetPosition -= m_CameraRight * m_CameraData.Speed * dt;
 
 		if (Input::IsKeyPressed(PIX3D::KeyCode::E))
-			m_TargetPosition.y += m_CameraData.Speed * dt;
+			m_TargetPosition += m_CameraUp * m_CameraData.Speed * dt;
 		else if (Input::IsKeyPressed(PIX3D::KeyCode::Q))
-			m_TargetPosition.y -= m_CameraData.Speed * dt;
+			m_TargetPosition -= m_CameraUp * m_CameraData.Speed * dt;
 
 		if (Input::IsKeyPressed(PIX3D::KeyCode::W))
 			m_TargetPosition += m_CameraForwardDirection * m_CameraData.Speed * dt;
@@ -86,12 +92,12 @@ namespace PIX3D
 		m_CameraData.Position = LerpVec3(m_CameraData.Position, m_TargetPosition, dt * m_CameraData.MovementSmoothness);
 	}
 
-	glm::mat4 Camera3D::GetViewMatrix()
+	glm::mat4 Camera3D::GetViewMatrix() const
 	{
 		return glm::lookAt(m_CameraData.Position, m_CameraData.Position + m_CameraForwardDirection, m_CameraUp);
 	}
 
-	glm::mat4 Camera3D::GetProjectionMatrix()
+	glm::mat4 Camera3D::GetProjectionMatrix() const
 	{
 		auto AppSpecs = PIX3D::Engine::GetApplicationSpecs();
 		float AspectRatio = (float)AppSpecs.Width / AppSpecs.Height;

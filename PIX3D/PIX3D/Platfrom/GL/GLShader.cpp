@@ -6,6 +6,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 #include <Core/Core.h>
+#include <filesystem>
 
 namespace PIX3D
 {
@@ -20,6 +21,11 @@ namespace PIX3D
 
         bool GLShader::LoadFromFile(const std::string & vertexPath, const std::string & fragmentPath)
         {
+            bool same_shader = std::filesystem::path(vertexPath).stem().string() == std::filesystem::path(fragmentPath).stem().string();
+            PIX_ASSERT(same_shader);
+
+            m_ShaderName = std::filesystem::path(vertexPath).stem().string();
+
             std::string vertexCode;
             std::string fragmentCode;
 
@@ -51,26 +57,59 @@ namespace PIX3D
             return CompileAndLink(vertexCode, fragmentCode);
         }
 
+        void GLShader::QueryUniforms()
+        {
+            std::cout << "Shader Name : " << m_ShaderName << "\n";
+
+            GLint uniformCount;
+            glGetProgramiv(m_ProgramID, GL_ACTIVE_UNIFORMS, &uniformCount);
+
+            GLchar name[512];
+            for (int i = 0; i < uniformCount; ++i)
+            {
+                GLint size;
+                GLenum type;
+                glGetActiveUniform(m_ProgramID,
+                    (GLuint)i,
+                    sizeof(name),
+                    NULL,
+                    &size,
+                    &type,
+                    name
+                );
+
+                GLint location = glGetUniformLocation(m_ProgramID, name);
+
+                std::cout << "Uniform #" << i
+                    << " Name: " << name
+                    << " -  Location: " << location
+                    << " -  Type: " << type
+                    << "\n";
+            }
+            std::cout << "----------------------------------------------------" << "\n";
+        }
+
         bool GLShader::CompileAndLink(const std::string & vertexCode, const std::string & fragmentCode)
         {
             const char* vShaderCode = vertexCode.c_str();
             const char* fShaderCode = fragmentCode.c_str();
 
             GLuint vertex, fragment;
-            int success;
             char infoLog[512];
 
             // Vertex Shader
+            int success = 0;
             vertex = glCreateShader(GL_VERTEX_SHADER);
             glShaderSource(vertex, 1, &vShaderCode, NULL);
             glCompileShader(vertex);
 
             // Check for vertex shader compile errors
             glGetShaderiv(vertex, GL_COMPILE_STATUS, &success);
-            if (!success) {
+            if (!success)
+            {
                 glGetShaderInfoLog(vertex, 512, NULL, infoLog);
                 std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-                return false;
+                PIX_ASSERT(false);
             }
 
             // Fragment Shader
@@ -79,11 +118,13 @@ namespace PIX3D
             glCompileShader(fragment);
 
             // Check for fragment shader compile errors
+            success = 0;
             glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
-            if (!success) {
+            if (!success)
+            {
                 glGetShaderInfoLog(fragment, 512, NULL, infoLog);
                 std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
-                return false;
+                PIX_ASSERT(false);
             }
 
             // Shader Program
@@ -93,12 +134,16 @@ namespace PIX3D
             glLinkProgram(m_ProgramID);
 
             // Check for linking errors
+            success = 0;
             glGetProgramiv(m_ProgramID, GL_LINK_STATUS, &success);
-            if (!success) {
+            if (!success)
+            {
                 glGetProgramInfoLog(m_ProgramID, 512, NULL, infoLog);
                 std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
-                return false;
+                PIX_ASSERT(false);
             }
+
+            QueryUniforms();
 
             // Delete shaders as they're linked into our program now and no longer necessary
             glDeleteShader(vertex);

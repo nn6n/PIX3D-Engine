@@ -32,8 +32,11 @@ namespace PIX3D
             uint32_t GetProgramID() const { return m_ProgramID; }
 
         private:
+            void QueryUniforms();
+        private:
             uint32_t m_ProgramID;
             bool CompileAndLink(const std::string& vertexCode, const std::string& fragmentCode);
+            std::string m_ShaderName;
         };
     }
 }

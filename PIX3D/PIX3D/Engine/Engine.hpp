@@ -9,6 +9,7 @@
 #include <Graphics/GraphicsContext.h>
 #include <Platfrom/GL/GLPixelRenderer2D.h>
 #include <Platfrom/GL/GLPixelBatchRenderer2D.h>
+#include <Platfrom/GL/GLRenderer.h>
 #include <Platfrom/GL/GLRenderpass.h>
 #include <memory>
 #include <functional>
@@ -68,6 +69,7 @@ namespace PIX3D
 
 					GL::GLPixelRenderer2D::Init();
 					GL::GLPixelBatchRenderer2D::Init();
+					GL::GLRenderer::Init();
 					GL::GLRenderpass::Init();
 					ImGuiLayer::Init();
 			    }break;
@@ -102,7 +104,7 @@ namespace PIX3D
 
 				GL::GLPixelBatchRenderer2D::ResetDrawCalls();
 				ImGuiLayer::BeginDraw();
-				s_Application->OnUpdate();
+				s_Application->OnUpdate(s_DeltaTime);
 				ImGuiLayer::EndDraw();
 
 				s_GraphicsContext->SwapBuffers(s_Platform->GetNativeWindowHandel());
@@ -115,6 +117,7 @@ namespace PIX3D
 		{
 			GL::GLPixelRenderer2D::Destory();
 			GL::GLPixelBatchRenderer2D::Destory();
+			GL::GLRenderer::Destory();
 			GL::GLRenderpass::Destroy();
 			ImGuiLayer::Destroy();
 
