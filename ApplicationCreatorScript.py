@@ -181,6 +181,9 @@ def create_project_file(project_path, project_name, project_guid, engine_project
     # Calculate vendor and library paths relative to engine project
     vendor_path = os.path.abspath(os.path.join(engine_project_path, '..', 'Vendor'))
     glfw_lib_path = os.path.abspath(os.path.join(vendor_path, 'glfw', 'lib'))
+    assimp_lib_path = os.path.abspath(os.path.join(vendor_path, 'assimp', 'bin', 'windows', 'Release'))    
+    assimp_include_path = os.path.abspath(os.path.join(vendor_path, 'assimp', 'include'))
+    
 
     project_content = f"""<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
@@ -229,13 +232,13 @@ def create_project_file(project_path, project_name, project_guid, engine_project
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>{engine_project_path}\PIX3D;{vendor_path}\glm;{vendor_path}\glfw\include;{proj_dir}\imgui;$(IncludePath)</IncludePath>
-    <LibraryPath>{glfw_lib_path};$(LibraryPath)</LibraryPath>
+    <IncludePath>{engine_project_path}\PIX3D;{vendor_path}\glm;{vendor_path}\glfw\include;{proj_dir}\imgui;{assimp_include_path};$(IncludePath)</IncludePath>
+    <LibraryPath>{glfw_lib_path};{assimp_lib_path};$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>{engine_project_path}\PIX3D;{vendor_path}\glm;{vendor_path}\glfw\include;{proj_dir}\imgui;$(IncludePath)</IncludePath>
-    <LibraryPath>{glfw_lib_path};$(LibraryPath)</LibraryPath>
+    <IncludePath>{engine_project_path}\PIX3D;{vendor_path}\glm;{vendor_path}\glfw\include;{proj_dir}\imgui;{assimp_include_path};$(IncludePath)</IncludePath>
+    <LibraryPath>{glfw_lib_path};{assimp_lib_path};$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -248,8 +251,8 @@ def create_project_file(project_path, project_name, project_guid, engine_project
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>{glfw_lib_path}</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>{glfw_lib_path};{assimp_lib_path};</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -267,8 +270,8 @@ def create_project_file(project_path, project_name, project_guid, engine_project
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>{glfw_lib_path}</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>{glfw_lib_path};{assimp_lib_path};</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;assimp-vc143.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

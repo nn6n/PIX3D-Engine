@@ -143,7 +143,7 @@ namespace PIX3D
                 PIX_ASSERT(false);
             }
 
-            QueryUniforms();
+            // QueryUniforms();
 
             // Delete shaders as they're linked into our program now and no longer necessary
             glDeleteShader(vertex);
