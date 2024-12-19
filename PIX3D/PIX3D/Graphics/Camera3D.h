@@ -27,8 +27,9 @@ namespace PIX3D
 	{
 	public:
 		Camera3D() = default;
-		void Init(const glm::vec3& position);
 		~Camera3D() {}
+
+		void Init(const glm::vec3& position);
 
 		void Update(float dt);
 

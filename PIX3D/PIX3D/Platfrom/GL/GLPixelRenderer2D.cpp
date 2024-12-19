@@ -13,10 +13,10 @@ namespace PIX3D
                 std::vector<float> vertices =
                 {
                     // positions         // corrdeinates for drawing in circle ndc
-                     1.0f,  1.0f, 0.0f,   1.0f,  1.0f,   1.0f,  1.0f,   // top right
-                     1.0f, -1.0f, 0.0f,   1.0f, -1.0f,   1.0f,  0.0f,   // bottom right
-                    -1.0f, -1.0f, 0.0f,  -1.0f, -1.0f,   0.0f,  0.0f,  // bottom left
-                    -1.0f,  1.0f, 0.0f,  -1.0f,  1.0f,   0.0f,  1.0f   // top left
+                     0.5f,  0.5f, 0.0f,   1.0f,  1.0f,   1.0f,  1.0f,   // top right
+                     0.5f, -0.5f, 0.0f,   1.0f, -1.0f,   1.0f,  0.0f,   // bottom right
+                    -0.5f, -0.5f, 0.0f,  -1.0f, -1.0f,   0.0f,  0.0f,  // bottom left
+                    -0.5f,  0.5f, 0.0f,  -1.0f,  1.0f,   0.0f,  1.0f   // top left
                 };
 
                 std::vector<uint32_t> indices =

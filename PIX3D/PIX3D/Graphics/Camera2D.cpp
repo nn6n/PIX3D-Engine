@@ -4,7 +4,7 @@
 
 namespace PIX3D
 {
-	Camera2D::Camera2D()
+	void Camera2D::Init()
 	{
         auto specs = PIX3D::Engine::GetApplicationSpecs();
         m_ProjectionMatrix = glm::ortho(

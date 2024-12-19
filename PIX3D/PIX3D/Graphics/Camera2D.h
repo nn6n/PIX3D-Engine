@@ -6,8 +6,10 @@ namespace PIX3D
 	class Camera2D
 	{
 	public:
-		Camera2D();
+		Camera2D() = default;
 		~Camera2D() {}
+
+		void Init();
 
 		inline glm::mat4 GetProjectionMatrix() const { return m_ProjectionMatrix; }
 
