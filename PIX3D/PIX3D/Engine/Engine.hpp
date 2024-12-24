@@ -145,6 +145,7 @@ namespace PIX3D
 		inline static WindowSizeCallBackFuncPtrType GetWindowSizeCallBackFunc() { return s_WindowSizeCallBackFuncPtr; }
 		inline static KeyboardCallBackFuncPtrType GetKeyboardCallBackFuncPtr() { return s_KeyboardCallBackFuncPtr; }
 
+		inline static GraphicsContext* GetGraphicsContext() { return s_GraphicsContext; }
 
 		inline static ApplicationSpecs GetApplicationSpecs() { return s_AppSpecs; }
 

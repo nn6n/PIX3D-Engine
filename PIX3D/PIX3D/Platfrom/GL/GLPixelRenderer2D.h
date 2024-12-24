@@ -21,7 +21,7 @@ namespace PIX3D
 			static void DrawSmoothRoundedQuad(float x, float y, float size_x, float size_y, glm::vec4 color, float roundness = 0.5f, float smoothness = 0.01f);
 			static void DrawSmoothQuad(float x, float y, float size_x, float size_y, glm::vec4 color, float smoothness = 0.01f);
 			static void DrawSmoothCircle(float x, float y, float size, glm::vec4 color, float smoothness = 0.01f);
-			static void DrawTexturedQuad(GLTexture texture, float x, float y, float size_x, float size_y, glm::vec4 color);
+			static void DrawTexturedQuad(GLTexture texture, float x, float y, float size_x, float size_y, glm::vec4 color, float tiling_factor = 1.0f);
 		private:
 
 			// Smooth Circle

@@ -39,3 +39,9 @@ void PIX3D::GL::GLTexture::Bind()
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, m_Handle);
 }
+
+void PIX3D::GL::GLTexture::Destroy()
+{
+    glMakeTextureHandleNonResidentARB(m_TextureID);
+    glDeleteTextures(1, &m_Handle);
+}
