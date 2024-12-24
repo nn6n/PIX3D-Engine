@@ -11,6 +11,7 @@ int main()
     {
         PIX3D::EngineSpecs EngineSpecs;
         EngineSpecs.API = PIX3D::GraphicsAPI::OPENGL;
+        EngineSpecs.WindowResizable = false;
 
         PIX3D::Engine::Init(EngineSpecs);
     }

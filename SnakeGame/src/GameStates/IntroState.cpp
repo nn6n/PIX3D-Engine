@@ -34,7 +34,10 @@ void IntroState::OnUpdate(float dt)
 	// start
 	{
 		if (Input::IsKeyPressed(KeyCode::Enter))
+		{
+			PlaySound(TEXT("assets/StartGame.wav"), NULL, SND_FILENAME | SND_ASYNC);
 			GameStateMangaer::Get().GoToState(new GameplayState());
+		}
 	}
 }
 

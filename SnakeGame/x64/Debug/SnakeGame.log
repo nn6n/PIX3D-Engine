@@ -1,13 +1,4 @@
-﻿  IntroState.cpp
-F:\Projects\PIX3D Engine\SnakeGame\src\Snake.hpp(105,40): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-F:\Projects\PIX3D Engine\SnakeGame\src\Snake.hpp(106,40): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-F:\Projects\PIX3D Engine\SnakeGame\src\Snake.hpp(116,42): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-F:\Projects\PIX3D Engine\SnakeGame\src\Snake.hpp(117,42): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-F:\Projects\PIX3D Engine\SnakeGame\src\Snake.hpp(150,41): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-F:\Projects\PIX3D Engine\SnakeGame\src\Snake.hpp(151,41): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-F:\Projects\PIX3D Engine\SnakeGame\src\Snake.hpp(392,13): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-F:\Projects\PIX3D Engine\SnakeGame\src\Snake.hpp(404,41): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-F:\Projects\PIX3D Engine\SnakeGame\src\Snake.hpp(405,41): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+﻿  main.cpp
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\utility(190,16): warning C4244: 'initializing': conversion from '_Ty' to '_Ty1', possible loss of data
           with
           [
@@ -38,4 +29,7 @@ C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.3162
           [
               _Ty2=uint32_t
           ]
+F:\Projects\PIX3D Engine\PIX3D\PIX3D\Engine\Engine.hpp(99,33): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+F:\Projects\PIX3D Engine\SnakeGame\src\main.cpp(25): message : see reference to function template instantiation 'void PIX3D::Engine::CreateApplication<SnakeGame>(const PIX3D::ApplicationSpecs &)' being compiled
+F:\Projects\PIX3D Engine\PIX3D\PIX3D\Engine\Engine.hpp(100,19): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
   SnakeGame.vcxproj -> F:\Projects\PIX3D Engine\x64\Debug\SnakeGame.exe

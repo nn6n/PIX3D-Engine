@@ -18,7 +18,7 @@ namespace PIX3D
 		PlatformLayer() = default;
 		~PlatformLayer() {}
 
-		virtual void CreatWindow(uint32_t width, uint32_t height, const char* name) {}
+		virtual void CreatWindow(uint32_t width, uint32_t height, const char* name, bool resizable) {}
 		virtual void PollEvents() {}
 		virtual void* GetNativeWindowHandel() { return nullptr; }
 

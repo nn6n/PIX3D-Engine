@@ -2,6 +2,11 @@
 #include <PIX3D.h>
 #include <time.h>
 
+#include <Windows.h>
+#include <mmsystem.h>
+
+#pragma comment (lib, "winmm.lib")
+
 using namespace PIX3D;
 
 #define CELL_SIZE 30
@@ -179,6 +184,7 @@ public:
 		{
 			if (head.x == Body[i].x && head.y == Body[i].y)
 			{
+				PlaySound(TEXT("assets/SnakeDie.wav"), NULL, SND_FILENAME | SND_ASYNC);
 				Dead = true;
 				break;
 			}
@@ -261,6 +267,7 @@ public:
 				FutureHeadPosition.y < 0 ||
 				FutureHeadPosition.y >= CELL_COUNT)
 			{
+				PlaySound(TEXT("assets/SnakeDie.wav"), NULL, SND_FILENAME | SND_ASYNC);
 				Dead = true;
 				return;
 			}
@@ -418,6 +425,7 @@ public:
 				FoodPosition.y = rand() % CELL_COUNT;
 			} while (FoodOnSnake(Snake));
 
+			PlaySound(TEXT("assets/SnakeEat.wav"), NULL, SND_FILENAME | SND_ASYNC);
 			Snake.Grow();
 		}
 	}
