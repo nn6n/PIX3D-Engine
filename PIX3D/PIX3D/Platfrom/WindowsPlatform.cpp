@@ -89,7 +89,7 @@ namespace PIX3D
         glfwTerminate();
     }
 
-    void WindowsPlatformLayer::CreatWindow(uint32_t width, uint32_t height, const char* title)
+    void WindowsPlatformLayer::CreatWindow(uint32_t width, uint32_t height, const char* title, bool resizable)
     {
         if (!glfwInit())
             std::cout << "Failed To Initialize GLFW!\n";
@@ -97,6 +97,7 @@ namespace PIX3D
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_RESIZABLE, resizable);
         glfwWindowHint(GLFW_SAMPLES, 8);
 
         m_NativeWindowHandel = glfwCreateWindow(width, height, title, NULL, NULL);

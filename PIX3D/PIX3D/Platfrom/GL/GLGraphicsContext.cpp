@@ -30,5 +30,13 @@ namespace PIX3D
 		{
 			glfwSwapBuffers((GLFWwindow*)NativeWindowHandle);
 		}
+
+		void GLGraphicsContext::EnableDepthTest(bool depthtest)
+		{
+			if(depthtest)
+				glEnable(GL_DEPTH_TEST);
+			else
+				glDisable(GL_DEPTH_TEST);
+		}
 	}
 }

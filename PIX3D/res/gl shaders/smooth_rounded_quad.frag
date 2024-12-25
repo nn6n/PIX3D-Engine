@@ -12,25 +12,29 @@ layout (location = 2) uniform float u_smoothness;
 layout (location = 3) uniform float u_corner_radius;
 layout (location = 4) uniform float u_use_texture;
 layout (location = 5) uniform sampler2D u_texture;
+layout (location = 6) uniform float u_tiling_factor;
 
 void main()
 {
-    // Translate to square's local space
-    vec2 localPos = abs(in_coords - vec2(0.0)) - (1.0 - u_corner_radius);
-
-    // Compute the SDF distance for a rounded square
-    float dist = length(max(localPos, 0.0)) - u_corner_radius;
-
-    // Smooth edge blending
-    float alpha = smoothstep(0.0, u_smoothness, -dist);
-
     vec4 color = u_color;
     
     if(u_use_texture == 1.0)
     {
-       color *= texture(u_texture, in_uvs);
+       color *= texture(u_texture, in_uvs * u_tiling_factor);
+       FragColor = vec4(color);
     }
+    else
+    {
+       // Translate to square's local space
+       vec2 localPos = abs(in_coords - vec2(0.0)) - (1.0 - u_corner_radius);
+       
+       // Compute the SDF distance for a rounded square
+       float dist = length(max(localPos, 0.0)) - u_corner_radius;
+       
+       // Smooth edge blending
+       float alpha = smoothstep(0.0, u_smoothness, -dist);
 
-    // Set fragment color with smooth alpha blending
-    FragColor = vec4(color.rgb, color.a * alpha);
+       // Set fragment color with smooth alpha blending
+       FragColor = vec4(color.rgb, color.a * alpha);
+    }
 }

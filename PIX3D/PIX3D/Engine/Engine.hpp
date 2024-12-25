@@ -31,6 +31,7 @@ namespace PIX3D
 	struct EngineSpecs
 	{
 		GraphicsAPI API = GraphicsAPI::OPENGL;
+		bool WindowResizable = true;
 	};
 
 	class Engine
@@ -54,7 +55,7 @@ namespace PIX3D
             #if defined(_WIN32) || defined(_WIN64)
             
             			s_Platform = new WindowsPlatformLayer();
-            			s_Platform->CreatWindow(specs.Width, specs.Height, specs.Title.c_str());
+            			s_Platform->CreatWindow(specs.Width, specs.Height, specs.Title.c_str(), s_EngineSpecs.WindowResizable);
             #else
             #error This Engine Is Currently Supports Windows Platform Only!
             #endif
@@ -145,6 +146,7 @@ namespace PIX3D
 		inline static WindowSizeCallBackFuncPtrType GetWindowSizeCallBackFunc() { return s_WindowSizeCallBackFuncPtr; }
 		inline static KeyboardCallBackFuncPtrType GetKeyboardCallBackFuncPtr() { return s_KeyboardCallBackFuncPtr; }
 
+		inline static GraphicsContext* GetGraphicsContext() { return s_GraphicsContext; }
 
 		inline static ApplicationSpecs GetApplicationSpecs() { return s_AppSpecs; }
 

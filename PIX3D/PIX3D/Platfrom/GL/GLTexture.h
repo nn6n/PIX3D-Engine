@@ -15,6 +15,8 @@ namespace PIX3D
 			void LoadFromFile(const std::string& path);
 			void Bind();
 			
+			void Destroy();
+
 			uint64_t GetVramTextureID() { return m_TextureID; }
 
 		private:

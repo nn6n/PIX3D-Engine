@@ -15,4 +15,15 @@ namespace PIX3D
             -1.0f, 1.0f             // Near and far planes
         );
 	}
+
+    glm::mat4 Camera2D::GetViewMatrix() const
+    {
+        glm::mat4 model =
+            glm::translate(glm::mat4(1.0f), glm::vec3(m_Position.x, m_Position.y, 0.0f)) *
+            glm::rotate(glm::mat4(1.0f), glm::radians(m_Rotaion), glm::vec3(0.0f, 0.0f, 1.0f)) *
+            glm::scale(glm::mat4(1.0f), glm::vec3(1.0f));
+        
+        return glm::inverse(model);
+    }
 }
+

@@ -10,6 +10,7 @@ namespace PIX3D
 		public:
 			virtual void Init(void* NativeWindowHandle) override;
 			virtual void SwapBuffers(void* NativeWindowHandle) override;
+			virtual void EnableDepthTest(bool depthtest) override;
 		};
 	}
 }
