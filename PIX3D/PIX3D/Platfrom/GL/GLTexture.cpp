@@ -8,6 +8,24 @@ PIX3D::GL::GLTexture::~GLTexture()
 {
 }
 
+void PIX3D::GL::GLTexture::LoadFromData(uint8_t* data, uint32_t width, uint32_t height)
+{
+    glCreateTextures(GL_TEXTURE_2D, 1, &m_Handle);
+
+    glTextureParameteri(m_Handle, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTextureParameteri(m_Handle, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTextureParameteri(m_Handle, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTextureParameteri(m_Handle, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    glTextureStorage2D(m_Handle, 1, GL_RGBA8, width, height);
+    glTextureSubImage2D(m_Handle, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
+    m_TextureID = glGetTextureHandleARB(m_Handle); // Generate ID For Texture In Vram
+    glMakeTextureHandleResidentARB(m_TextureID); // Make It Visible To Shaders
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 void PIX3D::GL::GLTexture::LoadFromFile(const std::string& path)
 {
     int w, h, bpp;

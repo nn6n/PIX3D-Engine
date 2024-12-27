@@ -7,18 +7,25 @@ namespace PIX3D
 	namespace GL
 	{
 
-		void GLStorageBuffer::Create(uint32_t Bindingpoint)
+		void GLStorageBuffer::Create(uint32_t bindingpoint, uint32_t size)
 		{
+			m_Size = size;
+
 			glCreateBuffers(1, &m_Handle);
 			PIX_ASSERT_MSG(m_Handle, "failed to create buffer!");
 
-			glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_Handle);
-			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, Bindingpoint, m_Handle);
+			glNamedBufferStorage(m_Handle, size, nullptr, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_DYNAMIC_STORAGE_BIT);
+			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, bindingpoint, m_Handle);
 		}
 
-		void GLStorageBuffer::Update(const BufferData& data)
+		void* GLStorageBuffer::MapBuffer()
 		{
-			glNamedBufferStorage(m_Handle, data.GetSize(), data.GetData(), GL_DYNAMIC_STORAGE_BIT);
+			return (void*)glMapNamedBuffer(m_Handle, GL_WRITE_ONLY);
+		}
+
+		void GLStorageBuffer::UnMapBuffer()
+		{
+			glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 		}
 
 		void GLStorageBuffer::Destroy()

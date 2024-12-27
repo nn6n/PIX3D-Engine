@@ -13,6 +13,7 @@ namespace PIX3D
 			static void Init();
 			static void Destroy();
 			static void ShowScreenRectPass(GLFramebuffer& framebuffer);
+			static void ShowScreenRectPass(uint32_t texturehandle);
 		private:
 			// Screen Quad Pass
 			inline static GLVertexArray s_ScreenQuadVertexArray;

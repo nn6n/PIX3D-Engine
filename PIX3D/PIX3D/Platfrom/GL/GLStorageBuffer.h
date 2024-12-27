@@ -9,11 +9,12 @@ namespace PIX3D
 		class GLStorageBuffer : public GLObject
 		{
 		public:
-			void Create(uint32_t Bindingpoint);
-			void Update(const BufferData& data);
+			void Create(uint32_t bindingpoint, uint32_t size);
+			void* MapBuffer();
+			void UnMapBuffer();
 			void Destroy();
 		private:
-
+			uint32_t m_Size; // size in bytes
 		};
 	}
 }

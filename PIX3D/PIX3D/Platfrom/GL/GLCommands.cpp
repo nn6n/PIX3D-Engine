@@ -10,7 +10,7 @@ namespace
 		{
 		case PIX3D::GL::ClearFlags::COLOR: return GL_COLOR_BUFFER_BIT;
 		case PIX3D::GL::ClearFlags::DEPTH: return GL_DEPTH_BUFFER_BIT;
-		case PIX3D::GL::ClearFlags::COLOR_DEPTH: return GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
+		case PIX3D::GL::ClearFlags::COLOR_DEPTH: return (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		default:
 			PIX_ASSERT_MSG(false, "UnKnown flag!");
 		}

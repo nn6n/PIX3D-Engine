@@ -29,12 +29,14 @@ namespace PIX3D
             std::string vertexCode;
             std::string fragmentCode;
 
-            try {
+            try
+            {
                 // Read vertex shader code from file
                 std::ifstream vShaderFile(vertexPath);
                 std::stringstream vShaderStream;
                 vShaderStream << vShaderFile.rdbuf();
                 vertexCode = vShaderStream.str();
+                PIX_ASSERT_MSG(!vertexCode.empty(), "Vertex shader file is empty");
                 vShaderFile.close();
 
                 // Read fragment shader code from file
@@ -42,9 +44,11 @@ namespace PIX3D
                 std::stringstream fShaderStream;
                 fShaderStream << fShaderFile.rdbuf();
                 fragmentCode = fShaderStream.str();
+                PIX_ASSERT_MSG(!fragmentCode.empty(), "Fragment shader file is empty");
                 fShaderFile.close();
             }
-            catch (std::ifstream::failure& e) {
+            catch (std::ifstream::failure& e)
+            {
                 std::cout << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ" << std::endl;
                 return false;
             }
@@ -160,6 +164,13 @@ namespace PIX3D
         void GLShader::Destroy()
         {
             glDeleteProgram(m_ProgramID);
+        }
+
+        void GLShader::SetInt(const std::string& name, int value) const
+        {
+            GLint Location = glGetUniformLocation(m_ProgramID, name.c_str());
+            PIX_ASSERT_MSG(Location >= 0, "Unknown Uniform");
+            glUniform1i(Location, value);
         }
 
         void GLShader::SetFloat(const std::string & name, float value) const

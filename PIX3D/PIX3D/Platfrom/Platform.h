@@ -37,5 +37,7 @@ namespace PIX3D
 		// Dialogue
 		virtual std::filesystem::path OpenDialogue(FileDialougeFilter Filter) { return std::filesystem::path(); }
 		virtual std::filesystem::path SaveDialogue(FileDialougeFilter Filter) { return std::filesystem::path(); }
+
+		virtual void ShowCursor(bool show) {}
 	};
 }

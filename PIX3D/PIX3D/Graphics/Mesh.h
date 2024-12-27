@@ -6,15 +6,59 @@
 #include <Platfrom/GL/GLTexture.h>
 #include <Platfrom/GL/GLVertexArray.h>
 #include <Platfrom/GL/GLShader.h>
+#include <Platfrom/GL/GLStorageBuffer.h>
 #include <filesystem>
 
 namespace PIX3D
 {
 	struct BaseColorMaterial
 	{
+		bool UseAlbedoTexture;
+		bool UseNormalTexture;
+		bool UseMetallicRoughnessTexture;
+		bool useAoTexture;
+		bool UseEmissiveTexture;
+
 		glm::vec4 BaseColor;
-		GL::GLTexture BaseColorTexture;
+		glm::vec4 EmissiveColor;
+
+		float Metalic = 0.0f;
+		float Roughness = 0.5f;
+		float Ao = 1.0f;
+
+		GL::GLTexture AlbedoTexture;
+		GL::GLTexture NormalTexture;
+		GL::GLTexture MetalRoughnessTexture;
+		GL::GLTexture AoTexture;
+		GL::GLTexture EmissiveTexture;
+		
 		std::string Name;
+	};
+
+	// Shared Buffer With Shader
+	struct MaterialGPUShader_TextureBufferData
+	{
+		uint64_t AlbedoTexture = 0;
+		uint64_t NormalTexture = 0;
+		uint64_t MetalRoughnessTexture = 0;
+		uint64_t AoTexture = 0;
+		uint64_t EmissiveTexture = 0;
+	};
+
+	struct MaterialGPUShader_InfoBufferData
+	{
+		alignas(4) int UseAlbedoTexture;
+		alignas(4) int UseNormalTexture;
+		alignas(4) int UseMetallicRoughnessTexture;
+		alignas(4) int useAoTexture;
+		alignas(4) int UseEmissiveTexture;
+
+		alignas(16) glm::vec3 BaseColor;
+		alignas(16) glm::vec3 EmissiveColor;
+
+		alignas(4) float Metalic;
+		alignas(4) float Roughness;
+		alignas(4) float Ao;
 	};
 
 
@@ -22,6 +66,8 @@ namespace PIX3D
 	{
 		glm::vec3 Position;
 		glm::vec3 Normal;
+		glm::vec3 Tangent;
+		glm::vec3 BiTangent;
 		glm::vec2 TexCoords;
 	};
 
@@ -40,8 +86,10 @@ namespace PIX3D
 		StaticMesh() = default;
 
 		void Load(const std::string& path, float scale = 1.0f);
+		void Destroy();
 
-
+		void FillMaterialBuffer();
+		
 		std::vector<StaticSubMesh> GetSubMeshes() const { return m_SubMeshes; }
 		std::vector<BaseColorMaterial> GetMaterials() const { return m_Materials; }
 		GL::GLVertexArray GetVertexArray() const { return m_VertexArray; }
@@ -54,13 +102,16 @@ namespace PIX3D
 
 	private:
 		std::filesystem::path m_Path;
+		float m_Scale = 1.0f;
 
 		std::vector<StaticMeshVertex> m_Vertices;
 		std::vector<uint32_t> m_Indices;
 
 		std::vector<StaticSubMesh> m_SubMeshes;
 		std::vector<BaseColorMaterial> m_Materials;
-
+		GL::GLStorageBuffer m_MaterialTextureDataStorageBuffer;
+		GL::GLStorageBuffer m_MaterialInfoDataStorageBuffer;
+		
 		uint32_t m_BaseVertex, m_BaseIndex = 0;
 
 		// Gpu Data

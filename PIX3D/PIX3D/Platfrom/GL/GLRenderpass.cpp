@@ -77,5 +77,16 @@ namespace PIX3D
             s_ScreenQuadVertexArray.Bind();
             GLCommands::DrawIndexed(Primitive::TRIANGLES, 6);
         }
+
+        void GLRenderpass::ShowScreenRectPass(uint32_t texturehandle)
+        {
+            // bind Texture
+            glBindTexture(GL_TEXTURE_2D, texturehandle);
+
+            s_ScreenQuadShader.Bind();
+
+            s_ScreenQuadVertexArray.Bind();
+            GLCommands::DrawIndexed(Primitive::TRIANGLES, 6);
+        }
 	}
 }

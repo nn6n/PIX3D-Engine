@@ -2,27 +2,315 @@
 
 #extension GL_ARB_bindless_texture : require
 
+#define PI 3.1415926535897932384626433832795
+#define GREYSCALE_WEIGHT_VECTOR vec3(0.2126, 0.7152, 0.0722)
+
 // out
 layout (location = 0) out vec4 FragColor;
 
 // in
-layout (location = 0) in vec3 in_Normal;
-layout (location = 1) in vec2 in_TexCoords;
+layout (location = 0) in vec2 in_TexCoords;
+layout (location = 1) in vec3 in_WorldCoordinates;
+layout (location = 2) in vec3 in_Tangent;
+layout (location = 3) in vec3 in_BiTangent;
+layout (location = 4) in vec3 in_Normal;
 
-// storage buffer
-layout(binding = 1, std430) readonly buffer MaterialsBuffer
+/*
+struct MaterialData
 {
-   sampler2D base_color_texture[];
-}material;
+		sampler2D AlbedoTexture;
+		sampler2D NormalTexture;
+		sampler2D MetalRoughnessTexture;
+		sampler2D AoTexture;
+		sampler2D EmissiveTexture;
 
-// uniforms
+        bool UseAlbedoTexture;
+		bool UseNormalTexture;
+		bool UseMetallicRoughnessTexture;
+		bool useAoTexture;
+		bool UseEmissiveTexture;
+
+		vec4 BaseColor;
+		vec4 EmissiveColor;
+		
+		float Metalic;
+		float Roughness;
+		float Ao;
+};
+*/
+
+// Shared Buffer With Shader
+struct MaterialGPUShader_TextureBufferData
+{
+	sampler2D AlbedoTexture;
+	sampler2D NormalTexture;
+	sampler2D MetalRoughnessTexture;
+	sampler2D AoTexture;
+	sampler2D EmissiveTexture;
+};
+
+struct MaterialGPUShader_InfoBufferData
+{
+	bool UseAlbedoTexture;
+	bool UseNormalTexture;
+	bool UseMetallicRoughnessTexture;
+	bool useAoTexture;
+	bool UseEmissiveTexture;
+
+	vec3 BaseColor;
+	vec3 EmissiveColor;
+
+	float Metalic;
+	float Roughness;
+	float Ao;
+};
+
+layout(std430, binding = 1) readonly buffer MaterialsTextureBuffer
+{
+     MaterialGPUShader_TextureBufferData Data[];
+}material_textures;
+
+layout(std430, binding = 2) readonly buffer MaterialsInfoBuffer
+{
+	 MaterialGPUShader_InfoBufferData Data[];
+}material_info;
+
 layout (location = 1) uniform float u_MeshIndex;
-layout (location = 2) uniform float u_TilinhFactor;
+layout (location = 2) uniform vec3 u_CameraPosition;
 
+// PBR
+// IBL precomputed maps
+const float PREFILTERED_ENV_MAP_LOD = 4.0; // how many mipmap levels
+
+layout (location = 3) uniform samplerCube u_DiffuseIrradianceMap;
+layout (location = 4) uniform samplerCube u_PrefilteredEnvMap;
+layout (location = 5) uniform sampler2D u_BrdfConvolutionMap;
+
+/*
+// lights
+uniform vec3 lightPositions[4];
+uniform vec3 lightColors[4];
+*/
+
+/*
+// Post parameters
+uniform float bloomBrightnessCutoff;
+*/
+
+// Fresnel function (Fresnel-Schlick approximation)
+//
+// F_schlick = f0 + (1 - f0)(1 - (h * v))^5
+//
+vec3 fresnelSchlick(float cosTheta, vec3 f0)
+{ 
+	return f0 + (1.0 - f0) * pow(max(1 - cosTheta, 0.0), 5.0);
+}
+
+// Fresnel schlick roughness
+//
+// Same as above except with a roughness term
+vec3 fresnelSchlickRoughness(float cosTheta, vec3 f0, float roughness)
+{
+	return f0 + (max(vec3(1.0 - roughness), f0) - f0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
+}
+
+// Normal distribution function (Trowbridge-Reitz GGX)
+//
+//                alpha ^ 2
+//     ---------------------------------
+//      PI((n * h)^2(alpha^2 - 1) + 1)^2
+//
+float ndfTrowbridgeReitzGGX(vec3 n, vec3 h, float roughness)
+{	
+	float alpha = roughness * roughness; // recommended by disney/epic papers
+	float alphaSquared = alpha * alpha;
+
+	float nDotH = max(dot(n, h), 0.0);
+	float nDotHSquared = nDotH * nDotH;
+	float innerTerms = nDotHSquared * (alphaSquared - 1.0) + 1.0;
+
+	float numerator = alphaSquared;
+	float denomenator = PI * innerTerms * innerTerms;
+	denomenator = max(denomenator, 0.0001); // avoid div by zero
+
+	return numerator / denomenator;
+}
+
+// Geometry function
+//
+//         n * v
+//   -------------------
+//   (n * v)(1 - k) + k
+//
+float geometrySchlickGGX(vec3 n, vec3 v, float k)
+{
+
+	float nDotV = max(dot(n, v), 0.0);
+
+	float numerator = nDotV;
+	float denomenator = nDotV * (1.0 - k) + k;
+
+	return numerator / denomenator;
+}
+
+// smiths method for taking into account view direction and light direction
+float geometrySmith(vec3 n, vec3 v, vec3 l, float roughness)
+{
+
+    // remapping for direct lighting (doesn't work for IBL)
+	float k = (roughness + 1.0) * (roughness + 1.0) / 8.0;
+
+	return geometrySchlickGGX(n, v, k) * geometrySchlickGGX(n, l, k);
+}
+
+// Tangent space to world
+vec3 calculateNormal(vec3 tangentNormal)
+{
+	vec3 norm = normalize(tangentNormal * 2.0 - 1.0);
+	mat3 TBN  = mat3(in_Tangent, in_BiTangent, in_Normal);
+	return normalize(TBN * norm); // tangent --> world
+}
 
 void main()
 {
-    int mesh_index = int(u_MeshIndex);
-    vec4 tex_color = texture(material.base_color_texture[mesh_index], in_TexCoords * u_TilinhFactor);
-    FragColor = vec4(tex_color.rgb, 1.0);
+	// retrieve all the material properties
+	MaterialGPUShader_TextureBufferData MaterialTextureData = material_textures.Data[int(u_MeshIndex)];
+	MaterialGPUShader_InfoBufferData MaterialInfoData = material_info.Data[int(u_MeshIndex)];
+
+	// albedo
+	vec3 albedo = MaterialInfoData.BaseColor.rgb;
+	if (MaterialInfoData.UseAlbedoTexture)
+	{
+		albedo = texture(MaterialTextureData.AlbedoTexture, in_TexCoords).rgb;
+	}
+
+	// metallic/roughness
+	float metallic = MaterialInfoData.Metalic;
+	float roughness = MaterialInfoData.Roughness;
+	if (MaterialInfoData.UseMetallicRoughnessTexture)
+	{
+		vec3 metallicRoughness = texture(MaterialTextureData.MetalRoughnessTexture, in_TexCoords).rgb;
+		metallic = metallicRoughness.b;
+		roughness = metallicRoughness.g;
+	}
+
+	// normal
+	vec3 n = in_Normal; // interpolated vertex normal
+	if (MaterialInfoData.UseNormalTexture)
+	{
+		n = calculateNormal(texture(MaterialTextureData.NormalTexture, in_TexCoords).rgb);
+	}
+
+	// ambient occlusion
+	float ao = MaterialInfoData.Ao;
+	if (MaterialInfoData.useAoTexture)
+	{
+		ao = texture(MaterialTextureData.AoTexture, in_TexCoords).r;
+	}
+
+	// emissive
+	vec3 emissive = MaterialInfoData.EmissiveColor.rgb;
+	if (MaterialInfoData.UseEmissiveTexture)
+	{
+		emissive = texture(MaterialTextureData.EmissiveTexture, in_TexCoords).rgb;
+	}
+
+	vec3 v = normalize(u_CameraPosition - in_WorldCoordinates); // view vector pointing at camera
+	vec3 r = reflect(-v, n); // reflection
+
+	// f0 is the "surface reflection at zero incidence"
+	// for PBR-metallic we assume dialectrics all have 0.04
+	// for metals the value comes from the albedo map
+	vec3 f0 = vec3(0.04);
+	f0 = mix(f0, albedo, metallic);
+
+	vec3 Lo = vec3(0.0); // total radiance out
+
+	// Direct lighting
+	/*
+	// Sum up the radiance contributions of each light source.
+	// This loop is essentially the integral of the rendering equation.
+	for (int i = 0; i < 4; i++)
+	{
+		vec3 l = normalize(lightPositions[i] - worldCoordinates); // light vector
+		vec3 h = normalize(v + l);
+
+		float distance = length(lightPositions[i] - worldCoordinates);
+		float attenuation = 1.0 / (distance * distance); // inverse square law
+		vec3 radiance = lightColors[i] * attenuation; // aka Li
+
+		// calculate Cook-Torrance specular BRDF term
+		//
+		//                DFG
+		//        --------------------
+		//         4(w_0 * n)(w_i * n)
+		//
+		//
+
+		// Normal Distribution term (D)
+		float dTerm = ndfTrowbridgeReitzGGX(n, h, roughness);
+
+		// Fresnel term (F)
+		// Determines the ratio of light reflected vs. absorbed
+		vec3 fTerm = fresnelSchlick(max(dot(h, v), 0.0), f0);
+
+		// Geometry term (G)
+		float gTerm = geometrySmith(n, v, l, roughness);
+
+
+		vec3 numerator = dTerm * fTerm * gTerm;
+		float denominator = 4.0 * max(dot(v, n), 0.0) * max(dot(l, n), 0.0);
+		
+		// recall fTerm is the proportion of reflected light, so the result here is the specular
+		vec3 specular = numerator / max(denominator, 0.001);
+
+		vec3 kSpecular = fTerm;
+		vec3 kDiffuse = vec3(1.0) - kSpecular;
+		kDiffuse *= 1.0 - metallic; // metallic materials should have no diffuse component
+
+		// now calculate full Cook-Torrance with both diffuse + specular
+		//
+		// f_r = kd * f_lambert + ks * f_cook-torrance
+		//
+		// where f_lambert = c / pi
+
+		vec3 diffuse = kDiffuse * albedo / PI;
+		vec3 cookTorranceBrdf = diffuse + specular;
+		float nDotL = max(dot(n, l), 0.0);
+
+		// Finally, the rendering equation!
+		Lo += cookTorranceBrdf * radiance * nDotL;
+	}
+	*/
+
+	// Indirect lighting (IBL)
+	vec3 kSpecular = fresnelSchlickRoughness(max(dot(n, v), 0.0), f0, roughness); // aka F
+    vec3 kDiffuse = 1.0 - kSpecular;
+	kDiffuse *= 1.0 - metallic; // metallic materials should have no diffuse component
+
+	// diffuse
+    vec3 irradiance = texture(u_DiffuseIrradianceMap, n).rgb;
+    vec3 diffuse = irradiance * albedo;
+
+	// specular
+	vec3 prefilteredEnvMapColor = textureLod(u_PrefilteredEnvMap, r, roughness * PREFILTERED_ENV_MAP_LOD).rgb;
+	float NdotV = max(dot(n, v), 0.0);
+	vec2 brdf = texture(u_BrdfConvolutionMap, vec2(NdotV, roughness)).rg;
+	vec3 specular = prefilteredEnvMapColor * (kSpecular * brdf.x + brdf.y);
+
+	vec3 ambient = (kDiffuse * diffuse + specular) * ao; // indirect lighting
+
+	// Combine emissive + indirect + direct
+	vec3 color = emissive + ambient + Lo;
+
+	// Outputs
+
+	// main color output
+	FragColor = vec4(color, 1.0);
+	/*
+	// bloom color output
+	// use greyscale conversion here because not all colors are equally "bright"
+    float greyscaleBrightness = dot(FragColor.rgb, GREYSCALE_WEIGHT_VECTOR);
+	BloomColor = greyscaleBrightness > bloomBrightnessCutoff ? vec4(emissive, 1.0) : vec4(0.0, 0.0, 0.0, 1.0);
+	*/
 }

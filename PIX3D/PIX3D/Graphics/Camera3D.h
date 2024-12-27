@@ -36,6 +36,8 @@ namespace PIX3D
 		glm::mat4 GetProjectionMatrix() const;
 		glm::mat4 GetViewMatrix() const;
 
+		glm::vec3 GetPosition() const { return m_CameraData.Position; }
+
 		CameraData GetCameraData() { return m_CameraData; }
 
 	private:

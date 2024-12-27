@@ -105,10 +105,19 @@
     <ClCompile Include="PIX3D\Platfrom\GL\GLStorageBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PIX3D\Graphics\Camera2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PIX3D\Platfrom\GL\IBL\GLHdrCubemap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PIX3D\Platfrom\GL\GLStaticMeshFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="PIX3D\Platfrom\GL\GLRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PIX3D\Graphics\Camera2D.cpp">
+    <ClCompile Include="PIX3D\Platfrom\GL\IBL\IBLCubemapsGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -242,6 +251,21 @@
     <ClInclude Include="PIX3D\Graphics\Camera2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PIX3D\Graphics\Transform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PIX3D\Platfrom\GL\IBL\GLHdrCubemap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PIX3D\Platfrom\GL\GLStaticMeshFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PIX3D\Core\Timer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PIX3D\Platfrom\GL\IBL\IBLCubemapsGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\gl shaders\pos_vertex.vert" />
@@ -254,5 +278,13 @@
     <None Include="res\gl shaders\model3d.frag" />
     <None Include="res\gl shaders\smooth_rounded_quad.vert" />
     <None Include="res\gl shaders\smooth_rounded_quad.frag" />
+    <None Include="res\gl shaders\skybox.vert" />
+    <None Include="res\gl shaders\skybox.frag" />
+    <None Include="res\gl shaders\diffuse_irradiance.vert" />
+    <None Include="res\gl shaders\diffuse_irradiance.frag" />
+    <None Include="res\gl shaders\ibl_specular_map.vert" />
+    <None Include="res\gl shaders\ibl_specular_map.frag" />
+    <None Include="res\gl shaders\brdf_lut.vert" />
+    <None Include="res\gl shaders\brdf_lut.frag" />
   </ItemGroup>
 </Project>

@@ -257,4 +257,12 @@ namespace PIX3D
             return std::filesystem::path();
         }
     }
+
+    void WindowsPlatformLayer::ShowCursor(bool show)
+    {
+        if(show)
+            glfwSetInputMode((GLFWwindow*)m_NativeWindowHandel, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        else
+            glfwSetInputMode((GLFWwindow*)m_NativeWindowHandel, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    }
 }

@@ -26,6 +26,8 @@ namespace PIX3D
 		virtual std::filesystem::path OpenDialogue(FileDialougeFilter Filter) override;
 		virtual std::filesystem::path SaveDialogue(FileDialougeFilter Filter) override;
 
+		virtual void ShowCursor(bool show) override; // called every frame
+
 	private:
 		void* m_NativeWindowHandel = nullptr;
 	};

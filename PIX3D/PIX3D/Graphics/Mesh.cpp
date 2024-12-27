@@ -2,6 +2,7 @@
 #include <Core/Core.h>
 #include <Platfrom/GL/GLCommands.h>
 #include <Platfrom/GL/GLRenderer.h>
+#include <fstream>
 
 
 namespace
@@ -16,6 +17,12 @@ namespace
         
         return texture;
     }
+
+    bool FileExists(const std::string& name)
+    {
+        std::ifstream f(name.c_str());
+        return f.good();
+    }
 }
 
 namespace PIX3D
@@ -24,6 +31,7 @@ namespace PIX3D
     void PIX3D::StaticMesh::Load(const std::string& path, float scale)
     {
         m_Path = path;
+        m_Scale = scale;
 
         Assimp::Importer importer;
         const aiScene* scene = importer.ReadFile(path,
@@ -44,6 +52,56 @@ namespace PIX3D
 
         // Load Into GPU
         LoadGpuData();
+    }
+
+    void StaticMesh::FillMaterialBuffer()
+    {
+        {
+            auto* gpu_material_buffer_data = (MaterialGPUShader_InfoBufferData*)m_MaterialInfoDataStorageBuffer.MapBuffer();
+
+            for (auto& mat : m_Materials)
+            {
+                gpu_material_buffer_data->UseAlbedoTexture = mat.UseAlbedoTexture;
+                gpu_material_buffer_data->UseNormalTexture = mat.UseNormalTexture;
+                gpu_material_buffer_data->UseMetallicRoughnessTexture = mat.UseMetallicRoughnessTexture;
+                gpu_material_buffer_data->useAoTexture = mat.useAoTexture;
+                gpu_material_buffer_data->UseEmissiveTexture = mat.UseEmissiveTexture;
+
+                gpu_material_buffer_data->BaseColor = mat.BaseColor;
+                gpu_material_buffer_data->EmissiveColor = mat.EmissiveColor;
+
+                gpu_material_buffer_data->Metalic = mat.Metalic;
+                gpu_material_buffer_data->Roughness = mat.Roughness;
+                gpu_material_buffer_data->Ao = mat.Ao;
+
+                gpu_material_buffer_data++;
+            }
+
+            m_MaterialInfoDataStorageBuffer.UnMapBuffer();
+        }
+
+        {
+            auto* gpu_material_buffer_data = (MaterialGPUShader_TextureBufferData*)m_MaterialTextureDataStorageBuffer.MapBuffer();
+
+            for (auto& mat : m_Materials)
+            {
+                gpu_material_buffer_data->AlbedoTexture = mat.AlbedoTexture.GetVramTextureID();
+                gpu_material_buffer_data->NormalTexture = mat.NormalTexture.GetVramTextureID();
+                gpu_material_buffer_data->MetalRoughnessTexture = mat.MetalRoughnessTexture.GetVramTextureID();
+                gpu_material_buffer_data->AoTexture = mat.AoTexture.GetVramTextureID();
+                gpu_material_buffer_data->EmissiveTexture = mat.EmissiveTexture.GetVramTextureID();
+
+                gpu_material_buffer_data++;
+            }
+
+            m_MaterialTextureDataStorageBuffer.UnMapBuffer();
+        }
+    }
+
+    void StaticMesh::Destroy()
+    {
+        m_MaterialTextureDataStorageBuffer.Destroy();
+        m_MaterialInfoDataStorageBuffer.Destroy();
     }
 
     void PIX3D::StaticMesh::ProcessNode(aiNode* node, const aiScene* scene)
@@ -69,14 +127,19 @@ namespace PIX3D
             StaticMeshVertex vertex;
 
             // process vertex positions, normals and texture coordinates
-            vertex.Position.x = mesh->mVertices[i].x;
-            vertex.Position.y = mesh->mVertices[i].y;
-            vertex.Position.z = mesh->mVertices[i].z;
+            vertex.Position.x = mesh->mVertices[i].x * m_Scale;
+            vertex.Position.y = mesh->mVertices[i].y * m_Scale;
+            vertex.Position.z = mesh->mVertices[i].z * m_Scale;
 
             vertex.Normal.x = mesh->mNormals[i].x;
             vertex.Normal.y = mesh->mNormals[i].y;
             vertex.Normal.z = mesh->mNormals[i].z;
 
+            if (mesh->HasTangentsAndBitangents())
+            {
+                vertex.Tangent = glm::vec3(mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z);
+                vertex.BiTangent = glm::vec3(mesh->mBitangents[i].x, mesh->mBitangents[i].y, mesh->mBitangents[i].z);
+            }
 
             if (mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
             {
@@ -106,56 +169,124 @@ namespace PIX3D
         {
             aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
             
-            // Diffuse Material Data
+
+            // Create New Material
+            BaseColorMaterial mat;
             
+            // Get Base Color
             aiColor4D DiffuseColor;
             material->Get(AI_MATKEY_COLOR_DIFFUSE, DiffuseColor);
+            mat.BaseColor = { DiffuseColor.r, DiffuseColor.g, DiffuseColor.b, 1.0f };
+
+            // Get Emissive Color
+            aiColor4D EmissiveColor;
+            material->Get(AI_MATKEY_COLOR_EMISSIVE, EmissiveColor);
+            mat.EmissiveColor = { EmissiveColor.r, EmissiveColor.g, EmissiveColor.b, 1.0f };
+
+            // Fill Metalic
+            float Metallic = 0.0f;
+            if (AI_SUCCESS == aiGetMaterialFloat(material, AI_MATKEY_METALLIC_FACTOR, &Metallic))
+                mat.Metalic = Metallic;
+
+            // Fill Roughness
+            float Roughness = 1.0f;
+            if (AI_SUCCESS == aiGetMaterialFloat(material, AI_MATKEY_ROUGHNESS_FACTOR, &Roughness))
+                mat.Roughness = Roughness;
+
+            // Load AlbedoMap
             {
                 aiString path;
                 material->GetTexture(aiTextureType_DIFFUSE, 0, &path);
-
                 std::filesystem::path FullPath = (m_Path.parent_path() / path.C_Str()).string();
                 
-                if (FullPath.has_extension())
+                if (FileExists(FullPath.string())) // AlbedoMap Found
                 {
-                    std::string TextureName = FullPath.stem().string();
+                    mat.UseAlbedoTexture = true;
+                    mat.AlbedoTexture.LoadFromFile(FullPath.string());
+                }
+                else // Default Albedo
+                {
+                    mat.UseAlbedoTexture = false;
+                    mat.AlbedoTexture = GL::GLRenderer::GetDefaultAlbedoTexture();
+                }
+            }
 
-                    // Check For Material Existance
-                    for (size_t i = 0; i < m_Materials.size(); i++)
-                    {
-                        if (m_Materials[i].Name == TextureName)
-                        {
-                            MaterialPresent = true;
-                            MaterialIndex = i;
-                            break;
-                        }
-                    }
+            // Load NormalMap
+            {
+                aiString path;
+                material->GetTexture(aiTextureType_NORMALS, 0, &path);
+                std::filesystem::path FullPath = (m_Path.parent_path() / path.C_Str()).string();
 
-                    if (!MaterialPresent)
-                    {
-                        // Create New Material
-                        BaseColorMaterial mat;
-                        mat.BaseColor = { DiffuseColor.r, DiffuseColor.g, DiffuseColor.b, DiffuseColor.a };
-                        mat.BaseColorTexture.LoadFromFile(FullPath.string());
-                        mat.Name = TextureName;
-
-                        m_Materials.push_back(mat);
-                        MaterialIndex = m_Materials.size() - 1;
-                    }
+                if (FileExists(FullPath.string())) // NormalMap Found
+                {
+                    mat.UseNormalTexture = true;
+                    mat.NormalTexture.LoadFromFile(FullPath.string());
                 }
                 else
                 {
-                    // Create New Material
-                    BaseColorMaterial mat;
-                    mat.BaseColor = glm::vec4(1.0f);
-                    mat.BaseColorTexture = GL::GLRenderer::GetDefaultTexture();
-                    mat.Name = "Engine Default Texture";
-
-                    m_Materials.push_back(mat);
-                    MaterialIndex = m_Materials.size() - 1;
+                    mat.UseNormalTexture = false;
+                    mat.NormalTexture = GL::GLRenderer::GetDefaultNormalTexture();
                 }
             }
+
+            // Load MetalRoughnessMap
+            {
+                aiString path;
+                material->GetTexture(aiTextureType_METALNESS, 0, &path);
+                std::filesystem::path FullPath = (m_Path.parent_path() / path.C_Str()).string();
+
+                if (FileExists(FullPath.string())) // RoughnessMap Found
+                {
+                    mat.UseMetallicRoughnessTexture = true;
+                    mat.MetalRoughnessTexture.LoadFromFile(FullPath.string());
+                }
+                else
+                {
+                    mat.UseMetallicRoughnessTexture = false;
+                    mat.MetalRoughnessTexture = GL::GLRenderer::GetDefaultBlackTexture();
+                }
+            }
+
+            // Load AoMap
+            {
+                aiString path;
+                material->GetTexture(aiTextureType_LIGHTMAP, 0, &path);
+                std::filesystem::path FullPath = (m_Path.parent_path() / path.C_Str()).string();
+
+                if (FileExists(FullPath.string())) // RoughnessMap Found
+                {
+                    mat.useAoTexture = true;
+                    mat.AoTexture.LoadFromFile(FullPath.string());
+                }
+                else
+                {
+                    mat.useAoTexture = false;
+                    mat.AoTexture = GL::GLRenderer::GetDefaultWhiteTexture();
+                }
+            }
+
+            // Load EmissiveMap
+            {
+                aiString path;
+                material->GetTexture(aiTextureType_EMISSIVE, 0, &path);
+                std::filesystem::path FullPath = (m_Path.parent_path() / path.C_Str()).string();
+
+                if (FileExists(FullPath.string())) // RoughnessMap Found
+                {
+                    mat.UseEmissiveTexture = true;
+                    mat.EmissiveTexture.LoadFromFile(FullPath.string());
+                }
+                else
+                {
+                    mat.UseEmissiveTexture = false;
+                    mat.EmissiveTexture = GL::GLRenderer::GetDefaultBlackTexture();
+                }
+            }
+
+            m_Materials.push_back(mat);
+            MaterialIndex = m_Materials.size() - 1;
         }
+
 
         StaticSubMesh subMesh;
         subMesh.BaseVertex = m_BaseVertex;
@@ -195,15 +326,33 @@ namespace PIX3D
             Normal.Count = 3;
             Normal.Offset = 3 * sizeof(float);
 
+            GL::GLVertexAttrib Tangent;
+            Tangent.ShaderLocation = 2;
+            Tangent.Type = GL::GLShaderAttribType::FLOAT;
+            Tangent.Count = 3;
+            Tangent.Offset = 3 * sizeof(float) + 3 * sizeof(float);
+
+            GL::GLVertexAttrib BiTangent;
+            BiTangent.ShaderLocation = 3;
+            BiTangent.Type = GL::GLShaderAttribType::FLOAT;
+            BiTangent.Count = 3;
+            BiTangent.Offset = 3 * sizeof(float) + 3 * sizeof(float) + 3 * sizeof(float);
+
             GL::GLVertexAttrib TexCoords;
-            TexCoords.ShaderLocation = 2;
+            TexCoords.ShaderLocation = 4;
             TexCoords.Type = GL::GLShaderAttribType::FLOAT;
             TexCoords.Count = 2;
-            TexCoords.Offset = 3 * sizeof(float) + 3 * sizeof(float);
+            TexCoords.Offset = 3 * sizeof(float) + 3 * sizeof(float) + 3 * sizeof(float) + 3 * sizeof(float);
 
             m_VertexArray.AddVertexAttrib(Position);
             m_VertexArray.AddVertexAttrib(Normal);
+            m_VertexArray.AddVertexAttrib(Tangent);
+            m_VertexArray.AddVertexAttrib(BiTangent);
             m_VertexArray.AddVertexAttrib(TexCoords);
         }
+
+        m_MaterialTextureDataStorageBuffer.Create(1, m_SubMeshes.size() * sizeof(MaterialGPUShader_TextureBufferData));
+        m_MaterialInfoDataStorageBuffer.Create(2, m_SubMeshes.size() * sizeof(MaterialGPUShader_InfoBufferData));
+        FillMaterialBuffer();
     }
 }
