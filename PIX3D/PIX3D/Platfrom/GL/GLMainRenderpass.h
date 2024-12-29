@@ -21,6 +21,8 @@ namespace PIX3D
 			void UnBindFrameBuffer();
 
 		private:
+			uint32_t m_Width, m_Height = 0;
+
 			uint32_t m_Framebuffer = 0;
 			uint32_t m_ColorAttachment = 0;
 			uint32_t m_BloomColorAttachment = 0;

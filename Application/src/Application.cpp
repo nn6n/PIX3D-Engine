@@ -42,7 +42,7 @@ void Application::OnStart()
 		//Mesh.Load("res/otako/source/model.fbx", 0.1);
 		Mesh.Load("res/helmet/DamagedHelmet.gltf", 5.0f);
 	}
-	
+
 	{
 		PIX3D::Timer profiler("Generate Hdr Cubemap Algrithm in GPU");
 		Cubemap.LoadHdrToCubemapGPU("res/hdr/barcelona_rooftop.hdr", 1024);
@@ -74,11 +74,10 @@ void Application::OnUpdate(float dt)
 
 	// update
 	{
-		// MeshTransform.Rotation.y += 10 * dt;
+		 // MeshTransform.Rotation.y += 10 * dt;
 		// CubemapTransform.Rotation.y += 10.0f * dt;
 	}
 
-	/*
 	// rendering
 	{
 		PIX3D::GL::GLRenderer::Begin(Cam3D);
@@ -89,7 +88,6 @@ void Application::OnUpdate(float dt)
 
 		PIX3D::GL::GLRenderer::End();
 	}
-	*/
 
 	//PIX3D::GL::GLScreenQuadRenderpass::Render(PIX3D::GL::GLRenderer::GetBloompassOutputColorAttachment());
 

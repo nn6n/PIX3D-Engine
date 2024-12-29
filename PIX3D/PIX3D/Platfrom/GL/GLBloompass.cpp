@@ -127,9 +127,11 @@ namespace PIX3D
                 m_BloomShader.SetInt("u_SampleMipLevel", mipLevel);
                 m_BloomShader.SetVec2("u_BlurDirection", blurDirectionX);
 
+                glDisable(GL_DEPTH_TEST);
                 GLStaticMeshData QuadMesh = GLStaticMeshGenerator::GenerateQuad();
                 QuadMesh.VertexArray.Bind();
                 GLCommands::DrawArrays(Primitive::TRIANGLES, QuadMesh.VerticesCount);
+                glEnable(GL_DEPTH_TEST);
 
                 unsigned int bloomFramebuffer = 1; // which buffer to use
 
@@ -146,9 +148,11 @@ namespace PIX3D
                     auto blurDirection = bloomFramebuffer == 1 ? blurDirectionY : blurDirectionX;
                     m_BloomShader.SetVec2("u_BlurDirection", blurDirection);
                     glBindTexture(GL_TEXTURE_2D, m_ColorAttachments[sourceBuffer]);
+                    glDisable(GL_DEPTH_TEST);
                     GLStaticMeshData QuadMesh = GLStaticMeshGenerator::GenerateQuad();
                     QuadMesh.VertexArray.Bind();
                     GLCommands::DrawArrays(Primitive::TRIANGLES, QuadMesh.VerticesCount);
+                    glEnable(GL_DEPTH_TEST);
                     bloomFramebuffer = sourceBuffer;
                 }
 

@@ -46,6 +46,13 @@ namespace PIX3D
             s_BrdfLUTTextureHandle = GenerateBRDFLUTTexture();
         }
 
+        void IBLCubemapsGenerator::Destroy()
+        {
+            s_DiffuseIrradianceShader.Destroy();
+            s_SpecularIBLShader.Destroy();
+            s_BrdfLUTShader.Destroy();
+        }
+
         IBLMaps IBLCubemapsGenerator::GenerateIBLMaps(uint32_t envcubemap, int irradiancesize, int prefiltersize)
         {
             // Create and setup irradiance cubemap

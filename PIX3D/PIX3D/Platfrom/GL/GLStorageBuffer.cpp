@@ -14,7 +14,7 @@ namespace PIX3D
 			glCreateBuffers(1, &m_Handle);
 			PIX_ASSERT_MSG(m_Handle, "failed to create buffer!");
 
-			glNamedBufferStorage(m_Handle, size, nullptr, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_DYNAMIC_STORAGE_BIT);
+			glNamedBufferStorage(m_Handle, size, nullptr, GL_MAP_WRITE_BIT);
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, bindingpoint, m_Handle);
 		}
 

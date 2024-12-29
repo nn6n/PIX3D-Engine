@@ -10,6 +10,7 @@ void PIX3D::GL::GLPostProcessingpass::Init(uint32_t width, uint32_t height)
     m_Width = width;
     m_Height = height;
 
+    /*
     // create the framebuffer
     glGenFramebuffers(1, &m_Framebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, m_Framebuffer);
@@ -47,6 +48,7 @@ void PIX3D::GL::GLPostProcessingpass::Init(uint32_t width, uint32_t height)
     PIX_ASSERT_MSG(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Error initializing framebuffer: framebuffer not complete!");
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+    */
     m_PostProcessingShader.LoadFromFile("../PIX3D/res/gl shaders/post.vert", "../PIX3D/res/gl shaders/post.frag");
 }
 
@@ -68,15 +70,11 @@ void PIX3D::GL::GLPostProcessingpass::Resize(uint32_t width, uint32_t height)
 
 void PIX3D::GL::GLPostProcessingpass::Render(uint32_t main_renderpass_color_attachment, uint32_t bloom_renderpass_output_color_attachment)
 {
-    //glBindFramebuffer(GL_FRAMEBUFFER, m_Framebuffer);
-
     m_PostProcessingShader.Bind();
     m_PostProcessingShader.SetBool("u_BloomEnabled", m_BloomEnabled);
     m_PostProcessingShader.SetFloat("u_BloomIntensity", m_BloomIntensity);
-    /*
     m_PostProcessingShader.SetBool("u_TonemappingEnabled", m_TonemappingEnabled);
     m_PostProcessingShader.SetFloat("u_GammaCorrectionFactor", m_GammaCorrectionFactor);
-    */
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, main_renderpass_color_attachment);
     m_PostProcessingShader.SetInt("u_ColorTexture", 0);
@@ -85,16 +83,12 @@ void PIX3D::GL::GLPostProcessingpass::Render(uint32_t main_renderpass_color_atta
     glBindTexture(GL_TEXTURE_2D, bloom_renderpass_output_color_attachment);
     m_PostProcessingShader.SetInt("u_BloomTexture", 1);
 
+
+    glDisable(GL_DEPTH_TEST);
+
     GLStaticMeshData QuadMesh = GLStaticMeshGenerator::GenerateQuad();
     QuadMesh.VertexArray.Bind();
     GLCommands::DrawArrays(Primitive::TRIANGLES, QuadMesh.VerticesCount);
 
-    /*
-    glBindFramebuffer(GL_FRAMEBUFFER, 0); // switch back to default fb
-    {
-        auto specs = Engine::GetApplicationSpecs();
-        GLCommands::SetViewPort(specs.Width, specs.Height);
-    }
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    */
+    glEnable(GL_DEPTH_TEST);
 }

@@ -71,8 +71,8 @@ namespace PIX3D
 
 					GL::GLPixelRenderer2D::Init();
 					GL::GLPixelBatchRenderer2D::Init();
-					GL::GLRenderer::Init(s_AppSpecs.Width, s_AppSpecs.Height);
 					GL::IBLCubemapsGenerator::Init();
+					GL::GLRenderer::Init(s_AppSpecs.Width, s_AppSpecs.Height);
 					GL::GLScreenQuadRenderpass::Init();
 					ImGuiLayer::Init();
 			    }break;
@@ -122,6 +122,7 @@ namespace PIX3D
 			GL::GLPixelBatchRenderer2D::Destory();
 			GL::GLRenderer::Destory();
 			GL::GLScreenQuadRenderpass::Destroy();
+			GL::IBLCubemapsGenerator::Destroy();
 			ImGuiLayer::Destroy();
 
 

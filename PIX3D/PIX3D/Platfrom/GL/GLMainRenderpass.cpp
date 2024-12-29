@@ -7,6 +7,9 @@ namespace PIX3D
 	{
         void GLMainRenderpass::Init(uint32_t width, uint32_t height)
         {
+            m_Width = width;
+            m_Height = height;
+
             // create the framebuffer
             glGenFramebuffers(1, &m_Framebuffer);
             glBindFramebuffer(GL_FRAMEBUFFER, m_Framebuffer);
@@ -28,7 +31,7 @@ namespace PIX3D
             glBindTexture(GL_TEXTURE_2D, m_BloomColorAttachment);
 
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -59,6 +62,9 @@ namespace PIX3D
 
         void GLMainRenderpass::Resize(uint32_t width, uint32_t height)
         {
+            m_Width = width;
+            m_Height = height;
+
             // resize color textures
             glBindTexture(GL_TEXTURE_2D, m_ColorAttachment);
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
@@ -81,7 +87,9 @@ namespace PIX3D
 
         void GLMainRenderpass::BindFrameBuffer()
         {
+            glViewport(0, 0, m_Width, m_Height);
             glBindFramebuffer(GL_FRAMEBUFFER, m_Framebuffer);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
 
         void GLMainRenderpass::UnBindFrameBuffer()

@@ -96,10 +96,15 @@ namespace PIX3D
 
 		void GLRenderer::Begin(Camera3D& cam)
 		{
+			// bind main renderpass framebuffer
+			s_MainRenderpass.BindFrameBuffer();
+
+			// save camera position to send later to shader
+			s_CameraPosition = cam.GetPosition();
+
+			// fill camera uniformbuffer
 			// remove translation so skybox is always surrounding camera
 			glm::mat4 SkyboxView = glm::mat4(glm::mat3(cam.GetViewMatrix()));
-
-			s_Model3DShader.Bind();
 
 			CameraUnifromBufferData data;
 			data.CameraProj = cam.GetProjectionMatrix();
@@ -107,14 +112,6 @@ namespace PIX3D
 			data.SkyboxView = SkyboxView;
 
 			s_CameraUnifromBuffer.Update({ &data, sizeof(data) });
-
-			s_CameraPosition = cam.GetPosition();
-
-			s_MainRenderpass.BindFrameBuffer();
-
-			// clear background
-			PIX3D::GL::GLCommands::ClearFlag(PIX3D::GL::ClearFlags::COLOR_DEPTH);
-			PIX3D::GL::GLCommands::Clear(0.1f, 0.1f, 0.1f, 1.0f);
 		}
 
 		void GLRenderer::RenderMesh(const glm::mat4& model, StaticMesh& mesh, IBLMaps& ibl_maps)
@@ -143,6 +140,26 @@ namespace PIX3D
 			auto submeshes = mesh.GetSubMeshes();
             for (size_t i = 0; i < submeshes.size(); i++)
             {
+				auto mat = mesh.GetMaterials()[i];
+
+
+				s_Model3DShader.SetInt("AlbedoTexture", 3);
+				mat.AlbedoTexture.Bind(3);
+
+				s_Model3DShader.SetInt("NormalTexture", 4);
+				mat.NormalTexture.Bind(4);
+
+				s_Model3DShader.SetInt("MetalRoughnessTexture", 5);
+				mat.MetalRoughnessTexture.Bind(5);
+
+
+				s_Model3DShader.SetInt("AoTexture", 6);
+				mat.AoTexture.Bind(6);
+
+
+				s_Model3DShader.SetInt("EmissiveTexture", 7);
+				mat.EmissiveTexture.Bind(7);
+
 				auto submesh = submeshes[i];
 			
 				mesh.GetVertexArray().Bind();
@@ -178,7 +195,6 @@ namespace PIX3D
 
 		void GLRenderer::End()
 		{
-			s_MainRenderpass.UnBindFrameBuffer();
 			s_Bloompass.Render(s_MainRenderpass.GetBloomColorAttachment());
 			s_PostProcessingpass.Render(s_MainRenderpass.GetColorAttachment(), s_Bloompass.GetOutputTexture());
 		}

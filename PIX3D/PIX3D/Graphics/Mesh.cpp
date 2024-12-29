@@ -80,6 +80,7 @@ namespace PIX3D
             m_MaterialInfoDataStorageBuffer.UnMapBuffer();
         }
 
+        /*
         {
             auto* gpu_material_buffer_data = (MaterialGPUShader_TextureBufferData*)m_MaterialTextureDataStorageBuffer.MapBuffer();
 
@@ -96,6 +97,7 @@ namespace PIX3D
 
             m_MaterialTextureDataStorageBuffer.UnMapBuffer();
         }
+        */
     }
 
     void StaticMesh::Destroy()
@@ -351,7 +353,7 @@ namespace PIX3D
             m_VertexArray.AddVertexAttrib(TexCoords);
         }
 
-        m_MaterialTextureDataStorageBuffer.Create(1, m_SubMeshes.size() * sizeof(MaterialGPUShader_TextureBufferData));
+        //m_MaterialTextureDataStorageBuffer.Create(1, m_SubMeshes.size() * sizeof(MaterialGPUShader_TextureBufferData));
         m_MaterialInfoDataStorageBuffer.Create(2, m_SubMeshes.size() * sizeof(MaterialGPUShader_InfoBufferData));
         FillMaterialBuffer();
     }

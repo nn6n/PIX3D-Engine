@@ -42,10 +42,12 @@ struct MaterialGPUShader_InfoBufferData
 	float Ao;
 };
 
+/*
 layout(std430, binding = 1) readonly buffer MaterialsTextureBuffer
 {
      MaterialGPUShader_TextureBufferData Data[];
 }material_textures;
+*/
 
 layout(std430, binding = 2) readonly buffer MaterialsInfoBuffer
 {
@@ -72,6 +74,12 @@ uniform vec3 lightColors[4];
 
 // Post parameters
 layout (location = 6) uniform float u_BloomBrightnessCutoff;
+
+layout (location = 7)	uniform sampler2D AlbedoTexture;
+layout (location = 8)	uniform sampler2D NormalTexture;
+layout (location = 9)	uniform sampler2D MetalRoughnessTexture;
+layout (location = 10)	uniform sampler2D AoTexture;
+layout (location = 11)	uniform sampler2D EmissiveTexture;
 
 // Fresnel function (Fresnel-Schlick approximation)
 //
@@ -150,14 +158,14 @@ vec3 calculateNormal(vec3 tangentNormal)
 void main()
 {
 	// retrieve all the material properties
-	MaterialGPUShader_TextureBufferData MaterialTextureData = material_textures.Data[int(u_MeshIndex)];
+	//MaterialGPUShader_TextureBufferData MaterialTextureData = material_textures.Data[int(u_MeshIndex)];
 	MaterialGPUShader_InfoBufferData MaterialInfoData = material_info.Data[int(u_MeshIndex)];
 
 	// albedo
 	vec3 albedo = MaterialInfoData.BaseColor.rgb;
 	if (MaterialInfoData.UseAlbedoTexture)
 	{
-		albedo = texture(MaterialTextureData.AlbedoTexture, in_TexCoords).rgb;
+		albedo = texture(AlbedoTexture, in_TexCoords).rgb;
 	}
 
 	// metallic/roughness
@@ -165,7 +173,7 @@ void main()
 	float roughness = MaterialInfoData.Roughness;
 	if (MaterialInfoData.UseMetallicRoughnessTexture)
 	{
-		vec3 metallicRoughness = texture(MaterialTextureData.MetalRoughnessTexture, in_TexCoords).rgb;
+		vec3 metallicRoughness = texture(MetalRoughnessTexture, in_TexCoords).rgb;
 		metallic = metallicRoughness.b;
 		roughness = metallicRoughness.g;
 	}
@@ -174,21 +182,21 @@ void main()
 	vec3 n = in_Normal; // interpolated vertex normal
 	if (MaterialInfoData.UseNormalTexture)
 	{
-		n = calculateNormal(texture(MaterialTextureData.NormalTexture, in_TexCoords).rgb);
+		n = calculateNormal(texture(NormalTexture, in_TexCoords).rgb);
 	}
 
 	// ambient occlusion
 	float ao = MaterialInfoData.Ao;
 	if (MaterialInfoData.useAoTexture)
 	{
-		ao = texture(MaterialTextureData.AoTexture, in_TexCoords).r;
+		ao = texture(AoTexture, in_TexCoords).r;
 	}
 
 	// emissive
 	vec3 emissive = MaterialInfoData.EmissiveColor.rgb;
 	if (MaterialInfoData.UseEmissiveTexture)
 	{
-		emissive = texture(MaterialTextureData.EmissiveTexture, in_TexCoords).rgb;
+		emissive = texture(EmissiveTexture, in_TexCoords).rgb;
 	}
 
 	vec3 v = normalize(u_CameraPosition - in_WorldCoordinates); // view vector pointing at camera

@@ -18,6 +18,7 @@ namespace PIX3D
         {
         public:
             static void Init();
+            static void Destroy();
             static IBLMaps GenerateIBLMaps(uint32_t envcubemap, int irradiancesize, int prefiltersize);
 
             inline static uint32_t GetBrdfLUTTextureHandle() { return s_BrdfLUTTextureHandle; }

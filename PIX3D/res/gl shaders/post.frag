@@ -26,7 +26,7 @@ void main()
 
 		color += bloomColor * u_BloomIntensity;
 	}
-	/*
+
 	// tonemapping
 	if (u_TonemappingEnabled)
 	{
@@ -36,6 +36,6 @@ void main()
 
 	// gamma correction
 	color = pow(color, vec3(1.0 / u_GammaCorrectionFactor)); // gamma correction to account for monitor, raise to the (1 / 2.2)
-	*/
+
 	FragColor = vec4(color, 1.0);
 }
