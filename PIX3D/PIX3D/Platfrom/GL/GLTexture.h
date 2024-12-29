@@ -13,7 +13,7 @@ namespace PIX3D
 			~GLTexture();
 
 			void LoadFromData(uint8_t* data, uint32_t width, uint32_t height);
-			void LoadFromFile(const std::string& path);
+			void LoadFromFile(const std::string& path, bool srgb = false);
 			void Bind();
 			
 			void Destroy();

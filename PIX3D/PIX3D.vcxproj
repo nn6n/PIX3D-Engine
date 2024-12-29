@@ -165,6 +165,8 @@
     <ClCompile Include="PIX3D\Graphics\Camera2D.cpp" />
     <ClCompile Include="PIX3D\Graphics\Camera3D.cpp" />
     <ClCompile Include="PIX3D\Graphics\Mesh.cpp" />
+    <ClCompile Include="PIX3D\Platfrom\GL\GLBloompass.cpp" />
+    <ClCompile Include="PIX3D\Platfrom\GL\GLMainRenderpass.cpp" />
     <ClCompile Include="PIX3D\Platfrom\GL\GLPixelBatchRenderer2D.cpp" />
     <ClCompile Include="PIX3D\Platfrom\GL\GLCommands.cpp" />
     <ClCompile Include="PIX3D\Platfrom\GL\GLDynamicVertexBuffer.cpp" />
@@ -172,8 +174,9 @@
     <ClCompile Include="PIX3D\Platfrom\GL\GLGraphicsContext.cpp" />
     <ClCompile Include="PIX3D\Platfrom\GL\GLIndexBuffer.cpp" />
     <ClCompile Include="PIX3D\Platfrom\GL\GLPipeline.cpp" />
+    <ClCompile Include="PIX3D\Platfrom\GL\GLPostProcessingpass.cpp" />
     <ClCompile Include="PIX3D\Platfrom\GL\GLRenderer.cpp" />
-    <ClCompile Include="PIX3D\Platfrom\GL\GLRenderpass.cpp" />
+    <ClCompile Include="PIX3D\Platfrom\GL\GLScreenQuadRenderpass.cpp" />
     <ClCompile Include="PIX3D\Platfrom\GL\GLShader.cpp" />
     <ClCompile Include="PIX3D\Platfrom\GL\GLStaticMeshFactory.cpp" />
     <ClCompile Include="PIX3D\Platfrom\GL\GLStorageBuffer.cpp" />
@@ -210,6 +213,7 @@
     <ClInclude Include="PIX3D\Graphics\Mesh.h" />
     <ClInclude Include="PIX3D\Graphics\Transform.h" />
     <ClInclude Include="PIX3D\PIX3D.h" />
+    <ClInclude Include="PIX3D\Platfrom\GL\GLBloompass.h" />
     <ClInclude Include="PIX3D\Platfrom\GL\GLPixelBatchRenderer2D.h" />
     <ClInclude Include="PIX3D\Platfrom\GL\GLCommands.h" />
     <ClInclude Include="PIX3D\Platfrom\GL\GLDynamicVertexBuffer.h" />
@@ -218,8 +222,9 @@
     <ClInclude Include="PIX3D\Platfrom\GL\GLIndexBuffer.h" />
     <ClInclude Include="PIX3D\Platfrom\GL\GLObject.h" />
     <ClInclude Include="PIX3D\Platfrom\GL\GLPipeline.h" />
+    <ClInclude Include="PIX3D\Platfrom\GL\GLPostProcessingpass.h" />
     <ClInclude Include="PIX3D\Platfrom\GL\GLRenderer.h" />
-    <ClInclude Include="PIX3D\Platfrom\GL\GLRenderpass.h" />
+    <ClInclude Include="PIX3D\Platfrom\GL\GLScreenQuadRenderpass.h" />
     <ClInclude Include="PIX3D\Platfrom\GL\GLShader.h" />
     <ClInclude Include="PIX3D\Platfrom\GL\GLStaticMeshFactory.h" />
     <ClInclude Include="PIX3D\Platfrom\GL\GLStorageBuffer.h" />
@@ -230,6 +235,7 @@
     <ClInclude Include="PIX3D\Platfrom\GL\GLPixelRenderer2D.h" />
     <ClInclude Include="PIX3D\Platfrom\GL\IBL\GLHdrCubemap.h" />
     <ClInclude Include="PIX3D\Platfrom\GL\IBL\IBLCubemapsGenerator.h" />
+    <ClInclude Include="PIX3D\Platfrom\GL\GLMainRenderpass.h" />
     <ClInclude Include="PIX3D\Platfrom\ImGui\ImGuiLayer.h" />
     <ClInclude Include="PIX3D\Platfrom\Platform.h" />
     <ClInclude Include="PIX3D\Platfrom\WindowsPlatform.h" />
@@ -238,6 +244,8 @@
     <ClInclude Include="PIX3D\Utils\stb_write.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\gl shaders\bloom.frag" />
+    <None Include="res\gl shaders\bloom.vert" />
     <None Include="res\gl shaders\brdf_lut.frag" />
     <None Include="res\gl shaders\brdf_lut.vert" />
     <None Include="res\gl shaders\diffuse_irradiance.frag" />
@@ -248,6 +256,8 @@
     <None Include="res\gl shaders\model3d.vert" />
     <None Include="res\gl shaders\pixel_batch_renderer.frag" />
     <None Include="res\gl shaders\pixel_batch_renderer.vert" />
+    <None Include="res\gl shaders\post.frag" />
+    <None Include="res\gl shaders\post.vert" />
     <None Include="res\gl shaders\pos_fragment.frag" />
     <None Include="res\gl shaders\pos_vertex.vert" />
     <None Include="res\gl shaders\screen_quad.frag" />

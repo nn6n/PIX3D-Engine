@@ -7,6 +7,7 @@
 
 // out
 layout (location = 0) out vec4 FragColor;
+layout (location = 1) out vec4 BloomColor; // output to be used by bloom shader
 
 // in
 layout (location = 0) in vec2 in_TexCoords;
@@ -14,30 +15,6 @@ layout (location = 1) in vec3 in_WorldCoordinates;
 layout (location = 2) in vec3 in_Tangent;
 layout (location = 3) in vec3 in_BiTangent;
 layout (location = 4) in vec3 in_Normal;
-
-/*
-struct MaterialData
-{
-		sampler2D AlbedoTexture;
-		sampler2D NormalTexture;
-		sampler2D MetalRoughnessTexture;
-		sampler2D AoTexture;
-		sampler2D EmissiveTexture;
-
-        bool UseAlbedoTexture;
-		bool UseNormalTexture;
-		bool UseMetallicRoughnessTexture;
-		bool useAoTexture;
-		bool UseEmissiveTexture;
-
-		vec4 BaseColor;
-		vec4 EmissiveColor;
-		
-		float Metalic;
-		float Roughness;
-		float Ao;
-};
-*/
 
 // Shared Buffer With Shader
 struct MaterialGPUShader_TextureBufferData
@@ -92,10 +69,9 @@ uniform vec3 lightPositions[4];
 uniform vec3 lightColors[4];
 */
 
-/*
+
 // Post parameters
-uniform float bloomBrightnessCutoff;
-*/
+layout (location = 6) uniform float u_BloomBrightnessCutoff;
 
 // Fresnel function (Fresnel-Schlick approximation)
 //
@@ -307,10 +283,9 @@ void main()
 
 	// main color output
 	FragColor = vec4(color, 1.0);
-	/*
+
 	// bloom color output
 	// use greyscale conversion here because not all colors are equally "bright"
     float greyscaleBrightness = dot(FragColor.rgb, GREYSCALE_WEIGHT_VECTOR);
-	BloomColor = greyscaleBrightness > bloomBrightnessCutoff ? vec4(emissive, 1.0) : vec4(0.0, 0.0, 0.0, 1.0);
-	*/
+	BloomColor = greyscaleBrightness > u_BloomBrightnessCutoff ? vec4(emissive, 1.0) : vec4(0.0, 0.0, 0.0, 1.0);
 }

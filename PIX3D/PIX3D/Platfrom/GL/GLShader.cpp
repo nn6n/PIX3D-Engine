@@ -166,6 +166,13 @@ namespace PIX3D
             glDeleteProgram(m_ProgramID);
         }
 
+        void GLShader::SetBool(const std::string& name, bool value) const
+        {
+            GLint Location = glGetUniformLocation(m_ProgramID, name.c_str());
+            PIX_ASSERT_MSG(Location >= 0, "Unknown Uniform");
+            glUniform1i(Location, (int)value);
+        }
+
         void GLShader::SetInt(const std::string& name, int value) const
         {
             GLint Location = glGetUniformLocation(m_ProgramID, name.c_str());
@@ -178,6 +185,13 @@ namespace PIX3D
             GLint Location = glGetUniformLocation(m_ProgramID, name.c_str());
             PIX_ASSERT_MSG(Location >= 0, "Unknown Uniform");
             glUniform1f(Location, value);
+        }
+
+        void GLShader::SetVec2(const std::string& name, const glm::vec2& value) const
+        {
+            GLint Location = glGetUniformLocation(m_ProgramID, name.c_str());
+            PIX_ASSERT_MSG(Location >= 0, "Unknown Uniform");
+            glUniform2f(Location, value.x, value.y);
         }
 
         void GLShader::SetVec3(const std::string& name, const glm::vec3& value) const

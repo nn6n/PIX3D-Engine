@@ -20,6 +20,7 @@ namespace
         App->OnResize(width, height);
 
         PIX3D::GL::GLCommands::SetViewPort(width, height);
+        PIX3D::GL::GLRenderer::Resize(width, height);
 
         auto func = PIX3D::Engine::GetWindowSizeCallBackFunc();
         if(func)

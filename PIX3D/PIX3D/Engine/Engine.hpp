@@ -10,7 +10,7 @@
 #include <Platfrom/GL/GLPixelRenderer2D.h>
 #include <Platfrom/GL/GLPixelBatchRenderer2D.h>
 #include <Platfrom/GL/GLRenderer.h>
-#include <Platfrom/GL/GLRenderpass.h>
+#include <Platfrom/GL/GLScreenQuadRenderpass.h>
 #include <Platfrom/GL/IBL/IBLCubemapsGenerator.h>
 #include <memory>
 #include <functional>
@@ -71,9 +71,9 @@ namespace PIX3D
 
 					GL::GLPixelRenderer2D::Init();
 					GL::GLPixelBatchRenderer2D::Init();
-					GL::GLRenderer::Init();
+					GL::GLRenderer::Init(s_AppSpecs.Width, s_AppSpecs.Height);
 					GL::IBLCubemapsGenerator::Init();
-					GL::GLRenderpass::Init();
+					GL::GLScreenQuadRenderpass::Init();
 					ImGuiLayer::Init();
 			    }break;
 			    
@@ -121,7 +121,7 @@ namespace PIX3D
 			GL::GLPixelRenderer2D::Destory();
 			GL::GLPixelBatchRenderer2D::Destory();
 			GL::GLRenderer::Destory();
-			GL::GLRenderpass::Destroy();
+			GL::GLScreenQuadRenderpass::Destroy();
 			ImGuiLayer::Destroy();
 
 

@@ -2,14 +2,17 @@
 #include "GLCommands.h"
 #include "GLStaticMeshFactory.h"
 #include <glm/gtc/type_ptr.hpp>
-
 #include <glad/glad.h>
+#include <imgui.h>
+
+#include <Engine/Engine.hpp>
+
 
 namespace PIX3D
 {
 	namespace GL
 	{
-		void GLRenderer::Init()
+		void GLRenderer::Init(uint32_t width, uint32_t height)
 		{
 			// Default Albedo Texture
 			{
@@ -70,12 +73,25 @@ namespace PIX3D
 			s_Model3DShader.LoadFromFile("../PIX3D/res/gl shaders/model3d.vert", "../PIX3D/res/gl shaders/model3d.frag");
 			s_SkyBoxShader.LoadFromFile("../PIX3D/res/gl shaders/skybox.vert", "../PIX3D/res/gl shaders/skybox.frag");
 			s_CameraUnifromBuffer.Create(0);
+
+			s_MainRenderpass.Init(width, height);
+			s_Bloompass.Init(width, height);
+			s_PostProcessingpass.Init(width, height);
+		}
+
+		void GLRenderer::Resize(uint32_t width, uint32_t height)
+		{
+			s_MainRenderpass.Resize(width, height);
+			s_Bloompass.Resize(width, height);
+			s_PostProcessingpass.Resize(width, height);
 		}
 
 		void GLRenderer::Destory()
 		{
 			s_Model3DShader.Destroy();
 			s_CameraUnifromBuffer.Destroy();
+			s_MainRenderpass.Destroy();
+			s_Bloompass.Destroy();
 		}
 
 		void GLRenderer::Begin(Camera3D& cam)
@@ -93,6 +109,12 @@ namespace PIX3D
 			s_CameraUnifromBuffer.Update({ &data, sizeof(data) });
 
 			s_CameraPosition = cam.GetPosition();
+
+			s_MainRenderpass.BindFrameBuffer();
+
+			// clear background
+			PIX3D::GL::GLCommands::ClearFlag(PIX3D::GL::ClearFlags::COLOR_DEPTH);
+			PIX3D::GL::GLCommands::Clear(0.1f, 0.1f, 0.1f, 1.0f);
 		}
 
 		void GLRenderer::RenderMesh(const glm::mat4& model, StaticMesh& mesh, IBLMaps& ibl_maps)
@@ -102,6 +124,7 @@ namespace PIX3D
 			s_Model3DShader.SetMat4("model", model);
 
 			s_Model3DShader.SetVec3("u_CameraPosition", s_CameraPosition);
+			s_Model3DShader.SetFloat("u_BloomBrightnessCutoff", s_BloomThreshold);
 
 			// IBL stuff
 			glActiveTexture(GL_TEXTURE0 + 0);
@@ -139,6 +162,7 @@ namespace PIX3D
 
 			s_SkyBoxShader.Bind();
 			s_SkyBoxShader.SetMat4("model", model);
+			//s_SkyBoxShader.SetFloat("u_BloomBrightnessCutoff", s_BloomThreshold);
 
 			glActiveTexture(GL_TEXTURE0);
 			s_SkyBoxShader.SetInt("u_CubemapTexture", 0);
@@ -154,7 +178,28 @@ namespace PIX3D
 
 		void GLRenderer::End()
 		{
+			s_MainRenderpass.UnBindFrameBuffer();
+			s_Bloompass.Render(s_MainRenderpass.GetBloomColorAttachment());
+			s_PostProcessingpass.Render(s_MainRenderpass.GetColorAttachment(), s_Bloompass.GetOutputTexture());
+		}
 
+		void GLRenderer::RenderPostPorcessingSettingsImGui()
+		{
+			ImGui::CollapsingHeader("Post-processing");
+
+			ImGui::Text("Bloom (Gaussian)");
+			ImGui::Checkbox("Enabled", &s_PostProcessingpass.m_BloomEnabled);
+			ImGui::SliderFloat("Intensity", &s_PostProcessingpass.m_BloomIntensity, 0.0, 5.0);
+			ImGui::SliderFloat("Threshold", &s_BloomThreshold, 0.01, 5.0);
+			ImGui::SliderInt("Blur Iterations", &s_Bloompass.m_BloomIterations, 2, 20);
+			ImGui::Text("Direction: "); ImGui::SameLine();
+			ImGui::RadioButton("Both", &s_Bloompass.m_BloomDirection, 0); ImGui::SameLine();
+			ImGui::RadioButton("Horizontal", &s_Bloompass.m_BloomDirection, 1); ImGui::SameLine();
+			ImGui::RadioButton("Vertical", &s_Bloompass.m_BloomDirection, 2);
+
+			ImGui::Text("Post");
+			ImGui::Checkbox("HDR Tone Mapping (Reinhard)", &s_PostProcessingpass.m_TonemappingEnabled);
+			ImGui::SliderFloat("Gamma Correction", &s_PostProcessingpass.m_GammaCorrectionFactor, 1.0, 3.0);
 		}
 	}
 }

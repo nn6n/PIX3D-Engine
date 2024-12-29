@@ -202,7 +202,7 @@ namespace PIX3D
                 if (FileExists(FullPath.string())) // AlbedoMap Found
                 {
                     mat.UseAlbedoTexture = true;
-                    mat.AlbedoTexture.LoadFromFile(FullPath.string());
+                    mat.AlbedoTexture.LoadFromFile(FullPath.string(), true);
                 }
                 else // Default Albedo
                 {

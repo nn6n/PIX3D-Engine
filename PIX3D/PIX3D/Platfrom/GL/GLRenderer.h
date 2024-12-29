@@ -6,6 +6,10 @@
 #include <Graphics/Camera3D.h>
 #include <Platfrom/GL/IBL/IBLCubemapsGenerator.h>
 #include <Graphics/Mesh.h>
+#include "GLMainRenderpass.h"
+#include "GLBloompass.h"
+#include "GLPostProcessingpass.h"
+
 
 namespace PIX3D
 {
@@ -23,7 +27,8 @@ namespace PIX3D
 		{
 
 		public:
-			static void Init();
+			static void Init(uint32_t width, uint32_t height);
+			static void Resize(uint32_t width, uint32_t height);
 			static void Destory();
 
 			static void Begin(Camera3D& cam);
@@ -31,11 +36,21 @@ namespace PIX3D
 			static void RenderHdrSkybox(const glm::mat4& model, const GLHdriCubemap& hdrcubemap);
 			static void End();
 
+			static void RenderPostPorcessingSettingsImGui();
+
 			inline static GLTexture GetDefaultAlbedoTexture() { return s_DefaultAlbedoTexture; }
 			inline static GLTexture GetDefaultNormalTexture() { return s_DefaultNormalTexture; }
 			
 			inline static GLTexture GetDefaultWhiteTexture() { return s_DefaultWhiteTexture; }
 			inline static GLTexture GetDefaultBlackTexture() { return s_DefaultBlackTexture; }
+
+			inline static uint32_t GetMainRenderpassColorAttachment() { return s_MainRenderpass.GetColorAttachment(); }
+			inline static uint32_t GetMainRenderpassBloomBrightnessColorAttachment() { return s_MainRenderpass.GetBloomColorAttachment(); }
+			inline static uint32_t GetBloompassOutputColorAttachment() { return s_Bloompass.GetOutputTexture(); }
+			inline static uint32_t GetPostProcessingpassOutputColorAttachment() { return s_PostProcessingpass.GetColorAttachment(); }
+
+			inline static float GetBloomThreshold() { return s_BloomThreshold; }
+			inline static void SetBloomThreshold(float threshold) { s_BloomThreshold = threshold; }
 
 		private:
 			inline static glm::vec3 s_CameraPosition;
@@ -49,9 +64,11 @@ namespace PIX3D
 			inline static GLTexture s_DefaultWhiteTexture;
 			inline static GLTexture s_DefaultBlackTexture;
 
-			/*
-			127, 127, 255
-			*/
+			// PBR Pipeline
+			inline static GLMainRenderpass s_MainRenderpass;
+			inline static GLBloompass s_Bloompass;
+			inline static GLPostProcessingpass s_PostProcessingpass;
+			inline static float s_BloomThreshold = 1.0f;
 		};
 	}
 }

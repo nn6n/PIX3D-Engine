@@ -59,12 +59,6 @@ void Application::OnStart()
 
 void Application::OnUpdate(float dt)
 {
-	// clear background
-	{
-		PIX3D::GL::GLCommands::ClearFlag(PIX3D::GL::ClearFlags::COLOR_DEPTH);
-		PIX3D::GL::GLCommands::Clear(0.1f, 0.1f, 0.1f, 1.0f);
-	}
-
 	// update
 	{
 		Cam3D.Update(dt);
@@ -78,11 +72,16 @@ void Application::OnUpdate(float dt)
 		PIX3D::Engine::GetPlatformLayer()->ShowCursor(ShowMouseCursor);
 	}
 
+	// update
+	{
+		// MeshTransform.Rotation.y += 10 * dt;
+		// CubemapTransform.Rotation.y += 10.0f * dt;
+	}
+
+	/*
 	// rendering
 	{
 		PIX3D::GL::GLRenderer::Begin(Cam3D);
-
-		//MeshTransform.Rotation.y += 10 * dt;
 
 		PIX3D::GL::GLRenderer::RenderMesh(MeshTransform, Mesh, IBLMaps);
 
@@ -90,14 +89,14 @@ void Application::OnUpdate(float dt)
 
 		PIX3D::GL::GLRenderer::End();
 	}
+	*/
 
-
-	//CubemapTransform.Rotation.y += 10.0f * dt;
+	//PIX3D::GL::GLScreenQuadRenderpass::Render(PIX3D::GL::GLRenderer::GetBloompassOutputColorAttachment());
 
 	ImGui::Begin("Editor");
 	ImGui::SliderInt("Texture Index", &TextureIndex, 0, 5);
 	RenderTransformComponent(CubemapTransform, "Cubemap Transform Component");
-	ImGui::Image((ImTextureID)PIX3D::GL::IBLCubemapsGenerator::GetBrdfLUTTextureHandle(), {256, 256});
+	PIX3D::GL::GLRenderer::RenderPostPorcessingSettingsImGui();
 	ImGui::End();
 }
 

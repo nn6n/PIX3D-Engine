@@ -63,7 +63,7 @@
     <ClCompile Include="PIX3D\Platfrom\GL\GLPixelRenderer2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PIX3D\Platfrom\GL\GLRenderpass.cpp">
+    <ClCompile Include="PIX3D\Platfrom\GL\GLScreenQuadRenderpass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui.cpp">
@@ -118,6 +118,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PIX3D\Platfrom\GL\IBL\IBLCubemapsGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PIX3D\Platfrom\GL\GLMainRenderpass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PIX3D\Platfrom\GL\GLBloompass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PIX3D\Platfrom\GL\GLPostProcessingpass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -194,7 +203,7 @@
     <ClInclude Include="PIX3D\Platfrom\GL\GLPixelRenderer2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PIX3D\Platfrom\GL\GLRenderpass.h">
+    <ClInclude Include="PIX3D\Platfrom\GL\GLScreenQuadRenderpass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imconfig.h">
@@ -266,6 +275,15 @@
     <ClInclude Include="PIX3D\Platfrom\GL\IBL\IBLCubemapsGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PIX3D\Platfrom\GL\GLMainRenderpass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PIX3D\Platfrom\GL\GLBloompass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PIX3D\Platfrom\GL\GLPostProcessingpass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\gl shaders\pos_vertex.vert" />
@@ -286,5 +304,9 @@
     <None Include="res\gl shaders\ibl_specular_map.frag" />
     <None Include="res\gl shaders\brdf_lut.vert" />
     <None Include="res\gl shaders\brdf_lut.frag" />
+    <None Include="res\gl shaders\bloom.vert" />
+    <None Include="res\gl shaders\bloom.frag" />
+    <None Include="res\gl shaders\post.vert" />
+    <None Include="res\gl shaders\post.frag" />
   </ItemGroup>
 </Project>

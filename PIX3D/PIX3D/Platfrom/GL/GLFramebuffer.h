@@ -33,6 +33,11 @@ namespace PIX3D
 
 			uint32_t GetColorAttachmentHandle() { return m_ColorAttachmentHandle; }
 
+			operator const uint32_t() const
+			{
+				return m_ColorAttachmentHandle;
+			}
+
 		private:
 			GLFramebufferSpecification m_Specs;
 			uint32_t m_RenderbufferHandle = 0;
