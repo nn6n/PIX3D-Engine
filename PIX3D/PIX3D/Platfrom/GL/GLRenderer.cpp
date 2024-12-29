@@ -179,7 +179,7 @@ namespace PIX3D
 
 			s_SkyBoxShader.Bind();
 			s_SkyBoxShader.SetMat4("model", model);
-			//s_SkyBoxShader.SetFloat("u_BloomBrightnessCutoff", s_BloomThreshold);
+			s_SkyBoxShader.SetFloat("u_BloomBrightnessCutoff", s_BloomThreshold);
 
 			glActiveTexture(GL_TEXTURE0);
 			s_SkyBoxShader.SetInt("u_CubemapTexture", 0);

@@ -16,7 +16,8 @@ private:
 	PIX3D::GL::GLHdriCubemap Cubemap;
 	PIX3D::GL::IBLMaps IBLMaps;
 
-	int TextureIndex = 0;
+	bool RotateModel = false;
+	bool RotateSkybox = false;
 
 	bool ShowMouseCursor = true;
 };

@@ -74,8 +74,10 @@ void Application::OnUpdate(float dt)
 
 	// update
 	{
-		 // MeshTransform.Rotation.y += 10 * dt;
-		// CubemapTransform.Rotation.y += 10.0f * dt;
+		if(RotateModel)
+			MeshTransform.Rotation.y += 10 * dt;
+		if(RotateSkybox)
+			CubemapTransform.Rotation.y += 10.0f * dt;
 	}
 
 	// rendering
@@ -89,11 +91,11 @@ void Application::OnUpdate(float dt)
 		PIX3D::GL::GLRenderer::End();
 	}
 
-	//PIX3D::GL::GLScreenQuadRenderpass::Render(PIX3D::GL::GLRenderer::GetBloompassOutputColorAttachment());
-
 	ImGui::Begin("Editor");
-	ImGui::SliderInt("Texture Index", &TextureIndex, 0, 5);
-	RenderTransformComponent(CubemapTransform, "Cubemap Transform Component");
+	ImGui::CollapsingHeader("model");
+	ImGui::Checkbox("RotateModel", &RotateModel);
+	ImGui::CollapsingHeader("skybox");
+	ImGui::Checkbox("RotateSkybox", &RotateSkybox);
 	PIX3D::GL::GLRenderer::RenderPostPorcessingSettingsImGui();
 	ImGui::End();
 }

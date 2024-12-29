@@ -16,6 +16,5 @@ void main() {
 	// bloom color output
 	// use greyscale conversion here because not all colors are equally "bright"
 	float greyscaleBrightness = dot(FragColor.rgb, GREYSCALE_WEIGHT_VECTOR);
-	//BloomColor = greyscaleBrightness > u_BloomBrightnessCutoff ? FragColor : vec4(0.0, 0.0, 0.0, 1.0);
-	BloomColor = vec4(0.0, 0.0, 0.0, 1.0);
+	BloomColor = greyscaleBrightness > u_BloomBrightnessCutoff ? FragColor : vec4(0.0, 0.0, 0.0, 1.0);
 }
