@@ -198,24 +198,5 @@ namespace PIX3D
 			s_Bloompass.Render(s_MainRenderpass.GetBloomColorAttachment());
 			s_PostProcessingpass.Render(s_MainRenderpass.GetColorAttachment(), s_Bloompass.GetOutputTexture());
 		}
-
-		void GLRenderer::RenderPostPorcessingSettingsImGui()
-		{
-			ImGui::CollapsingHeader("Post-processing");
-
-			ImGui::Text("Bloom (Gaussian)");
-			ImGui::Checkbox("Enabled", &s_PostProcessingpass.m_BloomEnabled);
-			ImGui::SliderFloat("Intensity", &s_PostProcessingpass.m_BloomIntensity, 0.0, 5.0);
-			ImGui::SliderFloat("Threshold", &s_BloomThreshold, 0.01, 5.0);
-			ImGui::SliderInt("Blur Iterations", &s_Bloompass.m_BloomIterations, 2, 20);
-			ImGui::Text("Direction: "); ImGui::SameLine();
-			ImGui::RadioButton("Both", &s_Bloompass.m_BloomDirection, 0); ImGui::SameLine();
-			ImGui::RadioButton("Horizontal", &s_Bloompass.m_BloomDirection, 1); ImGui::SameLine();
-			ImGui::RadioButton("Vertical", &s_Bloompass.m_BloomDirection, 2);
-
-			ImGui::Text("Post");
-			ImGui::Checkbox("HDR Tone Mapping (Reinhard)", &s_PostProcessingpass.m_TonemappingEnabled);
-			ImGui::SliderFloat("Gamma Correction", &s_PostProcessingpass.m_GammaCorrectionFactor, 1.0, 3.0);
-		}
 	}
 }

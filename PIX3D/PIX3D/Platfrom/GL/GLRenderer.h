@@ -36,8 +36,6 @@ namespace PIX3D
 			static void RenderHdrSkybox(const glm::mat4& model, const GLHdriCubemap& hdrcubemap);
 			static void End();
 
-			static void RenderPostPorcessingSettingsImGui();
-
 			inline static GLTexture GetDefaultAlbedoTexture() { return s_DefaultAlbedoTexture; }
 			inline static GLTexture GetDefaultNormalTexture() { return s_DefaultNormalTexture; }
 			
@@ -52,7 +50,7 @@ namespace PIX3D
 			inline static float GetBloomThreshold() { return s_BloomThreshold; }
 			inline static void SetBloomThreshold(float threshold) { s_BloomThreshold = threshold; }
 
-		private:
+		public:
 			inline static glm::vec3 s_CameraPosition;
 
 			inline static GLShader s_Model3DShader;

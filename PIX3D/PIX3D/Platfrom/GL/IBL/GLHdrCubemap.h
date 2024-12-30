@@ -16,8 +16,11 @@ namespace PIX3D
 			void Test();
 			void Destroy();
 			void Bind() const;
-		private:
 
+			uint32_t GetHdrTextureHandle() { return m_EquiRectangularHdrTextureHandle; }
+
+		private:
+			uint32_t m_EquiRectangularHdrTextureHandle = 0;
 		};
 	}
 }

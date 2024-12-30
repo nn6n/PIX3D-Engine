@@ -177,6 +177,9 @@ namespace PIX3D
         {
             glDeleteTextures(1, &m_Handle);
             m_Handle = 0;
+
+            glDeleteTextures(1, &m_EquiRectangularHdrTextureHandle);
+            m_EquiRectangularHdrTextureHandle = 0;
         }
 
         void GLHdriCubemap::Bind() const
@@ -200,9 +203,8 @@ namespace PIX3D
             PIX_ASSERT_MSG(data, "Failed to load HDR file!");
 
             // Create and setup equirectangular texture
-            GLuint equiTexture;
-            glGenTextures(1, &equiTexture);
-            glBindTexture(GL_TEXTURE_2D, equiTexture);
+            glGenTextures(1, &m_EquiRectangularHdrTextureHandle);
+            glBindTexture(GL_TEXTURE_2D, m_EquiRectangularHdrTextureHandle);
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, data);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -245,7 +247,7 @@ namespace PIX3D
                 glGetShaderInfoLog(computeShader, 512, nullptr, infoLog);
                 std::cerr << "Compute Shader Compilation Failed:\n" << infoLog << std::endl;
                 glDeleteShader(computeShader);
-                glDeleteTextures(1, &equiTexture);
+                glDeleteTextures(1, &m_EquiRectangularHdrTextureHandle);
                 stbi_image_free(data);
                 return;
             }
@@ -263,7 +265,7 @@ namespace PIX3D
                 std::cerr << "Compute Program Linking Failed:\n" << infoLog << std::endl;
                 glDeleteShader(computeShader);
                 glDeleteProgram(computeProgram);
-                glDeleteTextures(1, &equiTexture);
+                glDeleteTextures(1, &m_EquiRectangularHdrTextureHandle);
                 stbi_image_free(data);
                 return;
             }
@@ -272,7 +274,7 @@ namespace PIX3D
             glUseProgram(computeProgram);
 
             // Bind textures
-            glBindImageTexture(0, equiTexture, 0, GL_FALSE, 0, GL_READ_ONLY, GL_RGBA16F);
+            glBindImageTexture(0, m_EquiRectangularHdrTextureHandle, 0, GL_FALSE, 0, GL_READ_ONLY, GL_RGBA16F);
             glBindImageTexture(1, m_Handle, 0, GL_TRUE, 0, GL_WRITE_ONLY, GL_RGBA16F);
 
             // Set uniforms
@@ -288,7 +290,7 @@ namespace PIX3D
             glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
             // Cleanup
-            glDeleteTextures(1, &equiTexture);
+            // glDeleteTextures(1, &m_EquiRectangularHdrTextureHandle);
             glDeleteShader(computeShader);
             glDeleteProgram(computeProgram);
             stbi_image_free(data);

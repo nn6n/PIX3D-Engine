@@ -8,7 +8,7 @@ namespace PIX3D
 {
 	enum class FileDialougeFilter
 	{
-		PNG
+		PNG, HDR
 	};
 
 

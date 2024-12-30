@@ -114,6 +114,7 @@ namespace PIX3D
             s_DiffuseIrradianceShader.SetInt("environmentCubemap", 0);
             s_DiffuseIrradianceShader.SetMat4("projection", captureProjection);
 
+            glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_CUBE_MAP, envcubemap);
 
             for (unsigned int i = 0; i < 6; ++i)

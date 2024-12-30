@@ -26,7 +26,8 @@ namespace PIX3D
 			void SetBloomDirection(GLBloomDirection direction) { m_BloomDirection = direction; }
 			uint32_t GetBloomIterations() { return m_BloomIterations; }
 			void SetBloomIterations(uint32_t iterations) { m_BloomIterations = iterations; }
-		private:
+
+		public:
 			uint32_t m_Width, m_Height = 0;
 
 			GLShader m_BloomShader;
@@ -35,8 +36,6 @@ namespace PIX3D
 			int m_BloomDirection = GLBloomDirection::BOTH;
 			int m_BloomIterations = 10;
 			uint32_t m_BloomFramebufferResult = 0;
-
-			friend class GLRenderer;
 		};
 	}
 }

@@ -169,57 +169,65 @@ namespace PIX3D
         void GLShader::SetBool(const std::string& name, bool value) const
         {
             GLint Location = glGetUniformLocation(m_ProgramID, name.c_str());
-            PIX_ASSERT_MSG(Location >= 0, "Unknown Uniform");
-            glUniform1i(Location, (int)value);
+            //PIX_ASSERT_MSG(Location >= 0, "Unknown Uniform");
+            if(Location >= 0)
+                glUniform1i(Location, (int)value);
         }
 
         void GLShader::SetInt(const std::string& name, int value) const
         {
             GLint Location = glGetUniformLocation(m_ProgramID, name.c_str());
-            PIX_ASSERT_MSG(Location >= 0, "Unknown Uniform");
-            glUniform1i(Location, value);
+            //PIX_ASSERT_MSG(Location >= 0, "Unknown Uniform");
+            if(Location >= 0)
+                glUniform1i(Location, value);
         }
 
         void GLShader::SetFloat(const std::string & name, float value) const
         {
             GLint Location = glGetUniformLocation(m_ProgramID, name.c_str());
-            PIX_ASSERT_MSG(Location >= 0, "Unknown Uniform");
-            glUniform1f(Location, value);
+            //PIX_ASSERT_MSG(Location >= 0, "Unknown Uniform");
+            if (Location >= 0)
+                glUniform1f(Location, value);
         }
 
         void GLShader::SetVec2(const std::string& name, const glm::vec2& value) const
         {
             GLint Location = glGetUniformLocation(m_ProgramID, name.c_str());
-            PIX_ASSERT_MSG(Location >= 0, "Unknown Uniform");
-            glUniform2f(Location, value.x, value.y);
+            //PIX_ASSERT_MSG(Location >= 0, "Unknown Uniform");
+            if (Location >= 0)
+                glUniform2f(Location, value.x, value.y);
         }
 
         void GLShader::SetVec3(const std::string& name, const glm::vec3& value) const
         {
             GLint Location = glGetUniformLocation(m_ProgramID, name.c_str());
-            PIX_ASSERT_MSG(Location >= 0, "Unknown Uniform");
-            glUniform3f(Location, value.x, value.y, value.z);
+            //PIX_ASSERT_MSG(Location >= 0, "Unknown Uniform");
+            if (Location >= 0)
+                glUniform3f(Location, value.x, value.y, value.z);
         }
 
         void GLShader::SetVec4(const std::string& name, const glm::vec4& value) const
         {
             GLint Location = glGetUniformLocation(m_ProgramID, name.c_str());
-            PIX_ASSERT_MSG(Location >= 0, "Unknown Uniform");
-            glUniform4f(Location, value.x, value.y, value.z, value.w);
+            //PIX_ASSERT_MSG(Location >= 0, "Unknown Uniform");
+            if (Location >= 0)
+                glUniform4f(Location, value.x, value.y, value.z, value.w);
         }
 
         void GLShader::SetMat4(const std::string& name, const glm::mat4& matrix) const
         {
             GLint Location = glGetUniformLocation(m_ProgramID, name.c_str());
-            PIX_ASSERT_MSG(Location >= 0, "Unknown Uniform");
-            glUniformMatrix4fv(Location, 1, GL_FALSE, glm::value_ptr(matrix));
+            //PIX_ASSERT_MSG(Location >= 0, "Unknown Uniform");
+            if (Location >= 0)
+                glUniformMatrix4fv(Location, 1, GL_FALSE, glm::value_ptr(matrix));
         }
 
         void GLShader::SetMat3(const std::string& name, const glm::mat3& matrix) const
         {
             GLint Location = glGetUniformLocation(m_ProgramID, name.c_str());
-            PIX_ASSERT_MSG(Location >= 0, "Unknown Uniform");
-            glUniformMatrix3fv(Location, 1, GL_FALSE, glm::value_ptr(matrix));
+            //PIX_ASSERT_MSG(Location >= 0, "Unknown Uniform");
+            if (Location >= 0)
+                glUniformMatrix3fv(Location, 1, GL_FALSE, glm::value_ptr(matrix));
         }
     }
 }

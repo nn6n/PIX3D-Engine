@@ -14,7 +14,7 @@ namespace PIX3D
 
 			uint32_t GetColorAttachment() { return m_ColorAttachment; }
 
-		private:
+		public:
 			uint32_t m_Width, m_Height = 0;
 
 			uint32_t m_Framebuffer = 0;
@@ -22,12 +22,13 @@ namespace PIX3D
 			uint32_t m_DepthStencilRenderbuffer = 0;
 			GLShader m_PostProcessingShader;
 
-			bool m_BloomEnabled = true;
-			float m_BloomIntensity = 1.0f;
+			bool m_BloomEnabled = false;
+			float m_BloomIntensity = 0.5f;
 			bool m_TonemappingEnabled = false;
 			float m_GammaCorrectionFactor = 2.2f;
 
 			friend class GLRenderer;
+			friend class LightningWidget;
 		};
 	}
 }

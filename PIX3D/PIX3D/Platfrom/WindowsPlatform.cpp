@@ -177,7 +177,9 @@ namespace PIX3D
         switch (Filter)
         {
         case FileDialougeFilter::PNG:
-            ofn.lpstrFilter = "Image Files (*.hdr)\0*.png\0All Files (*.*)\0*.*\0"; break;
+            ofn.lpstrFilter = "Image Files (*.png)\0*.png\0All Files (*.*)\0*.*\0"; break;
+        case FileDialougeFilter::HDR:
+            ofn.lpstrFilter = "Image Files (*.hdr)\0*.hdr\0All Files (*.*)\0*.*\0"; break;
         default:
             break;
         }
@@ -228,6 +230,12 @@ namespace PIX3D
             extension = ".png";
         }
         break;
+        case FileDialougeFilter::HDR:
+        {
+            ofn.lpstrFilter = "Project Files (*.hdr)\0*.hdr\0All Files (*.*)\0*.*\0";
+            extension = ".hdr";
+        }
+
         default:
             break;
         }

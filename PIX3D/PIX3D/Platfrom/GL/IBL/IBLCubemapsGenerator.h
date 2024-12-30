@@ -10,8 +10,16 @@ namespace PIX3D
         {
             GLHdriCubemap IrradianceMap;
             GLHdriCubemap PrefilterMap;
-            int IrradianceSize;
-            int PrefilterSize;
+            int IrradianceSize = 0;
+            int PrefilterSize = 0;
+
+            void Destroy()
+            {
+                IrradianceMap.Destroy();
+                PrefilterMap.Destroy();
+                IrradianceSize = 0;
+                PrefilterSize = 0;
+            }
         };
 
         class IBLCubemapsGenerator
