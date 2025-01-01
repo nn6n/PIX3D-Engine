@@ -2,6 +2,7 @@
 
 #include "Editor Widgets/LightningWidget.h"
 #include "Editor Widgets/InspectorWidget.h"
+#include "Editor Widgets/MaterialWidget.h"
 
 using namespace PIX3D;
 
@@ -13,9 +14,6 @@ public:
 	virtual void OnDestroy() override;
 	virtual void OnResize(uint32_t width, uint32_t height) override;
 private:
-	StaticMesh Mesh;
-	Transform MeshTransform;
-
 	PIX3D::Scene * m_Scene;
 	
 	LightningWidget* m_LightningWidget = nullptr;
@@ -26,6 +24,9 @@ private:
 
 	InspectorWidget* m_InspectorWidget = nullptr;
 	bool m_ShowInspectorWidget = false;
+
+	MaterialWidget* m_MaterialWidget = nullptr;
+	bool m_ShowMaterialWidget = false;
 
 	bool ShowMouseCursor = true;
 };

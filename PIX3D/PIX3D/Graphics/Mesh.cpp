@@ -75,6 +75,7 @@ namespace PIX3D
                 data.Metalic = mat.Metalic;
                 data.Roughness = mat.Roughness;
                 data.Ao = mat.Ao;
+                data.UseIBL = mat.UseIBL;
 
                 info.push_back(data);
             }
@@ -92,6 +93,7 @@ namespace PIX3D
     void StaticMesh::BindMaterialBuffer(uint32_t binding_point)
     {
         m_MaterialInfoDataStorageBuffer.Bind(binding_point);
+        FillMaterialBuffer();
     }
 
     void PIX3D::StaticMesh::ProcessNode(aiNode* node, const aiScene* scene)
@@ -162,16 +164,20 @@ namespace PIX3D
 
             // Create New Material
             BaseColorMaterial mat;
-            
+            mat.Name = material->GetName().C_Str();
+
             // Get Base Color
             aiColor4D DiffuseColor;
             material->Get(AI_MATKEY_COLOR_DIFFUSE, DiffuseColor);
             mat.BaseColor = { DiffuseColor.r, DiffuseColor.g, DiffuseColor.b, 1.0f };
 
+            /*
             // Get Emissive Color
             aiColor4D EmissiveColor;
             material->Get(AI_MATKEY_COLOR_EMISSIVE, EmissiveColor);
             mat.EmissiveColor = { EmissiveColor.r, EmissiveColor.g, EmissiveColor.b, 1.0f };
+            */
+            mat.EmissiveColor = { 0.0f, 0.0f, 0.0f, 1.0f };
 
             // Fill Metalic
             float Metallic = 0.0f;

@@ -40,6 +40,7 @@ struct MaterialGPUShader_InfoBufferData
 	float Metalic;
 	float Roughness;
 	float Ao;
+	bool UseIBL;
 };
 
 struct PointLightStruct
@@ -335,25 +336,35 @@ void main()
     Lo += CalculateDirectionalLight(n, v, albedo, metallic, roughness, f0);
 	
 
-	// Indirect lighting (IBL)
-	vec3 kSpecular = fresnelSchlickRoughness(max(dot(n, v), 0.0), f0, roughness); // aka F
-    vec3 kDiffuse = 1.0 - kSpecular;
-	kDiffuse *= 1.0 - metallic; // metallic materials should have no diffuse component
+	vec3 color = vec3(0.0);
 
-	// diffuse
-    vec3 irradiance = texture(u_DiffuseIrradianceMap, n).rgb;
-    vec3 diffuse = irradiance * albedo;
-
-	// specular
-	vec3 prefilteredEnvMapColor = textureLod(u_PrefilteredEnvMap, r, roughness * PREFILTERED_ENV_MAP_LOD).rgb;
-	float NdotV = max(dot(n, v), 0.0);
-	vec2 brdf = texture(u_BrdfConvolutionMap, vec2(NdotV, roughness)).rg;
-	vec3 specular = prefilteredEnvMapColor * (kSpecular * brdf.x + brdf.y);
-
-	vec3 ambient = (kDiffuse * diffuse + specular) * ao; // indirect lighting
-
-	// Combine emissive + indirect + direct
-	vec3 color = emissive + ambient + Lo;
+	if(MaterialInfoData.UseIBL)
+	{
+	    // Indirect lighting (IBL)
+	    vec3 kSpecular = fresnelSchlickRoughness(max(dot(n, v), 0.0), f0, roughness); // aka F
+        vec3 kDiffuse = 1.0 - kSpecular;
+	    kDiffuse *= 1.0 - metallic; // metallic materials should have no diffuse component
+	    
+	    // diffuse
+        vec3 irradiance = texture(u_DiffuseIrradianceMap, n).rgb;
+        vec3 diffuse = irradiance * albedo;
+	    
+	    // specular
+	    vec3 prefilteredEnvMapColor = textureLod(u_PrefilteredEnvMap, r, roughness * PREFILTERED_ENV_MAP_LOD).rgb;
+	    float NdotV = max(dot(n, v), 0.0);
+	    vec2 brdf = texture(u_BrdfConvolutionMap, vec2(NdotV, roughness)).rg;
+	    vec3 specular = prefilteredEnvMapColor * (kSpecular * brdf.x + brdf.y);
+	    
+	    vec3 ambient = (kDiffuse * diffuse + specular) * ao; // indirect lighting
+	    
+	    // Combine emissive + indirect + direct
+	    color = emissive + ambient + Lo;
+	}
+	else
+	{
+	    // Combine emissive + direct
+	    color = emissive + Lo;
+	}
 
 	// Outputs
 

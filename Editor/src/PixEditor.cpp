@@ -18,16 +18,8 @@ void PixEditor::OnStart()
 	// init editor inspector widget
 	m_InspectorWidget = new InspectorWidget(m_Scene, m_HierarchyWidget);
 
-	// load assets
-	{
-		PIX3D::Timer profiler("Model Loading");
-		//Mesh.Load("res/otako/source/model.fbx", 0.1);
-		//Mesh.Load("res/helmet/DamagedHelmet.gltf", 5.0f);
-		
-		MeshTransform.Scale = glm::vec3(1.0f);
-	}
-
-
+	// init editor material widget
+	m_MaterialWidget = new MaterialWidget(m_Scene, m_HierarchyWidget);
 }
 
 void PixEditor::OnUpdate(float dt)
@@ -74,6 +66,13 @@ void PixEditor::OnUpdate(float dt)
 			}
 			ImGui::PopStyleColor();
 
+			ImGui::PushStyleColor(ImGuiCol_Text, m_ShowMaterialWidget ? ImVec4(1.0f, 0.0f, 0.0f, 1.0f) : ImVec4(0.0f, 1.0f, 0.0f, 1.0f));
+			if (ImGui::MenuItem("Material"))
+			{
+				m_ShowMaterialWidget = !m_ShowMaterialWidget;
+			}
+			ImGui::PopStyleColor();
+
 			ImGui::EndMenu();
 		}
 		ImGui::EndMainMenuBar();
@@ -90,6 +89,10 @@ void PixEditor::OnUpdate(float dt)
 	// Render InspectorWidget
 	if (m_ShowInspectorWidget)
 		m_InspectorWidget->OnRender();
+
+	// Render Material Widget
+	if (m_ShowMaterialWidget)
+		m_MaterialWidget->OnRender();
 }
 
 void PixEditor::OnDestroy()

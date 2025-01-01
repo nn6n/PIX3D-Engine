@@ -92,6 +92,7 @@
     <ClCompile Include="src\Editor Widgets\HierarchyWidget.cpp" />
     <ClCompile Include="src\Editor Widgets\InspectorWidget.cpp" />
     <ClCompile Include="src\Editor Widgets\LightningWidget.cpp" />
+    <ClCompile Include="src\Editor Widgets\MaterialWidget.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\PixEditor.cpp" />
   </ItemGroup>
@@ -109,6 +110,7 @@
     <ClInclude Include="src\Editor Widgets\HierarchyWidget.h" />
     <ClInclude Include="src\Editor Widgets\InspectorWidget.h" />
     <ClInclude Include="src\Editor Widgets\LightningWidget.h" />
+    <ClInclude Include="src\Editor Widgets\MaterialWidget.h" />
     <ClInclude Include="src\PixEditor.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

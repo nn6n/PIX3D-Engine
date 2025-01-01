@@ -26,6 +26,8 @@ namespace PIX3D
 		float Roughness = 0.5f;
 		float Ao = 1.0f;
 
+		bool UseIBL = true;
+
 		GL::GLTexture AlbedoTexture;
 		GL::GLTexture NormalTexture;
 		GL::GLTexture MetalRoughnessTexture;
@@ -59,6 +61,7 @@ namespace PIX3D
 		alignas(4) float Metalic;
 		alignas(4) float Roughness;
 		alignas(4) float Ao;
+		alignas(4) int UseIBL;
 	};
 
 
@@ -102,7 +105,7 @@ namespace PIX3D
 
 		void LoadGpuData();
 
-	private:
+	public:
 		std::filesystem::path m_Path;
 		float m_Scale = 1.0f;
 

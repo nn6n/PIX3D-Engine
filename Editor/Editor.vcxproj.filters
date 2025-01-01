@@ -25,6 +25,9 @@
     <ClCompile Include="imgui\imGuIZMO.quat\imGuIZMOquat.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Editor Widgets\MaterialWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\PixEditor.h" />
@@ -36,5 +39,6 @@
     <ClInclude Include="imgui\imGuIZMO.quat\vGizmo.h" />
     <ClInclude Include="imgui\imGuIZMO.quat\vGizmoMath.h" />
     <ClInclude Include="imgui\imGuIZMO.quat\vgMath.h" />
+    <ClInclude Include="src\Editor Widgets\MaterialWidget.h" />
   </ItemGroup>
 </Project>
