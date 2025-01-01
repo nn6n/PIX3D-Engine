@@ -16,9 +16,17 @@
     <ClCompile Include="src\Editor Widgets\LightningWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Editor Widgets\HierarchyWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Editor Widgets\InspectorWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\PixEditor.h" />
     <ClInclude Include="src\Editor Widgets\LightningWidget.h" />
+    <ClInclude Include="src\Editor Widgets\HierarchyWidget.h" />
+    <ClInclude Include="src\Editor Widgets\InspectorWidget.h" />
   </ItemGroup>
 </Project>

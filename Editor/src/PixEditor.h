@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Editor Widgets/LightningWidget.h"
+#include "Editor Widgets/InspectorWidget.h"
 
 using namespace PIX3D;
 
@@ -9,17 +10,22 @@ class PixEditor : public PIX3D::Application
 public:
 	virtual void OnStart() override;
 	virtual void OnUpdate(float dt) override;
+	virtual void OnDestroy() override;
 	virtual void OnResize(uint32_t width, uint32_t height) override;
 private:
-	Camera3D Cam3D;
 	StaticMesh Mesh;
 	Transform MeshTransform;
 
-	LightningWidget m_LightningWidget;
+	PIX3D::Scene * m_Scene;
+	
+	LightningWidget* m_LightningWidget = nullptr;
 	bool m_ShowLightningWidget = false;
 
-	bool RotateModel = false;
-	bool RotateSkybox = false;
+	HierarchyWidget* m_HierarchyWidget = nullptr;
+	bool m_ShowHierarchyWidget = false;
+
+	InspectorWidget* m_InspectorWidget = nullptr;
+	bool m_ShowInspectorWidget = false;
 
 	bool ShowMouseCursor = true;
 };

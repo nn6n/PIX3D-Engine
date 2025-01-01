@@ -7,10 +7,6 @@ namespace PIX3D
 
 	struct Transform
 	{
-	public:
-		Transform() = default;
-		Transform(const Transform& other) = default;
-
 		operator const glm::mat4() const
 		{
 			return GetTransformMatrix();

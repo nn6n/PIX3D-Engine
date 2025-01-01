@@ -6,18 +6,13 @@ using namespace PIX3D;
 class LightningWidget
 {
 public:
-	LightningWidget() = default;
+	LightningWidget(Scene* scene)
+		: m_Scene(scene)
+	{}
 	~LightningWidget() {}
 
-	void OnStart();
-	void OnRender(float dt);
+	void OnRender();
 
 public:
-	GL::GLHdriCubemap m_Cubemap;
-	Transform m_CubemapTransform;
-	GL::IBLMaps m_IBLMaps;
-
-	int m_EnvironmentMapSize = 1024;
-
-	friend class GLRenderer;
+	Scene* m_Scene;
 };

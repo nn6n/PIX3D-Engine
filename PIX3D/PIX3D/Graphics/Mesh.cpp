@@ -57,53 +57,41 @@ namespace PIX3D
     void StaticMesh::FillMaterialBuffer()
     {
         {
-            auto* gpu_material_buffer_data = (MaterialGPUShader_InfoBufferData*)m_MaterialInfoDataStorageBuffer.MapBuffer();
+            std::vector<MaterialGPUShader_InfoBufferData> info;
 
             for (auto& mat : m_Materials)
             {
-                gpu_material_buffer_data->UseAlbedoTexture = mat.UseAlbedoTexture;
-                gpu_material_buffer_data->UseNormalTexture = mat.UseNormalTexture;
-                gpu_material_buffer_data->UseMetallicRoughnessTexture = mat.UseMetallicRoughnessTexture;
-                gpu_material_buffer_data->useAoTexture = mat.useAoTexture;
-                gpu_material_buffer_data->UseEmissiveTexture = mat.UseEmissiveTexture;
+                MaterialGPUShader_InfoBufferData data;
 
-                gpu_material_buffer_data->BaseColor = mat.BaseColor;
-                gpu_material_buffer_data->EmissiveColor = mat.EmissiveColor;
+                data.UseAlbedoTexture = mat.UseAlbedoTexture;
+                data.UseNormalTexture = mat.UseNormalTexture;
+                data.UseMetallicRoughnessTexture = mat.UseMetallicRoughnessTexture;
+                data.useAoTexture = mat.useAoTexture;
+                data.UseEmissiveTexture = mat.UseEmissiveTexture;
 
-                gpu_material_buffer_data->Metalic = mat.Metalic;
-                gpu_material_buffer_data->Roughness = mat.Roughness;
-                gpu_material_buffer_data->Ao = mat.Ao;
+                data.BaseColor = mat.BaseColor;
+                data.EmissiveColor = mat.EmissiveColor;
 
-                gpu_material_buffer_data++;
+                data.Metalic = mat.Metalic;
+                data.Roughness = mat.Roughness;
+                data.Ao = mat.Ao;
+
+                info.push_back(data);
             }
 
-            m_MaterialInfoDataStorageBuffer.UnMapBuffer();
+            m_MaterialInfoDataStorageBuffer.FillData(info.data(), info.size() * sizeof(MaterialGPUShader_InfoBufferData));
         }
-
-        /*
-        {
-            auto* gpu_material_buffer_data = (MaterialGPUShader_TextureBufferData*)m_MaterialTextureDataStorageBuffer.MapBuffer();
-
-            for (auto& mat : m_Materials)
-            {
-                gpu_material_buffer_data->AlbedoTexture = mat.AlbedoTexture.GetVramTextureID();
-                gpu_material_buffer_data->NormalTexture = mat.NormalTexture.GetVramTextureID();
-                gpu_material_buffer_data->MetalRoughnessTexture = mat.MetalRoughnessTexture.GetVramTextureID();
-                gpu_material_buffer_data->AoTexture = mat.AoTexture.GetVramTextureID();
-                gpu_material_buffer_data->EmissiveTexture = mat.EmissiveTexture.GetVramTextureID();
-
-                gpu_material_buffer_data++;
-            }
-
-            m_MaterialTextureDataStorageBuffer.UnMapBuffer();
-        }
-        */
     }
 
     void StaticMesh::Destroy()
     {
         m_MaterialTextureDataStorageBuffer.Destroy();
         m_MaterialInfoDataStorageBuffer.Destroy();
+    }
+
+    void StaticMesh::BindMaterialBuffer(uint32_t binding_point)
+    {
+        m_MaterialInfoDataStorageBuffer.Bind(binding_point);
     }
 
     void PIX3D::StaticMesh::ProcessNode(aiNode* node, const aiScene* scene)
@@ -353,7 +341,6 @@ namespace PIX3D
             m_VertexArray.AddVertexAttrib(TexCoords);
         }
 
-        //m_MaterialTextureDataStorageBuffer.Create(1, m_SubMeshes.size() * sizeof(MaterialGPUShader_TextureBufferData));
         m_MaterialInfoDataStorageBuffer.Create(2, m_SubMeshes.size() * sizeof(MaterialGPUShader_InfoBufferData));
         FillMaterialBuffer();
     }

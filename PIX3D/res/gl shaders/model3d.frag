@@ -42,6 +42,15 @@ struct MaterialGPUShader_InfoBufferData
 	float Ao;
 };
 
+struct PointLightStruct
+{
+    vec4 LightPosition;
+	vec4 LightColor;
+	float Intensity;  // Controls the brightness of the light
+    float Radius;     // Controls the maximum range of the light
+	float Falloff;      // Controls the falloff curve
+};
+
 /*
 layout(std430, binding = 1) readonly buffer MaterialsTextureBuffer
 {
@@ -49,10 +58,17 @@ layout(std430, binding = 1) readonly buffer MaterialsTextureBuffer
 }material_textures;
 */
 
+// shader storage buffers
 layout(std430, binding = 2) readonly buffer MaterialsInfoBuffer
 {
 	 MaterialGPUShader_InfoBufferData Data[];
 }material_info;
+
+
+layout(std430, binding = 3) readonly buffer PointLightsBuffer
+{
+	 PointLightStruct Data[];
+}pointlights_info;
 
 layout (location = 1) uniform float u_MeshIndex;
 layout (location = 2) uniform vec3 u_CameraPosition;
@@ -80,6 +96,8 @@ layout (location = 8)	uniform sampler2D NormalTexture;
 layout (location = 9)	uniform sampler2D MetalRoughnessTexture;
 layout (location = 10)	uniform sampler2D AoTexture;
 layout (location = 11)	uniform sampler2D EmissiveTexture;
+
+layout (location = 12)	uniform int u_PointLightsCount;
 
 // Fresnel function (Fresnel-Schlick approximation)
 //
@@ -211,17 +229,28 @@ void main()
 	vec3 Lo = vec3(0.0); // total radiance out
 
 	// Direct lighting
-	/*
+	
 	// Sum up the radiance contributions of each light source.
 	// This loop is essentially the integral of the rendering equation.
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < u_PointLightsCount; i++)
 	{
-		vec3 l = normalize(lightPositions[i] - worldCoordinates); // light vector
+		vec3 l = normalize(pointlights_info.Data[i].LightPosition.xyz - in_WorldCoordinates); // light vector
 		vec3 h = normalize(v + l);
 
-		float distance = length(lightPositions[i] - worldCoordinates);
-		float attenuation = 1.0 / (distance * distance); // inverse square law
-		vec3 radiance = lightColors[i] * attenuation; // aka Li
+		float distance = length(pointlights_info.Data[i].LightPosition.xyz - in_WorldCoordinates);
+		//float attenuation = 1.0 / (distance * distance); // inverse square law
+
+		/////////////
+
+		// Calculate attenuation using radius
+        float attenuation = clamp(1.0 - (distance * distance) / (pointlights_info.Data[i].Radius * pointlights_info.Data[i].Radius), 0.0, 1.0);
+        attenuation *= mix(attenuation, 1.0, pointlights_info.Data[i].Falloff);
+
+		////////////
+
+
+
+		vec3 radiance = pointlights_info.Data[i].LightColor.xyz * pointlights_info.Data[i].Intensity * attenuation; // aka Li
 
 		// calculate Cook-Torrance specular BRDF term
 		//
@@ -265,7 +294,7 @@ void main()
 		// Finally, the rendering equation!
 		Lo += cookTorranceBrdf * radiance * nDotL;
 	}
-	*/
+	
 
 	// Indirect lighting (IBL)
 	vec3 kSpecular = fresnelSchlickRoughness(max(dot(n, v), 0.0), f0, roughness); // aka F
@@ -294,6 +323,8 @@ void main()
 
 	// bloom color output
 	// use greyscale conversion here because not all colors are equally "bright"
+	vec3 brightColor = emissive + Lo * 0.5;  // Include direct lighting contribution
     float greyscaleBrightness = dot(FragColor.rgb, GREYSCALE_WEIGHT_VECTOR);
-	BloomColor = greyscaleBrightness > u_BloomBrightnessCutoff ? vec4(emissive, 1.0) : vec4(0.0, 0.0, 0.0, 1.0);
+	//BloomColor = greyscaleBrightness > u_BloomBrightnessCutoff ? vec4(emissive, 1.0) : vec4(0.0, 0.0, 0.0, 1.0);
+	BloomColor = greyscaleBrightness > u_BloomBrightnessCutoff ? vec4(brightColor, 1.0) : vec4(0.0, 0.0, 0.0, 1.0);
 }

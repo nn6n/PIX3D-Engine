@@ -32,7 +32,7 @@ namespace PIX3D
 			static void Destory();
 
 			static void Begin(Camera3D& cam);
-			static void RenderMesh(const glm::mat4& model, StaticMesh& mesh, IBLMaps& ibl_maps);
+			static void RenderMesh(const glm::mat4& model, StaticMesh& mesh, IBLMaps& ibl_maps, int point_lights_count = 0);
 			static void RenderHdrSkybox(const glm::mat4& model, const GLHdriCubemap& hdrcubemap);
 			static void End();
 

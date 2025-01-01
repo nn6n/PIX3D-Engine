@@ -64,6 +64,8 @@ namespace PIX3D
 
                 s_QuadShader.LoadFromFile("../PIX3D/res/gl shaders/smooth_rounded_quad.vert", "../PIX3D/res/gl shaders/smooth_rounded_quad.frag");
 			}
+
+            s_PointLightGizmoIcon.LoadFromFile("../PIX3D/res/gizmos/point_light_icon.png");
 		}
         
         void GLPixelRenderer2D::Begin(const Camera2D& cam)
@@ -119,12 +121,12 @@ namespace PIX3D
             DrawSmoothRoundedQuad(x, y, size, size, color, 1.0f, smoothness);
         }
 
-        void GLPixelRenderer2D::DrawTexturedQuad(GLTexture texture, float x, float y, float size_x, float size_y, glm::vec4 color, float tiling_factor)
+        void GLPixelRenderer2D::DrawTexturedQuad(GLTexture texture, const glm::vec3& position, const glm::vec3& scale, glm::vec4 color, float tiling_factor)
         {
             glm::mat4 proj =
                 s_ProjectionMatrix *
-                glm::translate(glm::mat4(1.0f), glm::vec3(x, y, 0.0f)) *
-                glm::scale(glm::mat4(1.0f), glm::vec3(size_x, size_y, 1.0f));
+                glm::translate(glm::mat4(1.0f), position) *
+                glm::scale(glm::mat4(1.0f), scale);
 
             s_QuadShader.Bind();
             s_QuadShader.SetMat4("u_Projection", proj);
@@ -133,6 +135,43 @@ namespace PIX3D
             s_QuadShader.SetFloat("u_corner_radius", 0.01f);
             s_QuadShader.SetFloat("u_use_texture", 1.0);
             s_QuadShader.SetFloat("u_tiling_factor", tiling_factor);
+
+            texture.Bind();
+
+            s_QuadVertexArray.Bind();
+            GLCommands::DrawIndexed(Primitive::TRIANGLES, 6);
+        }
+
+        void GLPixelRenderer2D::DrawSmoothQuad(const glm::mat4& transformation, glm::vec4 color, float smoothness)
+        {
+            glm::mat4 proj =
+                s_ProjectionMatrix * transformation;
+
+            s_QuadShader.Bind();
+            s_QuadShader.SetMat4("u_Projection", proj);
+            s_QuadShader.SetVec4("u_color", color);
+            s_QuadShader.SetFloat("u_smoothness", smoothness);
+            s_QuadShader.SetFloat("u_corner_radius", 1.0f);
+            s_QuadShader.SetFloat("u_use_texture", 0.0);
+            s_QuadShader.SetFloat("u_tiling_factor", 1.0f);
+
+            s_QuadVertexArray.Bind();
+            GLCommands::DrawIndexed(Primitive::TRIANGLES, 6);
+        }
+
+        void GLPixelRenderer2D::DrawTexturedQuad(GLTexture texture, const glm::mat4& transformation, glm::vec4 color, float tiling_factor, bool flip)
+        {
+            glm::mat4 proj =
+                s_ProjectionMatrix * transformation;
+
+            s_QuadShader.Bind();
+            s_QuadShader.SetMat4("u_Projection", proj);
+            s_QuadShader.SetVec4("u_color", color);
+            s_QuadShader.SetFloat("u_smoothness", 0.01f);
+            s_QuadShader.SetFloat("u_corner_radius", 0.01f);
+            s_QuadShader.SetFloat("u_use_texture", 1.0);
+            s_QuadShader.SetFloat("u_tiling_factor", tiling_factor);
+            s_QuadShader.SetBool("u_flip", flip);
 
             texture.Bind();
 

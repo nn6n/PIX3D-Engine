@@ -9,6 +9,7 @@ namespace PIX3D
 		{
 		public:
 			uint32_t GetHandle() const { return m_Handle; }
+			bool IsValid() const { return m_Handle > 0; }
 		protected:
 			uint32_t m_Handle = 0;
 		};

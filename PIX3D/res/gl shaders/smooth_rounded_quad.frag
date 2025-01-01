@@ -13,6 +13,7 @@ layout (location = 3) uniform float u_corner_radius;
 layout (location = 4) uniform float u_use_texture;
 layout (location = 5) uniform sampler2D u_texture;
 layout (location = 6) uniform float u_tiling_factor;
+layout (location = 7) uniform bool u_flip;
 
 void main()
 {
@@ -20,7 +21,13 @@ void main()
     
     if(u_use_texture == 1.0)
     {
-       color *= texture(u_texture, in_uvs * u_tiling_factor);
+
+       vec2 TexCoords = in_uvs;
+       if(u_flip)
+       {
+          TexCoords = vec2(in_uvs.s, 1.0 - in_uvs.t);
+       }
+       color *= texture(u_texture, TexCoords * u_tiling_factor);
        FragColor = vec4(color);
     }
     else

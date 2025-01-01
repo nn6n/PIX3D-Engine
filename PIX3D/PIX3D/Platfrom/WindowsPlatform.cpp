@@ -180,6 +180,8 @@ namespace PIX3D
             ofn.lpstrFilter = "Image Files (*.png)\0*.png\0All Files (*.*)\0*.*\0"; break;
         case FileDialougeFilter::HDR:
             ofn.lpstrFilter = "Image Files (*.hdr)\0*.hdr\0All Files (*.*)\0*.*\0"; break;
+        case FileDialougeFilter::GLTF:
+            ofn.lpstrFilter = "Image Files (*.gltf)\0*.gltf\0All Files (*.*)\0*.*\0"; break;
         default:
             break;
         }
@@ -234,7 +236,12 @@ namespace PIX3D
         {
             ofn.lpstrFilter = "Project Files (*.hdr)\0*.hdr\0All Files (*.*)\0*.*\0";
             extension = ".hdr";
-        }
+        }break;
+        case FileDialougeFilter::GLTF:
+        {
+            ofn.lpstrFilter = "Project Files (*.gltf)\0*.gltf\0All Files (*.*)\0*.*\0";
+            extension = ".gltf";
+        }break;
 
         default:
             break;

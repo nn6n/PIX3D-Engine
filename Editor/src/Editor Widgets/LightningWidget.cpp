@@ -30,13 +30,7 @@ namespace
 	}
 }
 
-void LightningWidget::OnStart()
-{
-	m_Cubemap.LoadHdrToCubemapGPU("res/hdr/barcelona_rooftop.hdr", m_EnvironmentMapSize);
-	m_IBLMaps = PIX3D::GL::IBLCubemapsGenerator::GenerateIBLMaps(m_Cubemap.GetHandle(), 32, 128);
-}
-
-void LightningWidget::OnRender(float dt)
+void LightningWidget::OnRender()
 {
 	ImGui::Begin("Lightning");
 
@@ -44,7 +38,7 @@ void LightningWidget::OnRender(float dt)
 
 	auto WidgetSize = ImGui::GetContentRegionAvail();
 
-	ImGui::SliderInt("Environment Map Size", &m_EnvironmentMapSize, 0, 4000);
+	ImGui::SliderInt("Environment Map Size", &m_Scene->m_EnvironmentMapSize, 0, 4000);
 
 	if (ImGui::Button("Load Environment Map", { WidgetSize.x, 20.0f }))
 	{
@@ -56,17 +50,17 @@ void LightningWidget::OnRender(float dt)
 			std::cout << "Reload EnvMap\n";
 			
 			// Destroy Current Environment Map Data
-			m_Cubemap.Destroy();
-			m_IBLMaps.Destroy();
+			m_Scene->m_Cubemap.Destroy();
+			m_Scene->m_IBLMaps.Destroy();
 			
-			m_Cubemap.LoadHdrToCubemapGPU(savepath, m_EnvironmentMapSize);
-			m_IBLMaps = PIX3D::GL::IBLCubemapsGenerator::GenerateIBLMaps(m_Cubemap.GetHandle(), 32, 128);
+			m_Scene->m_Cubemap.LoadHdrToCubemapGPU(savepath, m_Scene->m_EnvironmentMapSize);
+			m_Scene->m_IBLMaps = PIX3D::GL::IBLCubemapsGenerator::GenerateIBLMaps(m_Scene->m_Cubemap.GetHandle(), 32, 128);
 		}
 	}
 
-	ImGui::Image((ImTextureID)m_Cubemap.GetHdrTextureHandle(), { WidgetSize.x, 200.0f }, { 0, 1 }, { 1, 0 });
+	ImGui::Image((ImTextureID)m_Scene->m_Cubemap.GetHdrTextureHandle(), { WidgetSize.x, 200.0f }, { 0, 1 }, { 1, 0 });
 
-	RenderTransformComponent(m_CubemapTransform, "Environment Map Transform");
+	RenderTransformComponent(m_Scene->m_CubemapTransform, "Environment Map Transform");
 
 	ImGui::CollapsingHeader("Post-processing");
 

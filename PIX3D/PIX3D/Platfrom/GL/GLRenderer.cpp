@@ -114,14 +114,17 @@ namespace PIX3D
 			s_CameraUnifromBuffer.Update({ &data, sizeof(data) });
 		}
 
-		void GLRenderer::RenderMesh(const glm::mat4& model, StaticMesh& mesh, IBLMaps& ibl_maps)
+		void GLRenderer::RenderMesh(const glm::mat4& model, StaticMesh& mesh, IBLMaps& ibl_maps, int point_lights_count)
 		{
             s_Model3DShader.Bind();
+
+			mesh.BindMaterialBuffer(2);
 
 			s_Model3DShader.SetMat4("model", model);
 
 			s_Model3DShader.SetVec3("u_CameraPosition", s_CameraPosition);
 			s_Model3DShader.SetFloat("u_BloomBrightnessCutoff", s_BloomThreshold);
+			s_Model3DShader.SetInt("u_PointLightsCount", point_lights_count);
 
 			// IBL stuff
 			glActiveTexture(GL_TEXTURE0 + 0);

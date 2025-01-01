@@ -94,6 +94,8 @@ namespace PIX3D
 		std::vector<BaseColorMaterial> GetMaterials() const { return m_Materials; }
 		GL::GLVertexArray GetVertexArray() const { return m_VertexArray; }
 
+		void BindMaterialBuffer(uint32_t binding_point);
+
 	private:
 		void ProcessNode(aiNode* node, const aiScene* scene);
 		StaticSubMesh ProcessMesh(aiMesh* mesh, const aiScene* scene);
@@ -110,7 +112,6 @@ namespace PIX3D
 		std::vector<StaticSubMesh> m_SubMeshes;
 		std::vector<BaseColorMaterial> m_Materials;
 		GL::GLStorageBuffer m_MaterialTextureDataStorageBuffer;
-		GL::GLStorageBuffer m_MaterialInfoDataStorageBuffer;
 		
 		uint32_t m_BaseVertex, m_BaseIndex = 0;
 
@@ -118,5 +119,6 @@ namespace PIX3D
 		GL::GLVertexBuffer m_Vertexbuffer;
 		GL::GLIndexBuffer m_Indexbuffer;
 		GL::GLVertexArray m_VertexArray;
+		GL::GLStorageBuffer m_MaterialInfoDataStorageBuffer;
 	};
 }

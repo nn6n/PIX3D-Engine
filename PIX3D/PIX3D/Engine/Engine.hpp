@@ -118,6 +118,8 @@ namespace PIX3D
 
 		static void Destroy()
 		{
+			s_Application->OnDestroy();
+
 			GL::GLPixelRenderer2D::Destory();
 			GL::GLPixelBatchRenderer2D::Destory();
 			GL::GLRenderer::Destory();

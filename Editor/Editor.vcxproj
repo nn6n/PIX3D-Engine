@@ -88,6 +88,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Editor Widgets\HierarchyWidget.cpp" />
+    <ClCompile Include="src\Editor Widgets\InspectorWidget.cpp" />
     <ClCompile Include="src\Editor Widgets\LightningWidget.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\PixEditor.cpp" />
@@ -98,6 +100,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Editor Widgets\HierarchyWidget.h" />
+    <ClInclude Include="src\Editor Widgets\InspectorWidget.h" />
     <ClInclude Include="src\Editor Widgets\LightningWidget.h" />
     <ClInclude Include="src\PixEditor.h" />
   </ItemGroup>

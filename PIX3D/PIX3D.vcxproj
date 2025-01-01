@@ -189,6 +189,8 @@
     <ClCompile Include="PIX3D\Platfrom\GL\IBL\IBLCubemapsGenerator.cpp" />
     <ClCompile Include="PIX3D\Platfrom\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="PIX3D\Platfrom\WindowsPlatform.cpp" />
+    <ClCompile Include="PIX3D\Scene\Scene.cpp" />
+    <ClCompile Include="PIX3D\Scene\Systems.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h" />
@@ -211,6 +213,7 @@
     <ClInclude Include="PIX3D\Graphics\Camera3D.h" />
     <ClInclude Include="PIX3D\Graphics\GraphicsContext.h" />
     <ClInclude Include="PIX3D\Graphics\Mesh.h" />
+    <ClInclude Include="PIX3D\Graphics\Sprite.h" />
     <ClInclude Include="PIX3D\Graphics\Transform.h" />
     <ClInclude Include="PIX3D\PIX3D.h" />
     <ClInclude Include="PIX3D\Platfrom\GL\GLBloompass.h" />
@@ -239,6 +242,10 @@
     <ClInclude Include="PIX3D\Platfrom\ImGui\ImGuiLayer.h" />
     <ClInclude Include="PIX3D\Platfrom\Platform.h" />
     <ClInclude Include="PIX3D\Platfrom\WindowsPlatform.h" />
+    <ClInclude Include="PIX3D\Scene\Components.h" />
+    <ClInclude Include="PIX3D\Scene\Scene.h" />
+    <ClInclude Include="PIX3D\Scene\Systems.h" />
+    <ClInclude Include="PIX3D\Utils\entt.hpp" />
     <ClInclude Include="PIX3D\Utils\FileWatcher.hpp" />
     <ClInclude Include="PIX3D\Utils\stb_image.h" />
     <ClInclude Include="PIX3D\Utils\stb_write.h" />
