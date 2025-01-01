@@ -25,6 +25,7 @@ namespace PIX3D
 			
 			static void DrawSmoothQuad(const glm::mat4& transformation, glm::vec4 color, float smoothness = 0.01f);
 			static void DrawTexturedQuad(GLTexture texture, const glm::mat4& transformation, glm::vec4 color, float tiling_factor = 1.0f, bool flip = false);
+			static void DrawTexturedQuadUV(GLTexture texture,const glm::mat4& transformation,const glm::vec2& uv_offset,const glm::vec2& uv_scale, glm::vec4 color, float tiling_factor = 1.0f, bool flip = false);
 
 			inline static GLTexture GetPointLightGizmoIcon() { return s_PointLightGizmoIcon; }
 		private:

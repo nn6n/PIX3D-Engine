@@ -63,6 +63,16 @@ namespace PIX3D
 		return (uint32_t)entity;
 	}
 
+	uint32_t Scene::AddSpriteAnimation(const std::string& name, const Transform& transform, const GL::GLTexture& spriteSheet, int frameCount, float frameTime)
+	{
+		const auto entity = m_Registry.create();
+		m_Registry.emplace<TagComponent>(entity, name);
+		m_Registry.emplace<TransformComponent>(entity, transform.Position, transform.Rotation, transform.Scale);
+		m_Registry.emplace<SpriteAnimatorComponent>(entity, spriteSheet, frameCount, frameTime);
+
+		return (uint32_t)entity;
+	}
+
 	void Scene::OnStart()
 	{
 		// editor camera
@@ -126,13 +136,15 @@ namespace PIX3D
 					m_HasDirectionalLight = true;
 				});
 		}
+
+		SpriteAnimatorSystem::Update(m_Registry, dt);
 	}
 
 	void Scene::OnRender()
 	{
 		// Static Meshes && Skybox
 		{
-			PIX3D::GL::GLRenderer::Begin(m_Cam3D);
+			PIX3D::GL::GLRenderer::Begin(m_Cam3D, m_BackgroundColor);
 
 
 			// Sprites
@@ -140,6 +152,9 @@ namespace PIX3D
 				PIX3D::GL::GLPixelRenderer2D::Begin(m_Cam3D);
 
 				SpriteRendererSystem::Render(m_Registry);
+
+				// Render animated sprites
+				SpriteAnimatorSystem::Render(m_Registry);
 
 				// Render PointLights Gizmo Sprite
 				{
@@ -161,7 +176,9 @@ namespace PIX3D
 
 
 			StaticMeshRendererSystem::Render(this, m_Registry, m_IBLMaps, m_PointLightsCount);
-			GL::GLRenderer::RenderHdrSkybox(m_CubemapTransform, m_Cubemap);
+
+			if(m_UseSkybox)
+				GL::GLRenderer::RenderHdrSkybox(m_CubemapTransform, m_Cubemap);
 
 			PIX3D::GL::GLRenderer::End();
 		}

@@ -94,10 +94,10 @@ namespace PIX3D
 			s_Bloompass.Destroy();
 		}
 
-		void GLRenderer::Begin(Camera3D& cam)
+		void GLRenderer::Begin(Camera3D& cam, const glm::vec4& clear_color)
 		{
 			// bind main renderpass framebuffer
-			s_MainRenderpass.BindFrameBuffer();
+			s_MainRenderpass.BindFrameBuffer(clear_color);
 
 			// save camera position to send later to shader
 			s_CameraPosition = cam.GetPosition();

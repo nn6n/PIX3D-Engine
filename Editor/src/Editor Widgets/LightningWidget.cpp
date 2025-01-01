@@ -38,6 +38,9 @@ void LightningWidget::OnRender()
 
 	auto WidgetSize = ImGui::GetContentRegionAvail();
 
+	ImGui::Checkbox("Use Skybox", &m_Scene->m_UseSkybox);
+	ImGui::ColorEdit4("Background Color", &m_Scene->m_BackgroundColor.x);
+
 	ImGui::SliderInt("Environment Map Size", &m_Scene->m_EnvironmentMapSize, 0, 4000);
 
 	if (ImGui::Button("Load Environment Map", { WidgetSize.x, 20.0f }))

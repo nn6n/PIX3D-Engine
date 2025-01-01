@@ -172,9 +172,31 @@ namespace PIX3D
             s_QuadShader.SetFloat("u_use_texture", 1.0);
             s_QuadShader.SetFloat("u_tiling_factor", tiling_factor);
             s_QuadShader.SetBool("u_flip", flip);
+            s_QuadShader.SetBool("u_Apply_uv_scale_and_offset", false);
 
             texture.Bind();
 
+            s_QuadVertexArray.Bind();
+            GLCommands::DrawIndexed(Primitive::TRIANGLES, 6);
+        }
+
+        void GLPixelRenderer2D::DrawTexturedQuadUV(GLTexture texture, const glm::mat4& transformation, const glm::vec2& uv_offset, const glm::vec2& uv_scale, glm::vec4 color, float tiling_factor, bool flip)
+        {
+            glm::mat4 proj = s_ProjectionMatrix * transformation;
+
+            s_QuadShader.Bind();
+            s_QuadShader.SetMat4("u_Projection", proj);
+            s_QuadShader.SetVec4("u_color", color);
+            s_QuadShader.SetFloat("u_smoothness", 0.01f);
+            s_QuadShader.SetFloat("u_corner_radius", 0.01f);
+            s_QuadShader.SetFloat("u_use_texture", 1.0f);
+            s_QuadShader.SetFloat("u_tiling_factor", tiling_factor);
+            s_QuadShader.SetBool("u_flip", flip);
+            s_QuadShader.SetVec2("u_uv_offset", uv_offset);
+            s_QuadShader.SetVec2("u_uv_scale", uv_scale);
+            s_QuadShader.SetBool("u_Apply_uv_scale_and_offset", true);
+
+            texture.Bind();
             s_QuadVertexArray.Bind();
             GLCommands::DrawIndexed(Primitive::TRIANGLES, 6);
         }

@@ -17,4 +17,11 @@ namespace PIX3D
     public:
         static void Render(entt::registry& registry);
     };
+
+    class SpriteAnimatorSystem
+    {
+    public:
+        static void Update(entt::registry& registry, float dt);
+        static void Render(entt::registry& registry);
+    };
 }

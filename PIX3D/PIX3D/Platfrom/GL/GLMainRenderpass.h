@@ -17,7 +17,7 @@ namespace PIX3D
 			inline uint32_t GetColorAttachment() { return m_ColorAttachment; }
 			inline uint32_t GetBloomColorAttachment() { return m_BloomColorAttachment; }
 
-			void BindFrameBuffer();
+			void BindFrameBuffer(const glm::vec4& clear_color);
 			void UnBindFrameBuffer();
 
 		private:

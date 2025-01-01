@@ -85,11 +85,12 @@ namespace PIX3D
             glDeleteTextures(1, &m_BloomColorAttachment);
         }
 
-        void GLMainRenderpass::BindFrameBuffer()
+        void GLMainRenderpass::BindFrameBuffer(const glm::vec4& clear_color)
         {
             glViewport(0, 0, m_Width, m_Height);
             glBindFramebuffer(GL_FRAMEBUFFER, m_Framebuffer);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glClearColor(clear_color.r, clear_color.g, clear_color.b, 1.0f);
         }
 
         void GLMainRenderpass::UnBindFrameBuffer()

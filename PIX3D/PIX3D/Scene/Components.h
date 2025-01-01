@@ -122,4 +122,27 @@ namespace PIX3D
 		glm::vec4 m_Color = { 1.0f, 1.0f, 1.0f, 1.0f };
 		float m_Intensity = 1.0f;
 	};
+
+	struct SpriteAnimatorComponent
+	{
+		SpriteAnimatorComponent() = default;
+		SpriteAnimatorComponent(const SpriteAnimatorComponent& other) = default;
+		SpriteAnimatorComponent(const GL::GLTexture& spriteSheet, int frameCount, float frameTime)
+			: m_SpriteSheet(spriteSheet)
+			, m_FrameCount(frameCount)
+			, m_FrameTime(frameTime)
+		{
+		}
+
+		GL::GLTexture m_SpriteSheet;          // Sprite sheet texture
+		int m_FrameCount = 1;                 // Number of frames in the animation
+		float m_FrameTime = 0.1f;             // Time per frame in seconds
+		float m_CurrentTime = 0.0f;           // Current animation time
+		int m_CurrentFrame = 0;               // Current frame index
+		bool m_IsPlaying = false;              // Is animation playing?
+		bool m_Loop = true;                   // Should animation loop?
+		float m_TilingFactor = 1.0f;          // UV tiling factor for single frame
+		bool m_Flip = true;
+		glm::vec4 m_Color = { 1.0f, 1.0f, 1.0f, 1.0f };
+	};
 }

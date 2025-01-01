@@ -30,6 +30,7 @@ namespace PIX3D
 		uint32_t AddSprite(const std::string& name, const Transform& transform, const Sprite& sprite);
 		uint32_t AddPointLight(const std::string& name, const Transform& transform, const glm::vec4& color);
 		uint32_t AddDirectionalLight(const std::string& name, const Transform& transform, const glm::vec4& color);
+		uint32_t AddSpriteAnimation(const std::string& name, const Transform& transform, const GL::GLTexture& spriteSheet, int frameCount, float frameTime);
 
 		void OnStart();
 		void OnUpdate(float dt);
@@ -47,6 +48,8 @@ namespace PIX3D
 		Transform m_CubemapTransform;
 		GL::IBLMaps m_IBLMaps;
 		int m_EnvironmentMapSize = 1024;
+		bool m_UseSkybox = true;
+		glm::vec4 m_BackgroundColor = { 0.0f, 0.0f, 0.0f, 1.0f };
 
 		// PointLights Buffer
 		std::vector<PointLightShaderBuffer> m_PointLightsShaderData;

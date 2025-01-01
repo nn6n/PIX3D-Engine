@@ -129,6 +129,11 @@ void InspectorWidget::OnRender()
                 if (!m_Scene->m_Registry.try_get<DirectionalLightComponent>(selectedEntity))
                     m_Scene->m_Registry.emplace<DirectionalLightComponent>(selectedEntity);
             }
+            if (ImGui::MenuItem("Sprite Animator"))
+            {
+                if (!m_Scene->m_Registry.try_get<SpriteAnimatorComponent>(selectedEntity))
+                    m_Scene->m_Registry.emplace<SpriteAnimatorComponent>(selectedEntity);
+            }
             ImGui::EndPopup();
         }
 
@@ -220,6 +225,54 @@ void InspectorWidget::OnRender()
                 ImGui::DragFloat3("Direction", &dirlight->m_Direction[0]);
                 ImGui::ColorEdit4("Color", &dirlight->m_Color.x);
                 ImGui::SliderFloat("Intensity", &dirlight->m_Intensity, 0.0f, 10.0f);
+            }
+        }
+
+        if (auto* animator = m_Scene->m_Registry.try_get<SpriteAnimatorComponent>(selectedEntity))
+        {
+            if (ImGui::CollapsingHeader("Sprite Animator", ImGuiTreeNodeFlags_DefaultOpen))
+            {
+                // Texture preview and change button
+                if (animator->m_SpriteSheet.GetHandle())
+                {
+                    ImGui::Image((ImTextureID)animator->m_SpriteSheet.GetHandle(),
+                        { 256.0f, 64.0f }, { 0, 0 }, { 1, 1 });
+                }
+
+                ImGui::Checkbox("Flip", &animator->m_Flip);
+                
+                if (ImGui::Button("Set Sprite Sheet"))
+                {
+                    auto* platform = PIX3D::Engine::GetPlatformLayer();
+                    std::filesystem::path filepath = platform->OpenDialogue(PIX3D::FileDialougeFilter::PNG);
+                    if (!filepath.empty())
+                    {
+                        animator->m_SpriteSheet.LoadFromFile(filepath.string(), true);
+                    }
+                }
+
+                // Animation controls
+                ImGui::ColorEdit4("Color", &animator->m_Color.x);
+                ImGui::DragFloat("Tiling Factor", &animator->m_TilingFactor, 0.1f, 0.0f, 100.0f);
+                ImGui::DragInt("Frame Count", &animator->m_FrameCount, 1, 1, 32);
+                ImGui::DragFloat("Frame Time", &animator->m_FrameTime, 0.01f, 0.01f, 1.0f, "%.3f");
+
+                // Playback controls
+                if (ImGui::Button(animator->m_IsPlaying ? "Pause" : "Play"))
+                    animator->m_IsPlaying = !animator->m_IsPlaying;
+
+                ImGui::SameLine();
+                if (ImGui::Button("Reset"))
+                {
+                    animator->m_CurrentFrame = 0;
+                    animator->m_CurrentTime = 0.0f;
+                }
+
+                ImGui::Checkbox("Loop", &animator->m_Loop);
+
+                // Current frame display
+                ImGui::Text("Current Frame: %d/%d", animator->m_CurrentFrame + 1, animator->m_FrameCount);
+                ImGui::ProgressBar((float)animator->m_CurrentFrame / (float)(animator->m_FrameCount - 1));
             }
         }
     }

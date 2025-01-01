@@ -14,6 +14,9 @@ layout (location = 4) uniform float u_use_texture;
 layout (location = 5) uniform sampler2D u_texture;
 layout (location = 6) uniform float u_tiling_factor;
 layout (location = 7) uniform bool u_flip;
+layout (location = 8) uniform vec2 u_uv_offset;
+layout (location = 9) uniform vec2 u_uv_scale;
+layout (location = 10) uniform bool u_Apply_uv_scale_and_offset;
 
 void main()
 {
@@ -27,7 +30,16 @@ void main()
        {
           TexCoords = vec2(in_uvs.s, 1.0 - in_uvs.t);
        }
+
+       if(u_Apply_uv_scale_and_offset)
+       {
+          TexCoords = (TexCoords * u_uv_scale) + u_uv_offset;
+       }
+
        color *= texture(u_texture, TexCoords * u_tiling_factor);
+       
+       if(color.a < 0.1) discard; // TODO:: Remove And Add OpenGL Blend
+       
        FragColor = vec4(color);
     }
     else
