@@ -15,7 +15,7 @@ namespace PIX3D
         // Iterate over all matching entities
         view.each([&](TransformComponent& transform, StaticMeshComponent& mesh)
             {
-                PIX3D::GL::GLRenderer::RenderMesh(scene->m_DirLight, transform.GetTransformMatrix(), mesh.m_Mesh, ibl_maps, point_lights_count);
+                PIX3D::GL::GLRenderer::RenderMesh(scene, transform.GetTransformMatrix(), mesh.m_Mesh, ibl_maps, point_lights_count);
             });
     }
 

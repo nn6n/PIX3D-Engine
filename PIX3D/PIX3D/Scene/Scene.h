@@ -55,5 +55,6 @@ namespace PIX3D
 		int m_PointLightsCount = 0;
 
 		DirectionalLightComponent m_DirLight;
+		bool m_HasDirectionalLight = false;
 	};
 }

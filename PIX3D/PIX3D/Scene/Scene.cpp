@@ -122,6 +122,8 @@ namespace PIX3D
 					m_DirLight.m_Direction = dirlight.m_Direction;
 					m_DirLight.m_Color = dirlight.m_Color;
 					m_DirLight.m_Intensity = dirlight.m_Intensity;
+
+					m_HasDirectionalLight = true;
 				});
 		}
 	}

@@ -103,6 +103,7 @@ layout (location = 12) uniform int u_PointLightsCount;
 layout (location = 13) uniform vec3 u_DirLightDirection;
 layout (location = 14) uniform vec4 u_DirLightColor;
 layout (location = 15) uniform float u_DirLightIntensity;
+layout (location = 16) uniform bool u_HasDirLight;
 
 // Fresnel function (Fresnel-Schlick approximation)
 //
@@ -333,8 +334,11 @@ void main()
 	}
 
 	// Add directional lights contribution
-    Lo += CalculateDirectionalLight(n, v, albedo, metallic, roughness, f0);
-	
+    if(u_HasDirLight)
+	{
+	    Lo += CalculateDirectionalLight(n, v, albedo, metallic, roughness, f0);
+	}
+
 
 	vec3 color = vec3(0.0);
 

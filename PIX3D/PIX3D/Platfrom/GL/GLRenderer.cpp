@@ -114,7 +114,7 @@ namespace PIX3D
 			s_CameraUnifromBuffer.Update({ &data, sizeof(data) });
 		}
 
-		void GLRenderer::RenderMesh(DirectionalLightComponent& dirlight, const glm::mat4& model, StaticMesh& mesh, IBLMaps& ibl_maps, int point_lights_count)
+		void GLRenderer::RenderMesh(Scene* scene, const glm::mat4& model, StaticMesh& mesh, IBLMaps& ibl_maps, int point_lights_count)
 		{
             s_Model3DShader.Bind();
 
@@ -126,9 +126,10 @@ namespace PIX3D
 			s_Model3DShader.SetFloat("u_BloomBrightnessCutoff", s_BloomThreshold);
 			s_Model3DShader.SetInt("u_PointLightsCount", point_lights_count);
 
-			s_Model3DShader.SetVec3("u_DirLightDirection", dirlight.m_Direction);
-			s_Model3DShader.SetVec4("u_DirLightColor", dirlight.m_Color);
-			s_Model3DShader.SetFloat("u_DirLightIntensity", dirlight.m_Intensity);
+			s_Model3DShader.SetVec3("u_DirLightDirection", scene->m_DirLight.m_Direction);
+			s_Model3DShader.SetVec4("u_DirLightColor", scene->m_DirLight.m_Color);
+			s_Model3DShader.SetFloat("u_DirLightIntensity", scene->m_DirLight.m_Intensity);
+			s_Model3DShader.SetBool("u_HasDirLight", scene->m_HasDirectionalLight);
 
 			// IBL stuff
 			glActiveTexture(GL_TEXTURE0 + 0);
