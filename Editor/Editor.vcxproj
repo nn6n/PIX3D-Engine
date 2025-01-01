@@ -88,6 +88,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="imgui\imGuIZMO.quat\imGuIZMOquat.cpp" />
     <ClCompile Include="src\Editor Widgets\HierarchyWidget.cpp" />
     <ClCompile Include="src\Editor Widgets\InspectorWidget.cpp" />
     <ClCompile Include="src\Editor Widgets\LightningWidget.cpp" />
@@ -100,6 +101,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="imgui\imGuIZMO.quat\imGuIZMOquat.h" />
+    <ClInclude Include="imgui\imGuIZMO.quat\vgConfig.h" />
+    <ClInclude Include="imgui\imGuIZMO.quat\vGizmo.h" />
+    <ClInclude Include="imgui\imGuIZMO.quat\vGizmoMath.h" />
+    <ClInclude Include="imgui\imGuIZMO.quat\vgMath.h" />
     <ClInclude Include="src\Editor Widgets\HierarchyWidget.h" />
     <ClInclude Include="src\Editor Widgets\InspectorWidget.h" />
     <ClInclude Include="src\Editor Widgets\LightningWidget.h" />

@@ -33,6 +33,12 @@ void HierarchyWidget::OnRender()
             Transform transform;
             m_Scene->AddPointLight("New Point Light", transform, {1.0f, 1.0f, 1.0f, 1.0f});
         }
+
+        if (ImGui::MenuItem("Add Dir Light"))
+        {
+            Transform transform;
+            m_Scene->AddDirectionalLight("Dir Light", transform, { 1.0f, 1.0f, 1.0f, 1.0f });
+        }
         ImGui::EndPopup();
     }
 

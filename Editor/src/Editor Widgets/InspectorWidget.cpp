@@ -1,4 +1,5 @@
 #include "InspectorWidget.h"
+#include <imGuIZMO.quat/imGuIZMOquat.h>
 #include <imgui.h>
 #include <imgui_internal.h>
 
@@ -68,6 +69,11 @@ namespace
         ImGui::Columns(1);
         ImGui::PopID();
     }
+
+    vgm::Quat qRot = quat(1.f, 0.f, 0.f, 0.f);
+    vgm::Vec3 PanDolly(0.f);
+
+    static vec3 lightDirection = vec3(0.0f, -1.0f, 0.0f); // Initial direction pointing down
 }
 
 void InspectorWidget::OnRender()
@@ -117,6 +123,11 @@ void InspectorWidget::OnRender()
             {
                 if (!m_Scene->m_Registry.try_get<PointLightComponent>(selectedEntity))
                     m_Scene->m_Registry.emplace<PointLightComponent>(selectedEntity);
+            }
+            if (ImGui::MenuItem("Directional Light"))
+            {
+                if (!m_Scene->m_Registry.try_get<DirectionalLightComponent>(selectedEntity))
+                    m_Scene->m_Registry.emplace<DirectionalLightComponent>(selectedEntity);
             }
             ImGui::EndPopup();
         }
@@ -189,6 +200,26 @@ void InspectorWidget::OnRender()
                 ImGui::SliderFloat("Intensity", &pointlight->m_Intensity, 0.0f, 100.0f);
                 ImGui::SliderFloat("Raduis", &pointlight->m_Raduis, 0.0f, 20.0f);
                 ImGui::SliderFloat("FallOff", &pointlight->m_Falloff, 0.0f, 5.0f);
+            }
+        }
+
+        if (auto* dirlight = m_Scene->m_Registry.try_get<DirectionalLightComponent>(selectedEntity))
+        {
+            auto* transform = m_Scene->m_Registry.try_get<TransformComponent>(selectedEntity);
+
+            if (ImGui::CollapsingHeader("Directional Light", ImGuiTreeNodeFlags_DefaultOpen))
+            {
+                if (ImGui::gizmo3D("##LightDirection", lightDirection, ImGui::GetFrameHeightWithSpacing() * 4, imguiGizmo::modeDirection)) {
+                    // Normalize the direction vector after manipulation
+                    lightDirection = vgm::normalize(lightDirection);
+
+                    // Update your directional light or object's properties
+                    dirlight->m_Direction = { lightDirection.x, lightDirection.y, lightDirection.z };
+                }
+
+                ImGui::DragFloat3("Direction", &dirlight->m_Direction[0]);
+                ImGui::ColorEdit4("Color", &dirlight->m_Color.x);
+                ImGui::SliderFloat("Intensity", &dirlight->m_Intensity, 0.0f, 10.0f);
             }
         }
     }

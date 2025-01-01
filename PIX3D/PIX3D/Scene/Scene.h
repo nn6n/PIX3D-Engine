@@ -29,6 +29,7 @@ namespace PIX3D
 		uint32_t AddStaticMesh(const std::string& name, const Transform& transform, const StaticMesh& static_mesh);
 		uint32_t AddSprite(const std::string& name, const Transform& transform, const Sprite& sprite);
 		uint32_t AddPointLight(const std::string& name, const Transform& transform, const glm::vec4& color);
+		uint32_t AddDirectionalLight(const std::string& name, const Transform& transform, const glm::vec4& color);
 
 		void OnStart();
 		void OnUpdate(float dt);
@@ -52,5 +53,7 @@ namespace PIX3D
 		GL::GLStorageBuffer m_PointLightsBuffer;
 
 		int m_PointLightsCount = 0;
+
+		DirectionalLightComponent m_DirLight;
 	};
 }

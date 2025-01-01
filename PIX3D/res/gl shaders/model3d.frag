@@ -97,7 +97,11 @@ layout (location = 9)	uniform sampler2D MetalRoughnessTexture;
 layout (location = 10)	uniform sampler2D AoTexture;
 layout (location = 11)	uniform sampler2D EmissiveTexture;
 
-layout (location = 12)	uniform int u_PointLightsCount;
+layout (location = 12) uniform int u_PointLightsCount;
+
+layout (location = 13) uniform vec3 u_DirLightDirection;
+layout (location = 14) uniform vec4 u_DirLightColor;
+layout (location = 15) uniform float u_DirLightIntensity;
 
 // Fresnel function (Fresnel-Schlick approximation)
 //
@@ -171,6 +175,38 @@ vec3 calculateNormal(vec3 tangentNormal)
 	vec3 norm = normalize(tangentNormal * 2.0 - 1.0);
 	mat3 TBN  = mat3(in_Tangent, in_BiTangent, in_Normal);
 	return normalize(TBN * norm); // tangent --> world
+}
+
+vec3 CalculateDirectionalLight(vec3 n, vec3 v, vec3 albedo, float metallic, float roughness, vec3 f0)
+{
+    vec3 Lo = vec3(0.0);
+    
+    //for(int i = 0; i < u_DirLightsCount; i++)
+    {
+        vec3 l = normalize(-u_DirLightDirection.xyz);
+        vec3 h = normalize(v + l);
+        
+        // Calculate radiance (no attenuation for directional lights)
+        vec3 radiance = u_DirLightColor.rgb * u_DirLightIntensity;
+        
+        // Cook-Torrance BRDF
+        float NDF = ndfTrowbridgeReitzGGX(n, h, roughness);
+        vec3 F = fresnelSchlick(max(dot(h, v), 0.0), f0);
+        float G = geometrySmith(n, v, l, roughness);
+        
+        vec3 numerator = NDF * F * G;
+        float denominator = max(4.0 * max(dot(n, v), 0.0) * max(dot(n, l), 0.0), 0.001);
+        vec3 specular = numerator / denominator;
+        
+        vec3 kS = F;
+        vec3 kD = vec3(1.0) - kS;
+        kD *= 1.0 - metallic;
+        
+        float NdotL = max(dot(n, l), 0.0);
+        Lo += (kD * albedo / PI + specular) * radiance * NdotL;
+    }
+    
+    return Lo;
 }
 
 void main()
@@ -294,6 +330,9 @@ void main()
 		// Finally, the rendering equation!
 		Lo += cookTorranceBrdf * radiance * nDotL;
 	}
+
+	// Add directional lights contribution
+    Lo += CalculateDirectionalLight(n, v, albedo, metallic, roughness, f0);
 	
 
 	// Indirect lighting (IBL)

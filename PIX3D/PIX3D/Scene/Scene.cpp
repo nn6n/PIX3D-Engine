@@ -1,6 +1,10 @@
 #include "Scene.h"
 #include "Systems.h"
+#include <Platfrom/GL/GLRenderer.h>
 #include <Platfrom/GL/GLPixelRenderer2D.h>
+
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/euler_angles.hpp >
 
 namespace PIX3D
 {
@@ -49,6 +53,16 @@ namespace PIX3D
 		return (uint32_t)entity;
 	}
 
+	uint32_t Scene::AddDirectionalLight(const std::string& name, const Transform& transform, const glm::vec4& color)
+	{
+		const auto entity = m_Registry.create();
+		m_Registry.emplace<TagComponent>(entity, name);
+		m_Registry.emplace<TransformComponent>(entity, transform.Position, transform.Rotation, transform.Scale);
+		m_Registry.emplace<DirectionalLightComponent>(entity, color);
+
+		return (uint32_t)entity;
+	}
+
 	void Scene::OnStart()
 	{
 		// editor camera
@@ -90,6 +104,26 @@ namespace PIX3D
 
 				m_PointLightsBuffer.FillData(pointlightsdata.data(), pointlightsdata.size() * sizeof(PointLightShaderBuffer));
 		}
+
+		{ // Get Dir Light Data
+			auto view = m_Registry.view<TransformComponent, DirectionalLightComponent>();
+
+			view.each([&](TransformComponent& transform, DirectionalLightComponent& dirlight)
+				{
+					/*
+					// Calculate forward direction from rotation
+					glm::mat4 rotationMatrix = glm::eulerAngleXYZ(
+						glm::radians(transform.m_Rotation.x),
+						glm::radians(transform.m_Rotation.y),
+						glm::radians(transform.m_Rotation.z)
+					);
+					glm::vec3 forward = glm::normalize(glm::vec3(rotationMatrix[2]));
+					*/
+					m_DirLight.m_Direction = dirlight.m_Direction;
+					m_DirLight.m_Color = dirlight.m_Color;
+					m_DirLight.m_Intensity = dirlight.m_Intensity;
+				});
+		}
 	}
 
 	void Scene::OnRender()
@@ -124,7 +158,7 @@ namespace PIX3D
 			}
 
 
-			StaticMeshRendererSystem::Render(m_Registry, m_IBLMaps, m_PointLightsCount);
+			StaticMeshRendererSystem::Render(this, m_Registry, m_IBLMaps, m_PointLightsCount);
 			GL::GLRenderer::RenderHdrSkybox(m_CubemapTransform, m_Cubemap);
 
 			PIX3D::GL::GLRenderer::End();

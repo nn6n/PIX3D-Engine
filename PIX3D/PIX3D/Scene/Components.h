@@ -1,6 +1,5 @@
 #pragma once
 #include <Graphics/Mesh.h>
-#include <Platfrom/GL/GLRenderer.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -107,5 +106,20 @@ namespace PIX3D
 		float m_Intensity = 1.0f;
 		float m_Raduis = 1.0f;
 		float m_Falloff = 1.0f;
+	};
+
+	struct DirectionalLightComponent
+	{
+	public:
+		DirectionalLightComponent() = default;
+		DirectionalLightComponent(const DirectionalLightComponent& other) = default;
+		DirectionalLightComponent(const glm::vec4& color)
+			: m_Color(color)
+		{
+		}
+
+		glm::vec3 m_Direction = { 0.0f, -1.0f, 0.0f };
+		glm::vec4 m_Color = { 1.0f, 1.0f, 1.0f, 1.0f };
+		float m_Intensity = 1.0f;
 	};
 }

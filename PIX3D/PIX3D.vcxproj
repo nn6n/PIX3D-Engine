@@ -165,6 +165,7 @@
     <ClCompile Include="PIX3D\Graphics\Camera2D.cpp" />
     <ClCompile Include="PIX3D\Graphics\Camera3D.cpp" />
     <ClCompile Include="PIX3D\Graphics\Mesh.cpp" />
+    <ClCompile Include="PIX3D\Graphics\Sprite.cpp" />
     <ClCompile Include="PIX3D\Platfrom\GL\GLBloompass.cpp" />
     <ClCompile Include="PIX3D\Platfrom\GL\GLMainRenderpass.cpp" />
     <ClCompile Include="PIX3D\Platfrom\GL\GLPixelBatchRenderer2D.cpp" />
