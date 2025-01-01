@@ -90,11 +90,11 @@ namespace PIX3D
 	{
 		m_Cam3D.Update(dt);
 
+		m_PointLightsCount = 0;
 		// Set PointLights Shader Data
 		{
 			auto view = m_Registry.view<TransformComponent, PointLightComponent>();
 			m_PointLightsCount = (int)view.size_hint();
-
 
 			std::vector<PointLightShaderBuffer> pointlightsdata;
 
@@ -112,6 +112,7 @@ namespace PIX3D
 						pointlightsdata.push_back(data);
 					});
 
+				m_PointLightsBuffer.Bind(3);
 				m_PointLightsBuffer.FillData(pointlightsdata.data(), pointlightsdata.size() * sizeof(PointLightShaderBuffer));
 		}
 
