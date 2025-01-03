@@ -1,6 +1,6 @@
 #pragma once
 #include "GLObject.h"
-#include <string>
+#include <filesystem>
 
 namespace PIX3D
 {
@@ -18,10 +18,12 @@ namespace PIX3D
 			
 			void Destroy();
 
-			uint64_t GetVramTextureID() { return m_TextureID; }
+			inline uint64_t GetVramTextureID() const { return m_TextureID; }
+			inline std::filesystem::path GetPath() const { return m_Path; }
 
 		private:
 			uint64_t m_TextureID = 0; // Vram Texture ID
+			std::filesystem::path m_Path;
 		};
 	}
 }

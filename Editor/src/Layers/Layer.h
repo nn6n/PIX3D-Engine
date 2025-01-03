@@ -8,6 +8,7 @@ public:
 	virtual void OnStart() = 0;
 	virtual void OnUpdate(float dt) = 0;
 	virtual void OnDestroy() = 0;
+	virtual void OnKeyPressed(uint32_t key) = 0;
 private:
 };
 
@@ -19,6 +20,8 @@ public:
 
 	void OnStart();
 	void OnUpdate(float dt);
+	void OnDestroy();
+	void OnKeyPressed(uint32_t key);
 
 	void GoToLayer(Layer* layer);
 

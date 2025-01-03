@@ -25,6 +25,7 @@ public:
 	virtual void OnStart() override;
 	virtual void OnUpdate(float dt) override;
 	virtual void OnDestroy() override;
+	virtual void OnKeyPressed(uint32_t key) {}
 private:
 	void RenderNewProjectDialog();
 	bool RenderProjectTile(const char* name, GL::GLTexture& texture, bool isNewProject, float tileSize);

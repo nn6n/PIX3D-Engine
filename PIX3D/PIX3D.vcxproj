@@ -191,6 +191,7 @@
     <ClCompile Include="PIX3D\Platfrom\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="PIX3D\Platfrom\WindowsPlatform.cpp" />
     <ClCompile Include="PIX3D\Scene\Scene.cpp" />
+    <ClCompile Include="PIX3D\Scene\SceneSerializer.cpp" />
     <ClCompile Include="PIX3D\Scene\Systems.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -246,6 +247,7 @@
     <ClInclude Include="PIX3D\Project\Project.h" />
     <ClInclude Include="PIX3D\Scene\Components.h" />
     <ClInclude Include="PIX3D\Scene\Scene.h" />
+    <ClInclude Include="PIX3D\Scene\SceneSerializer.h" />
     <ClInclude Include="PIX3D\Scene\Systems.h" />
     <ClInclude Include="PIX3D\Utils\entt.hpp" />
     <ClInclude Include="PIX3D\Utils\FileWatcher.hpp" />

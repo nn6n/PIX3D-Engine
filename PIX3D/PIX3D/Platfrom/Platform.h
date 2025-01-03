@@ -9,6 +9,7 @@ namespace PIX3D
 	enum class FileDialougeFilter
 	{
 		PIXPROJ,
+		PIXSCENE,
 		PATH,
 		PNG, HDR,
 		GLTF

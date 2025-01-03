@@ -52,23 +52,100 @@ void EditorLayer::OnDestroy()
     m_Scene = nullptr;
 }
 
+void EditorLayer::OnKeyPressed(uint32_t key)
+{
+    PIX3D::KeyCode keycode = (PIX3D::KeyCode)key;
+
+    if (keycode == PIX3D::KeyCode::LeftControl)
+    {
+        // Save Scene
+        if (PIX3D::Input::IsKeyPressed(PIX3D::KeyCode::S))
+        {
+            SaveSceneDialogue();
+        }
+
+        // Load Scene
+        if (PIX3D::Input::IsKeyPressed(PIX3D::KeyCode::D))
+        {
+            LoadSceneDialogue();
+        }
+    }
+}
+
+void EditorLayer::SaveSceneDialogue()
+{
+    auto* PlatformLayer = PIX3D::Engine::GetPlatformLayer();
+
+    std::filesystem::path ScenePath = PlatformLayer->SaveDialogue(FileDialougeFilter::PIXSCENE);
+    if (!ScenePath.string().empty())
+    {
+        SceneSerializer::SaveScene_Text(m_Scene, ScenePath);
+    }
+}
+
+void EditorLayer::LoadSceneDialogue()
+{
+    auto* PlatformLayer = PIX3D::Engine::GetPlatformLayer();
+
+    std::filesystem::path ScenePath = PlatformLayer->OpenDialogue(FileDialougeFilter::PIXSCENE);
+    if (!ScenePath.string().empty() && ScenePath.extension().string() == ".pixscene")
+    {
+        SceneSerializer::LoadScene_Text(m_Scene, ScenePath);
+    }
+}
+
 void EditorLayer::RenderMenuBar()
 {
     if (ImGui::BeginMainMenuBar())
     {
-        if (ImGui::BeginMenu("Window"))
+        if (ImGui::BeginMenu("File"))
         {
-            if (ImGui::MenuItem("Lightning"))
-                m_ShowLightningWidget = !m_ShowLightningWidget;
-            if (ImGui::MenuItem("Hierarchy"))
-                m_ShowHierarchyWidget = !m_ShowHierarchyWidget;
-            if (ImGui::MenuItem("Inspector"))
-                m_ShowInspectorWidget = !m_ShowInspectorWidget;
-            if (ImGui::MenuItem("Material"))
-                m_ShowMaterialWidget = !m_ShowMaterialWidget;
+            if (ImGui::MenuItem("Save Scene ...", "Cntrl + S"))
+            {
+                SaveSceneDialogue();
+            }
+
+            if (ImGui::MenuItem("Load Scene ...", "Cntrl + D"))
+            {
+                LoadSceneDialogue();
+            }
 
             ImGui::EndMenu();
         }
+
+        if (ImGui::BeginMenu("Window"))
+        {
+            ImGui::PushStyleColor(ImGuiCol_Text, m_ShowLightningWidget ? ImVec4(1.0f, 0.0f, 0.0f, 1.0f) : ImVec4(0.0f, 1.0f, 0.0f, 1.0f));
+            if (ImGui::MenuItem("Lightning"))
+            {
+                m_ShowLightningWidget = !m_ShowLightningWidget;
+            }
+            ImGui::PopStyleColor();
+
+            ImGui::PushStyleColor(ImGuiCol_Text, m_ShowHierarchyWidget ? ImVec4(1.0f, 0.0f, 0.0f, 1.0f) : ImVec4(0.0f, 1.0f, 0.0f, 1.0f));
+            if (ImGui::MenuItem("Hierarchy"))
+            {
+                m_ShowHierarchyWidget = !m_ShowHierarchyWidget;
+            }
+            ImGui::PopStyleColor();
+
+            ImGui::PushStyleColor(ImGuiCol_Text, m_ShowInspectorWidget ? ImVec4(1.0f, 0.0f, 0.0f, 1.0f) : ImVec4(0.0f, 1.0f, 0.0f, 1.0f));
+            if (ImGui::MenuItem("Inspector"))
+            {
+                m_ShowInspectorWidget = !m_ShowInspectorWidget;
+            }
+            ImGui::PopStyleColor();
+
+            ImGui::PushStyleColor(ImGuiCol_Text, m_ShowMaterialWidget ? ImVec4(1.0f, 0.0f, 0.0f, 1.0f) : ImVec4(0.0f, 1.0f, 0.0f, 1.0f));
+            if (ImGui::MenuItem("Material"))
+            {
+                m_ShowMaterialWidget = !m_ShowMaterialWidget;
+            }
+            ImGui::PopStyleColor();
+
+            ImGui::EndMenu();
+        }
+
         ImGui::EndMainMenuBar();
     }
 }

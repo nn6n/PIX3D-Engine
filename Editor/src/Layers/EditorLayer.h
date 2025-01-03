@@ -11,6 +11,11 @@ public:
     virtual void OnStart() override;
     virtual void OnUpdate(float dt) override;
     virtual void OnDestroy() override;
+    virtual void OnKeyPressed(uint32_t key) override;
+
+private:
+    void SaveSceneDialogue();
+    void LoadSceneDialogue();
 
 private:
     void RenderMenuBar();

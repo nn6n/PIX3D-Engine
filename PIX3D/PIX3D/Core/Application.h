@@ -20,6 +20,7 @@ namespace PIX3D
 		virtual void OnUpdate(float dt) {}
 		virtual void OnDestroy() {}
 		virtual void OnResize(uint32_t width, uint32_t height) {}
+		virtual void OnKeyPressed(uint32_t key) {}
 	private:
 	};
 }

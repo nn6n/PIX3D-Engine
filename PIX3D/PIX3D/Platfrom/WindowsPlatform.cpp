@@ -33,6 +33,9 @@ namespace
 
     void KeyboardCallBack(GLFWwindow* window, int key, int scancode, int action, int mods)
     { 
+        auto App = PIX3D::Engine::GetApplication();
+        App->OnKeyPressed(key);
+
         auto func = PIX3D::Engine::GetKeyboardCallBackFuncPtr();
         if(func)
             func((PIX3D::KeyCode)key);
@@ -188,6 +191,8 @@ namespace PIX3D
             is_path_dialoge = true;
         }
         break;
+        case FileDialougeFilter::PIXSCENE:
+            ofn.lpstrFilter = "PIX 3D Scenes (*.pixscene)\0*.pixscene\0All Files (*.*)\0*.*\0"; break;
         case FileDialougeFilter::PNG:
             ofn.lpstrFilter = "Image Files (*.png)\0*.png\0All Files (*.*)\0*.*\0"; break;
         case FileDialougeFilter::PIXPROJ:
@@ -266,7 +271,12 @@ namespace PIX3D
         {
             ofn.lpstrFilter = "Project Files (*.pixproj)\0*.pixproj\0All Files (*.*)\0*.*\0";
             extension = ".pixproj";
-        }
+        }break;
+        case FileDialougeFilter::PIXSCENE:
+        {
+            ofn.lpstrFilter = "Project Files (*.pixscene)\0*.pixscene\0All Files (*.*)\0*.*\0";
+            extension = ".pixscene";
+        }break;
         case FileDialougeFilter::PNG:
         { 
             ofn.lpstrFilter = "Project Files (*.png)\0*.png\0All Files (*.*)\0*.*\0";

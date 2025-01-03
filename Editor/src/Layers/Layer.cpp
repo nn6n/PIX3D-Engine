@@ -16,6 +16,16 @@ void LayerManager::OnUpdate(float dt)
 	m_CurrentLayer->OnUpdate(dt);
 }
 
+void LayerManager::OnKeyPressed(uint32_t key)
+{
+	m_CurrentLayer->OnKeyPressed(key);
+}
+
+void LayerManager::OnDestroy()
+{
+	m_CurrentLayer->OnDestroy();
+}
+
 void LayerManager::GoToLayer(Layer* layer)
 {
 	// destroy old state

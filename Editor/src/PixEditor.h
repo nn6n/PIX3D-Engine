@@ -14,6 +14,7 @@ public:
 	virtual void OnUpdate(float dt) override;
 	virtual void OnDestroy() override;
 	virtual void OnResize(uint32_t width, uint32_t height) override;
+	virtual void OnKeyPressed(uint32_t key) override;
 
 	LayerManager m_LayerManager;
 };

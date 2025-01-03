@@ -28,6 +28,8 @@ void PIX3D::GL::GLTexture::LoadFromData(uint8_t* data, uint32_t width, uint32_t 
 
 void PIX3D::GL::GLTexture::LoadFromFile(const std::string& path, bool srgb)
 {
+    m_Path = path;
+
     int w, h, bpp;
     unsigned char* data = stbi_load(path.c_str(), &w, &h, &bpp, 0);
 

@@ -22,3 +22,8 @@ void PixEditor::OnResize(uint32_t width, uint32_t height)
 {
 
 }
+
+void PixEditor::OnKeyPressed(uint32_t key)
+{
+	m_LayerManager.OnKeyPressed(key);
+}

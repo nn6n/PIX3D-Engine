@@ -11,4 +11,4 @@
 #include <Graphics/Mesh.h>
 #include <Graphics/Transform.h>
 #include <Core/Timer.h>
-#include <Scene/Scene.h>
+#include <Scene/SceneSerializer.h>
