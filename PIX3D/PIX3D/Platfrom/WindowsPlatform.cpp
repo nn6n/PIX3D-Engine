@@ -6,6 +6,10 @@
 #include <Utils/stb_write.h>
 
 #include <Windows.h>
+#include <shlobj.h>
+#include <commdlg.h>
+
+#pragma comment(lib, "Shell32.lib")
 
 namespace
 {
@@ -164,6 +168,8 @@ namespace PIX3D
 
     std::filesystem::path WindowsPlatformLayer::OpenDialogue(FileDialougeFilter Filter)
     {
+        bool is_path_dialoge = false;
+
         OPENFILENAMEA ofn;    // Ansi version of the structure
         CHAR szFile[260] = { 0 };    // Buffer to store the selected file path
         ZeroMemory(&ofn, sizeof(ofn));
@@ -176,8 +182,16 @@ namespace PIX3D
         // Set the filter to show only .proj files
         switch (Filter)
         {
+        case FileDialougeFilter::PATH:
+        {
+            ofn.lpstrFilter = "Path \0*.*\0";
+            is_path_dialoge = true;
+        }
+        break;
         case FileDialougeFilter::PNG:
             ofn.lpstrFilter = "Image Files (*.png)\0*.png\0All Files (*.*)\0*.*\0"; break;
+        case FileDialougeFilter::PIXPROJ:
+            ofn.lpstrFilter = "Pix3D Project Files (*.pixproj)\0*.pixproj\0All Files (*.*)\0*.*\0"; break;
         case FileDialougeFilter::HDR:
             ofn.lpstrFilter = "Image Files (*.hdr)\0*.hdr\0All Files (*.*)\0*.*\0"; break;
         case FileDialougeFilter::GLTF:
@@ -185,27 +199,49 @@ namespace PIX3D
         default:
             break;
         }
-
-        // Save the current working directory
-        char currentDir[MAX_PATH];
-        GetCurrentDirectoryA(MAX_PATH, currentDir);
-
-
-        ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
-
-        if (GetOpenFileNameA(&ofn) == TRUE)
+        if (!is_path_dialoge)
         {
-            // Restore the previous working directory
-            SetCurrentDirectoryA(currentDir);
-            // Return the selected file path as a std::filesystem::path object
-            return std::filesystem::path(szFile);
+            // Save the current working directory
+            char currentDir[MAX_PATH];
+            GetCurrentDirectoryA(MAX_PATH, currentDir);
+
+
+            ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+            if (GetOpenFileNameA(&ofn) == TRUE)
+            {
+                // Restore the previous working directory
+                SetCurrentDirectoryA(currentDir);
+                // Return the selected file path as a std::filesystem::path object
+                return std::filesystem::path(szFile);
+            }
+            else
+            {
+                // Restore the previous working directory
+                SetCurrentDirectoryA(currentDir);
+                // Return an empty path if the user canceled the dialog
+                return std::filesystem::path();
+            }
         }
         else
         {
-            // Restore the previous working directory
-            SetCurrentDirectoryA(currentDir);
-            // Return an empty path if the user canceled the dialog
-            return std::filesystem::path();
+            BROWSEINFOA bi = { 0 };
+            bi.lpszTitle = "Select a Directory";
+            bi.ulFlags = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE;
+
+            LPITEMIDLIST pidl = SHBrowseForFolderA(&bi);
+            if (pidl != NULL)
+            {
+                CHAR path[MAX_PATH];
+                if (SHGetPathFromIDListA(pidl, path))
+                {
+                    CoTaskMemFree(pidl); // Free the memory allocated by SHBrowseForFolderA
+                    return std::filesystem::path(path);
+                }
+                CoTaskMemFree(pidl); // Free the memory even if it fails
+            }
+
+            return std::filesystem::path(); // Return an empty path if canceled
         }
     }
 
@@ -226,6 +262,11 @@ namespace PIX3D
         // Set the filter to show only .proj files
         switch (Filter)
         {
+        case FileDialougeFilter::PIXPROJ:
+        {
+            ofn.lpstrFilter = "Project Files (*.pixproj)\0*.pixproj\0All Files (*.*)\0*.*\0";
+            extension = ".pixproj";
+        }
         case FileDialougeFilter::PNG:
         { 
             ofn.lpstrFilter = "Project Files (*.png)\0*.png\0All Files (*.*)\0*.*\0";

@@ -243,11 +243,14 @@
     <ClInclude Include="PIX3D\Platfrom\ImGui\ImGuiLayer.h" />
     <ClInclude Include="PIX3D\Platfrom\Platform.h" />
     <ClInclude Include="PIX3D\Platfrom\WindowsPlatform.h" />
+    <ClInclude Include="PIX3D\Project\Project.h" />
     <ClInclude Include="PIX3D\Scene\Components.h" />
     <ClInclude Include="PIX3D\Scene\Scene.h" />
     <ClInclude Include="PIX3D\Scene\Systems.h" />
     <ClInclude Include="PIX3D\Utils\entt.hpp" />
     <ClInclude Include="PIX3D\Utils\FileWatcher.hpp" />
+    <ClInclude Include="PIX3D\Utils\json.hpp" />
+    <ClInclude Include="PIX3D\Utils\json_fwd.hpp" />
     <ClInclude Include="PIX3D\Utils\stb_image.h" />
     <ClInclude Include="PIX3D\Utils\stb_write.h" />
   </ItemGroup>

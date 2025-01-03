@@ -16,6 +16,7 @@
 #include <functional>
 #include <GLFW/glfw3.h>
 #include <Platfrom/ImGui/ImGuiLayer.h>
+#include <Project/Project.h>
 
 namespace PIX3D
 {
@@ -162,6 +163,9 @@ namespace PIX3D
 
 		inline static void SetWindowWidth(uint32_t width) { s_AppSpecs.Width = width; }
 		inline static void SetWindowHeight(uint32_t height) { s_AppSpecs.Height = height; }
+
+		inline static Project GetCurrentProject() { return s_CurrentProject; }
+		inline static Project& GetCurrentProjectRef() { return s_CurrentProject; }
 	private:
 		// Engine Specs
 		inline static EngineSpecs s_EngineSpecs;
@@ -180,5 +184,8 @@ namespace PIX3D
 		// CallBacks
 		inline static WindowSizeCallBackFuncPtrType s_WindowSizeCallBackFuncPtr = nullptr;
 		inline static KeyboardCallBackFuncPtrType s_KeyboardCallBackFuncPtr = nullptr;
+
+		// project
+		inline static Project s_CurrentProject;
 	};
 }

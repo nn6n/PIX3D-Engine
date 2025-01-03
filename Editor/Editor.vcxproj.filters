@@ -28,6 +28,15 @@
     <ClCompile Include="src\Editor Widgets\MaterialWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Layers\Layer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Layers\LauncherLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Layers\EditorLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\PixEditor.h" />
@@ -40,5 +49,8 @@
     <ClInclude Include="imgui\imGuIZMO.quat\vGizmoMath.h" />
     <ClInclude Include="imgui\imGuIZMO.quat\vgMath.h" />
     <ClInclude Include="src\Editor Widgets\MaterialWidget.h" />
+    <ClInclude Include="src\Layers\Layer.h" />
+    <ClInclude Include="src\Layers\LauncherLayer.h" />
+    <ClInclude Include="src\Layers\EditorLayer.h" />
   </ItemGroup>
 </Project>
