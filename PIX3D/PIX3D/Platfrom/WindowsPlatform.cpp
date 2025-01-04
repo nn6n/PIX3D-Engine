@@ -200,7 +200,7 @@ namespace PIX3D
         case FileDialougeFilter::HDR:
             ofn.lpstrFilter = "Image Files (*.hdr)\0*.hdr\0All Files (*.*)\0*.*\0"; break;
         case FileDialougeFilter::GLTF:
-            ofn.lpstrFilter = "Image Files (*.gltf)\0*.gltf\0All Files (*.*)\0*.*\0"; break;
+            ofn.lpstrFilter = "3D Model Files (*.gltf;*.glb;*.obj)\0*.gltf;*.glb;*.obj\0All Files (*.*)\0*.*\0"; break;
         default:
             break;
         }

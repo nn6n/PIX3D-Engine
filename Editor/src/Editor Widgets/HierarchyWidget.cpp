@@ -12,7 +12,7 @@ void HierarchyWidget::OnRender()
         {
             auto* platform = PIX3D::Engine::GetPlatformLayer();
             std::filesystem::path filepath = platform->OpenDialogue(PIX3D::FileDialougeFilter::GLTF);
-            if (!filepath.empty() && filepath.extension().string() == ".gltf")
+            if (!filepath.empty() && (filepath.extension().string() == ".gltf" || filepath.extension().string() == ".glb" || filepath.extension().string() == ".obj"))
             {
                 StaticMesh mesh;
                 mesh.Load(filepath.string(), 1.0f);

@@ -210,7 +210,16 @@ namespace PIX3D
             // Load NormalMap
             {
                 aiString path;
-                material->GetTexture(aiTextureType_NORMALS, 0, &path);
+
+                auto ext = m_Path.extension().string();
+
+                aiTextureType type = aiTextureType_NORMALS;
+
+                if (ext == ".obj")
+                    type = aiTextureType_HEIGHT;
+
+
+                material->GetTexture(type, 0, &path);
                 std::filesystem::path FullPath = (m_Path.parent_path() / path.C_Str()).string();
 
                 if (FileExists(FullPath.string())) // NormalMap Found
@@ -228,7 +237,15 @@ namespace PIX3D
             // Load MetalRoughnessMap
             {
                 aiString path;
-                material->GetTexture(aiTextureType_METALNESS, 0, &path);
+
+                auto ext = m_Path.extension().string();
+
+                aiTextureType type = aiTextureType_METALNESS;
+
+                if (ext == ".obj")
+                    type = aiTextureType_SPECULAR;
+
+                material->GetTexture(type, 0, &path);
                 std::filesystem::path FullPath = (m_Path.parent_path() / path.C_Str()).string();
 
                 if (FileExists(FullPath.string())) // RoughnessMap Found
