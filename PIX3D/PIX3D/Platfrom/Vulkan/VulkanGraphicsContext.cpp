@@ -56,6 +56,7 @@ namespace
 		const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
 		void* pUserData)
 	{
+		/*
 		PIX_DEBUG_INFO_FORMAT("Debug callback: {}", pCallbackData->pMessage);
 		PIX_DEBUG_INFO_FORMAT("  Severity {}", GetDebugSeverityStr(Severity));
 		PIX_DEBUG_INFO_FORMAT("  Type {}", GetDebugType(Type));
@@ -68,6 +69,16 @@ namespace
 #else
 			printf("%lux ", pCallbackData->pObjects[i].objectHandle);
 #endif
+		}
+		*/
+
+		if (Severity == VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
+		{
+			PIX_DEBUG_INFO_FORMAT("Debug callback: {}", pCallbackData->pMessage);
+		}
+		if (Severity == VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
+		{
+			PIX_DEBUG_ERROR_FORMAT("Debug callback: {}", pCallbackData->pMessage);
 		}
 
 		return VK_FALSE;  // The calling function should not be aborted
@@ -123,14 +134,12 @@ namespace PIX3D
 
 		VulkanGraphicsContext::VulkanGraphicsContext()
 		{
-			// Init Vulkan
-
 		}
 
 		VulkanGraphicsContext::~VulkanGraphicsContext()
 		{
-
 		}
+
 		void VulkanGraphicsContext::Init(void* window_handle)
 		{
 			// set native window handle
@@ -393,6 +402,20 @@ namespace PIX3D
 			VK_CHECK_RESULT(res, "vkCreateCommandPool");
 
 			PIX_DEBUG_INFO("Command buffer pool created");
+
+
+			//////////////////////////////////////////////////////
+            ////////////////// Queue Init ////////////////////////
+            //////////////////////////////////////////////////////
+
+			m_Queue.Init(m_Device, m_SwapChain, m_QueueFamily, 0);
+
+
+			//////////////////////////////////////////////////////
+            ////////////////// Command Buffer ////////////////////
+            //////////////////////////////////////////////////////
+
+			VulkanHelper::CreateCommandBuffers(m_Device, m_CommandPool, 1, &m_CopyCommandBuffer);
 		}
 
 		void VulkanGraphicsContext::SwapBuffers(void* window_handle)
@@ -532,11 +555,13 @@ namespace PIX3D
 				res = vkGetPhysicalDeviceSurfaceFormatsKHR(PhysDev, Surface, &NumFormats, m_Devices[i].m_surfaceFormats.data());
 				VK_CHECK_RESULT(res, "vkGetPhysicalDeviceSurfaceFormatsKHR");
 
+				/*
 				for (uint32_t j = 0; j < NumFormats; j++)
 				{
 					const VkSurfaceFormatKHR& SurfaceFormat = m_Devices[i].m_surfaceFormats[j];
-					PIX_DEBUG_INFO("    Format {0} color space {1}", SurfaceFormat.format, SurfaceFormat.colorSpace);
+					PIX_DEBUG_INFO_FORMAT("    Format {0} color space {1}", SurfaceFormat.format, SurfaceFormat.colorSpace);
 				}
+				*/
 
 				res = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(PhysDev, Surface, &(m_Devices[i].m_surfaceCaps));
 				VK_CHECK_RESULT(res, "vkGetPhysicalDeviceSurfaceCapabilitiesKHR");
@@ -609,5 +634,114 @@ namespace PIX3D
 			PIX_ASSERT_MSG(m_devIndex >= 0, "A physical device has not been selected!");
 			return m_Devices[m_devIndex];
 		}
+
+
+		/*
+		
+		Queue
+
+		*/
+
+
+		void VulkanQueue::Init(VkDevice Device, VkSwapchainKHR SwapChain, uint32_t QueueFamily, uint32_t QueueIndex)
+		{
+			m_Device = Device;
+			m_SwapChain = SwapChain;
+
+			vkGetDeviceQueue(Device, QueueFamily, QueueIndex, &m_Queue);
+
+			printf("Queue acquired\n");
+
+			CreateSemaphores();
+		}
+
+
+		void VulkanQueue::Destroy()
+		{
+			vkDestroySemaphore(m_Device, m_PresentCompleteSem, NULL);
+			vkDestroySemaphore(m_Device, m_RenderCompleteSem, NULL);
+		}
+
+
+		void VulkanQueue::CreateSemaphores()
+		{
+			m_PresentCompleteSem = VulkanHelper::CreateVulkanSemaphore(m_Device);
+			m_RenderCompleteSem = VulkanHelper::CreateVulkanSemaphore(m_Device);
+		}
+
+
+		void VulkanQueue::WaitIdle()
+		{
+			vkQueueWaitIdle(m_Queue);
+		}
+
+
+		uint32_t VulkanQueue::AcquireNextImage()
+		{
+			uint32_t ImageIndex = 0;
+			VkResult res = vkAcquireNextImageKHR(m_Device, m_SwapChain, UINT64_MAX, m_PresentCompleteSem, NULL, &ImageIndex);
+			VK_CHECK_RESULT(res, "vkAcquireNextImageKHR");
+			return ImageIndex;
+		}
+
+
+		void VulkanQueue::SubmitSync(VkCommandBuffer CmbBuf)
+		{
+			VkSubmitInfo SubmitInfo = {
+				.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
+				.pNext = NULL,
+				.waitSemaphoreCount = 0,
+				.pWaitSemaphores = VK_NULL_HANDLE,
+				.pWaitDstStageMask = VK_NULL_HANDLE,
+				.commandBufferCount = 1,
+				.pCommandBuffers = &CmbBuf,
+				.signalSemaphoreCount = 0,
+				.pSignalSemaphores = VK_NULL_HANDLE
+			};
+
+			VkResult res = vkQueueSubmit(m_Queue, 1, &SubmitInfo, NULL);
+			VK_CHECK_RESULT(res, "vkQueueSubmit");
+		}
+
+
+		void VulkanQueue::SubmitAsync(VkCommandBuffer CmbBuf)
+		{
+			VkPipelineStageFlags waitFlags = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+
+			VkSubmitInfo SubmitInfo = {
+				.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
+				.pNext = NULL,
+				.waitSemaphoreCount = 1,
+				.pWaitSemaphores = &m_PresentCompleteSem,
+				.pWaitDstStageMask = &waitFlags,
+				.commandBufferCount = 1,
+				.pCommandBuffers = &CmbBuf,
+				.signalSemaphoreCount = 1,
+				.pSignalSemaphores = &m_RenderCompleteSem
+			};
+
+			VkResult res = vkQueueSubmit(m_Queue, 1, &SubmitInfo, NULL);
+			VK_CHECK_RESULT(res, "vkQueueSubmit");
+		}
+
+
+		void VulkanQueue::Present(uint32_t ImageIndex)
+		{
+			VkPresentInfoKHR PresentInfo = {
+				.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
+				.pNext = NULL,
+				.waitSemaphoreCount = 1,
+				.pWaitSemaphores = &m_RenderCompleteSem,
+				.swapchainCount = 1,
+				.pSwapchains = &m_SwapChain,
+				.pImageIndices = &ImageIndex
+			};
+
+			VkResult res = vkQueuePresentKHR(m_Queue, &PresentInfo);
+			VK_CHECK_RESULT(res, "vkQueuePresentKHR");
+
+			WaitIdle();	// TODO: looks like a workaround but we're getting error messages without it
+		}
+
 	}
 }

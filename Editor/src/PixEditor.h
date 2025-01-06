@@ -1,9 +1,6 @@
 #pragma once
 
-#include "Editor Widgets/LightningWidget.h"
-#include "Editor Widgets/InspectorWidget.h"
-#include "Editor Widgets/MaterialWidget.h"
-#include "Layers/LauncherLayer.h"
+#include <PIX3D.h>
 
 using namespace PIX3D;
 
@@ -16,5 +13,9 @@ public:
 	virtual void OnResize(uint32_t width, uint32_t height) override;
 	virtual void OnKeyPressed(uint32_t key) override;
 
-	LayerManager m_LayerManager;
+private:
+	int m_NumImages = 0;
+	std::vector<VkCommandBuffer> m_CommandBuffers;
+	VkRenderPass m_Renderpass;
+	std::vector<VkFramebuffer> m_FrameBuffers;
 };

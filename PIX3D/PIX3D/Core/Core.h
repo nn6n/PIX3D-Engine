@@ -36,7 +36,7 @@
 // Macros with `std::format`
 #define PIX_DEBUG_INFO_FORMAT(fmt, ...) \
         do { \
-            std::cout << rang::fg::blue << rang::style::bold << "INFO: " \
+            std::cout << rang::fg::green << rang::style::bold << "INFO: " \
                       << std::format(fmt, __VA_ARGS__) << rang::style::reset << std::endl; \
         } while(0)
 

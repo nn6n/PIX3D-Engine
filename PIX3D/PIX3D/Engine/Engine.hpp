@@ -17,6 +17,7 @@
 #include <GLFW/glfw3.h>
 #include <Platfrom/ImGui/ImGuiLayer.h>
 #include <Project/Project.h>
+#include <Platfrom/Vulkan/VulkanGraphicsContext.h>
 
 namespace PIX3D
 {
@@ -32,7 +33,7 @@ namespace PIX3D
 
 	struct EngineSpecs
 	{
-		GraphicsAPI API = GraphicsAPI::OPENGL;
+		GraphicsAPI API = GraphicsAPI::VULKAN;
 		bool WindowResizable = true;
 	};
 
@@ -80,7 +81,8 @@ namespace PIX3D
 			    
 			    case GraphicsAPI::VULKAN:
 			    {
-			    	PIX_ASSERT_MSG(false, "Vulkan Not Supported Yet!");
+					s_GraphicsContext = new VK::VulkanGraphicsContext();
+					s_GraphicsContext->Init(s_Platform->GetNativeWindowHandel());
 			    }break;
 			    
 			    case GraphicsAPI::NONE:
@@ -106,10 +108,19 @@ namespace PIX3D
 				// Poll Events
 				s_Platform->PollEvents();
 
-				GL::GLPixelBatchRenderer2D::ResetDrawCalls();
-				ImGuiLayer::BeginDraw();
+				if (s_EngineSpecs.API == GraphicsAPI::OPENGL)
+				{
+					GL::GLPixelBatchRenderer2D::ResetDrawCalls();
+					ImGuiLayer::BeginDraw();
+				}
+				
 				s_Application->OnUpdate(s_DeltaTime);
-				ImGuiLayer::EndDraw();
+				
+				
+				if (s_EngineSpecs.API == GraphicsAPI::OPENGL)
+				{
+					ImGuiLayer::EndDraw();
+				}
 
 				s_GraphicsContext->SwapBuffers(s_Platform->GetNativeWindowHandel());
 
@@ -121,13 +132,15 @@ namespace PIX3D
 		{
 			s_Application->OnDestroy();
 
-			GL::GLPixelRenderer2D::Destory();
-			GL::GLPixelBatchRenderer2D::Destory();
-			GL::GLRenderer::Destory();
-			GL::GLScreenQuadRenderpass::Destroy();
-			GL::IBLCubemapsGenerator::Destroy();
-			ImGuiLayer::Destroy();
-
+			if (s_EngineSpecs.API == GraphicsAPI::OPENGL)
+			{
+				GL::GLPixelRenderer2D::Destory();
+				GL::GLPixelBatchRenderer2D::Destory();
+				GL::GLRenderer::Destory();
+				GL::GLScreenQuadRenderpass::Destroy();
+				GL::IBLCubemapsGenerator::Destroy();
+				ImGuiLayer::Destroy();
+			}
 
 			delete s_Platform;
 			delete s_Application;

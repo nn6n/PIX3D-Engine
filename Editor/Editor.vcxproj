@@ -45,8 +45,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>F:\Projects\PIX3D Engine\PIX3D\PIX3D;F:\Projects\PIX3D Engine\Vendor\glm;F:\Projects\PIX3D Engine\Vendor\glfw\include;F:\Projects\PIX3D Engine\Editor\imgui;F:\Projects\PIX3D Engine\Vendor\assimp\include;$(IncludePath)</IncludePath>
-    <LibraryPath>F:\Projects\PIX3D Engine\Vendor\glfw\lib;F:\Projects\PIX3D Engine\Vendor\assimp\bin\windows\Release;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(VULKAN_SDK)\Include;F:\Projects\PIX3D Engine\PIX3D\PIX3D;F:\Projects\PIX3D Engine\Vendor\glm;F:\Projects\PIX3D Engine\Vendor\glfw\include;F:\Projects\PIX3D Engine\Editor\imgui;F:\Projects\PIX3D Engine\Vendor\assimp\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(VULKAN_SDK)\Lib;F:\Projects\PIX3D Engine\Vendor\glfw\lib;F:\Projects\PIX3D Engine\Vendor\assimp\bin\windows\Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -65,7 +65,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>F:\Projects\PIX3D Engine\Vendor\glfw\lib;F:\Projects\PIX3D Engine\Vendor\assimp\bin\windows\Release;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;assimp-vc143-mt.lib;%(AdditionalDependencies);vulkan-1.lib;SPIRV.lib;SPIRV-Tools.lib;SPIRV-Tools-opt.lib;glslang.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -84,7 +84,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>F:\Projects\PIX3D Engine\Vendor\glfw\lib;F:\Projects\PIX3D Engine\Vendor\assimp\bin\windows\Release;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;assimp-vc143.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;assimp-vc143.lib;%(AdditionalDependencies);vulkan-1.lib;SPIRV.lib;SPIRV-Tools.lib;SPIRV-Tools-opt.lib;glslang.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

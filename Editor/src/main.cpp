@@ -10,7 +10,7 @@ int main()
     // Init Engine
     {
         PIX3D::EngineSpecs EngineSpecs;
-        EngineSpecs.API = PIX3D::GraphicsAPI::OPENGL;
+        EngineSpecs.API = PIX3D::GraphicsAPI::VULKAN;
 
         PIX3D::Engine::Init(EngineSpecs);
     }

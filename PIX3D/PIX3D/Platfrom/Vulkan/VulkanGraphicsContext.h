@@ -139,6 +139,38 @@ namespace PIX3D
 			int m_devIndex = -1;
 		};
 
+		class VulkanQueue
+		{
+
+		public:
+			VulkanQueue() {}
+			~VulkanQueue() {}
+
+			void Init(VkDevice Device, VkSwapchainKHR SwapChain, uint32_t QueueFamily, uint32_t QueueIndex);
+
+			void Destroy();
+
+			uint32_t AcquireNextImage();
+
+			void SubmitSync(VkCommandBuffer CmbBuf);
+
+			void SubmitAsync(VkCommandBuffer CmbBuf);
+
+			void Present(uint32_t ImageIndex);
+
+			void WaitIdle();
+
+		private:
+
+			void CreateSemaphores();
+
+			VkDevice m_Device = VK_NULL_HANDLE;
+			VkSwapchainKHR m_SwapChain = VK_NULL_HANDLE;
+			VkQueue m_Queue = VK_NULL_HANDLE;
+			VkSemaphore m_RenderCompleteSem;
+			VkSemaphore m_PresentCompleteSem;
+		};
+
 
 		class VulkanGraphicsContext : public GraphicsContext
 		{
@@ -150,7 +182,7 @@ namespace PIX3D
 			virtual void SwapBuffers(void* window_handle) override;
 			void Destroy();
 
-		private:
+		public:
 			void* m_NativeWindowHandle = nullptr;
 
 			VkInstance m_Instance = nullptr;
@@ -166,6 +198,11 @@ namespace PIX3D
 			std::vector<VkImageView> m_SwapChainImageViews;
 
 			VkCommandPool m_CommandPool = nullptr;
+
+			VulkanQueue m_Queue;
+			uint32_t m_QueueIndex;
+
+			VkCommandBuffer m_CopyCommandBuffer = nullptr;
 		};
 	}
 }

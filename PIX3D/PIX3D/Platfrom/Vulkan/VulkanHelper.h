@@ -8,6 +8,139 @@ namespace PIX3D
 		class VulkanHelper
 		{
 		public:
+			static VkRenderPass CreateSimpleRenderPass(VkDevice Device, VkFormat SwapChainSurfaceFormat)
+			{
+				VkAttachmentDescription AttachDesc = {
+					.flags = 0,
+					.format = SwapChainSurfaceFormat,
+					.samples = VK_SAMPLE_COUNT_1_BIT,
+					.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR,
+					.storeOp = VK_ATTACHMENT_STORE_OP_STORE,
+					.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE,
+					.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE,
+					.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED,
+					.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR
+				};
+
+				VkAttachmentReference AttachRef = 
+				{
+					.attachment = 0,
+					.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL
+				};
+
+				VkSubpassDescription SubpassDesc = 
+				{
+					.flags = 0,
+					.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS,
+					.inputAttachmentCount = 0,
+					.pInputAttachments = NULL,
+					.colorAttachmentCount = 1,
+					.pColorAttachments = &AttachRef,
+					.pResolveAttachments = NULL,
+					.pDepthStencilAttachment = NULL,
+					.preserveAttachmentCount = 0,
+					.pPreserveAttachments = NULL
+				};
+
+				VkRenderPassCreateInfo RenderPassCreateInfo = 
+				{
+					.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,
+					.pNext = NULL,
+					.flags = 0,
+					.attachmentCount = 1,
+					.pAttachments = &AttachDesc,
+					.subpassCount = 1,
+					.pSubpasses = &SubpassDesc,
+					.dependencyCount = 0,
+					.pDependencies = NULL
+				};
+
+				VkRenderPass RenderPass;
+
+				VkResult res = vkCreateRenderPass(Device, &RenderPassCreateInfo, NULL, &RenderPass);
+				VK_CHECK_RESULT(res, "vkCreateRenderPass");
+
+				PIX_DEBUG_SUCCESS("Created a simple render pass");
+
+				return RenderPass;
+			}
+
+			static std::vector<VkFramebuffer> CreateSwapChainFrameBuffers(VulkanGraphicsContext* Context, VkRenderPass RenderPass, uint32_t Width, uint32_t Height)
+			{
+				std::vector<VkFramebuffer> frameBuffers;
+				frameBuffers.resize(Context->m_SwapChainImages.size());
+
+				VkResult res;
+
+				for (uint32_t i = 0; i < Context->m_SwapChainImages.size(); i++)
+				{
+
+					VkFramebufferCreateInfo fbCreateInfo = {};
+					fbCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+					fbCreateInfo.renderPass = RenderPass;
+					fbCreateInfo.attachmentCount = 1;
+					fbCreateInfo.pAttachments = &Context->m_SwapChainImageViews[i];
+					fbCreateInfo.width = Width;
+					fbCreateInfo.height = Height;
+					fbCreateInfo.layers = 1;
+
+					res = vkCreateFramebuffer(Context->m_Device, &fbCreateInfo, NULL, &frameBuffers[i]);
+					VK_CHECK_RESULT(res, "vkCreateFramebuffer");
+				}
+
+				PIX_DEBUG_SUCCESS("Framebuffers created");
+
+				return frameBuffers;
+			}
+
+
+			static  void BeginCommandBuffer(VkCommandBuffer commandbuffer, VkCommandBufferUsageFlags usageFlags = 0)
+			{
+				PIX_ASSERT_MSG(commandbuffer, "Command buffer must not be null");
+
+				VkCommandBufferBeginInfo beginInfo{};
+				beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+				beginInfo.pNext = nullptr;
+				beginInfo.flags = usageFlags; // Usage flags (e.g., VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT)
+				beginInfo.pInheritanceInfo = nullptr; // Not used for primary command buffers
+
+				VkResult res = vkBeginCommandBuffer(commandbuffer, &beginInfo);
+				if (res != VK_SUCCESS)
+				{
+					VK_CHECK_RESULT(res ,"vkBeginCommandBuffer failed");
+				}
+			}
+
+			static void CreateCommandBuffers(VkDevice device, VkCommandPool commandpool, uint32_t count, VkCommandBuffer* commandbuffer)
+			{
+
+				VkCommandBufferAllocateInfo cmdBufAllocInfo =
+				{
+				   .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
+				   .pNext = NULL,
+				   .commandPool = commandpool,
+				   .level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
+				   .commandBufferCount = count
+				};
+
+				VkResult res = vkAllocateCommandBuffers(device, &cmdBufAllocInfo, commandbuffer);
+				VK_CHECK_RESULT(res, "vkAllocateCommandBuffers");
+
+				PIX_DEBUG_INFO_FORMAT("{} command buffers created", count);
+			}
+
+
+			static VkSemaphore CreateVulkanSemaphore(VkDevice Device)
+			{
+				VkSemaphoreCreateInfo createInfo = {};
+				createInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+				VkSemaphore semaphore;
+				VkResult res = vkCreateSemaphore(Device, &createInfo, NULL, &semaphore);
+				VK_CHECK_RESULT(res, "vkCreateSemaphore error");
+				return semaphore;
+			}
+
 			static VkImageView CreateImageView(VkDevice Device, VkImage Image, VkFormat Format, VkImageAspectFlags AspectFlags,
 				VkImageViewType ViewType, uint32_t LayerCount, uint32_t mipLevels)
 			{
