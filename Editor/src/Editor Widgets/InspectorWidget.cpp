@@ -219,10 +219,10 @@ void InspectorWidget::OnRender()
                     lightDirection = vgm::normalize(lightDirection);
 
                     // Update your directional light or object's properties
-                    dirlight->m_Direction = { lightDirection.x, lightDirection.y, lightDirection.z };
+                    dirlight->m_Direction = { lightDirection.x, lightDirection.y * -1.0f, lightDirection.z };
                 }
 
-                ImGui::DragFloat3("Direction", &dirlight->m_Direction[0]);
+                ImGui::DragFloat3("Direction", &dirlight->m_Direction[0], 0.01f, -1.0f, 1.0f);
                 ImGui::ColorEdit4("Color", &dirlight->m_Color.x);
                 ImGui::SliderFloat("Intensity", &dirlight->m_Intensity, 0.0f, 10.0f);
             }

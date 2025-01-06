@@ -9,6 +9,7 @@
 #include "GLMainRenderpass.h"
 #include "GLBloompass.h"
 #include "GLPostProcessingpass.h"
+#include "GLDirShadowpass.h"
 #include <Scene/Scene.h>
 
 namespace PIX3D
@@ -31,7 +32,7 @@ namespace PIX3D
 			static void Resize(uint32_t width, uint32_t height);
 			static void Destory();
 
-			static void Begin(Camera3D& cam, const glm::vec4& clear_color = {1.0f, 1.0f, 1.0f, 1.0f});
+			static void Begin(Scene* scene, Camera3D& cam, const glm::vec4& clear_color = {1.0f, 1.0f, 1.0f, 1.0f});
 			static void RenderMesh(Scene* scene, const glm::mat4& model, StaticMesh& mesh, IBLMaps& ibl_maps, int point_lights_count = 0);
 			static void RenderHdrSkybox(const glm::mat4& model, const GLHdriCubemap& hdrcubemap);
 			static void End();
@@ -52,6 +53,7 @@ namespace PIX3D
 
 		public:
 			inline static glm::vec3 s_CameraPosition;
+			inline static glm::mat4 s_CameraView;
 
 			inline static GLShader s_Model3DShader;
 			inline static GLShader s_SkyBoxShader;
@@ -63,6 +65,7 @@ namespace PIX3D
 			inline static GLTexture s_DefaultBlackTexture;
 
 			// PBR Pipeline
+			inline static GLDirShadowpass s_DirShadowpass;
 			inline static GLMainRenderpass s_MainRenderpass;
 			inline static GLBloompass s_Bloompass;
 			inline static GLPostProcessingpass s_PostProcessingpass;

@@ -141,6 +141,12 @@
     <ClCompile Include="PIX3D\Scene\SceneSerializer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PIX3D\Platfrom\GL\GLDirShadowpass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PIX3D\Platfrom\Vulkan\VulkanGraphicsContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PIX3D\Platfrom\Platform.h">
@@ -323,6 +329,18 @@
     <ClInclude Include="PIX3D\Scene\SceneSerializer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PIX3D\Platfrom\GL\GLDirShadowpass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PIX3D\Utils\rang.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PIX3D\Platfrom\Vulkan\VulkanGraphicsContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PIX3D\Platfrom\Vulkan\VulkanHelper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\gl shaders\pos_vertex.vert" />
@@ -347,5 +365,8 @@
     <None Include="res\gl shaders\bloom.frag" />
     <None Include="res\gl shaders\post.vert" />
     <None Include="res\gl shaders\post.frag" />
+    <None Include="res\gl shaders\shadowmapping_depth.vert" />
+    <None Include="res\gl shaders\shadowmapping_depth.frag" />
+    <None Include="res\gl shaders\shadowmapping_depth.geom" />
   </ItemGroup>
 </Project>

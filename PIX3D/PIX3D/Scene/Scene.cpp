@@ -145,7 +145,7 @@ namespace PIX3D
 	{
 		// Static Meshes && Skybox
 		{
-			PIX3D::GL::GLRenderer::Begin(m_Cam3D, m_BackgroundColor);
+			PIX3D::GL::GLRenderer::Begin(this, m_Cam3D, m_BackgroundColor);
 
 
 			// Sprites

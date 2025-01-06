@@ -105,6 +105,84 @@ layout (location = 14) uniform vec4 u_DirLightColor;
 layout (location = 15) uniform float u_DirLightIntensity;
 layout (location = 16) uniform bool u_HasDirLight;
 
+// cascaded shadow mapping
+layout (binding = 10, std140) uniform LightSpaceMatrices
+{
+    mat4 lightSpaceMatrices[16];
+};
+
+layout (location = 17) uniform sampler2DArray u_DirShadowMap;
+layout (location = 18) uniform mat4 u_View;
+layout (location = 19) uniform float u_CascadePlaneDistances[16];
+
+const float FarPlane = 1000.0;
+const int CascadeCount = 4; // number of frusta - 1
+
+
+float ShadowCalculation(vec3 fragPosWorldSpace)
+{
+    // select cascade layer
+    vec4 fragPosViewSpace = u_View * vec4(fragPosWorldSpace, 1.0);
+    float depthValue = abs(fragPosViewSpace.z);
+
+    int layer = -1;
+    for (int i = 0; i < CascadeCount; ++i)
+    {
+        if (depthValue < u_CascadePlaneDistances[i])
+        {
+            layer = i;
+            break;
+        }
+    }
+    if (layer == -1)
+    {
+        layer = CascadeCount;
+    }
+
+    vec4 fragPosLightSpace = lightSpaceMatrices[layer] * vec4(fragPosWorldSpace, 1.0);
+    // perform perspective divide
+    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+    // transform to [0,1] range
+    projCoords = projCoords * 0.5 + 0.5;
+
+    // get depth of current fragment from light's perspective
+    float currentDepth = projCoords.z;
+
+    // keep the shadow at 0.0 when outside the far_plane region of the light's frustum.
+    if (currentDepth > 1.0)
+    {
+        return 0.0;
+    }
+    // calculate bias (based on depth map resolution and slope)
+    vec3 normal = normalize(in_Normal);
+    float bias = max(0.05 * (1.0 - dot(normal, u_DirLightDirection)), 0.005);
+    const float biasModifier = 0.5f;
+    if (layer == CascadeCount)
+    {
+        bias *= 1 / (FarPlane * biasModifier);
+    }
+    else
+    {
+        bias *= 1 / (u_CascadePlaneDistances[layer] * biasModifier);
+    }
+
+    // PCF
+    float shadow = 0.0;
+    vec2 texelSize = 1.0 / vec2(textureSize(u_DirShadowMap, 0));
+    for(int x = -1; x <= 1; ++x)
+    {
+        for(int y = -1; y <= 1; ++y)
+        {
+            float pcfDepth = texture(u_DirShadowMap, vec3(projCoords.xy + vec2(x, y) * texelSize, layer)).r;
+            shadow += (currentDepth - bias) > pcfDepth ? 1.0 : 0.0;        
+        }    
+    }
+    shadow /= 9.0;
+        
+    return shadow;
+}
+
+
 // Fresnel function (Fresnel-Schlick approximation)
 //
 // F_schlick = f0 + (1 - f0)(1 - (h * v))^5
@@ -339,6 +417,10 @@ void main()
 	    Lo += CalculateDirectionalLight(n, v, albedo, metallic, roughness, f0);
 	}
 
+	float shadow = ShadowCalculation(in_WorldCoordinates);
+
+    // Apply shadow only to direct lighting (Lo)
+    Lo *= (1.0 - shadow);
 
 	vec3 color = vec3(0.0);
 
@@ -360,7 +442,8 @@ void main()
 	    vec3 specular = prefilteredEnvMapColor * (kSpecular * brdf.x + brdf.y);
 	    
 	    vec3 ambient = (kDiffuse * diffuse + specular) * ao; // indirect lighting
-	    
+	    ambient *= mix(1.0, 0.5, shadow);  // Reduce to 50% in shadowed areas
+
 	    // Combine emissive + indirect + direct
 	    color = emissive + ambient + Lo;
 	}

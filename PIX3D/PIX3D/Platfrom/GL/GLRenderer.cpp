@@ -74,6 +74,7 @@ namespace PIX3D
 			s_SkyBoxShader.LoadFromFile("../PIX3D/res/gl shaders/skybox.vert", "../PIX3D/res/gl shaders/skybox.frag");
 			s_CameraUnifromBuffer.Create(0);
 
+			s_DirShadowpass.Init(4096);
 			s_MainRenderpass.Init(width, height);
 			s_Bloompass.Init(width, height);
 			s_PostProcessingpass.Init(width, height);
@@ -94,10 +95,33 @@ namespace PIX3D
 			s_Bloompass.Destroy();
 		}
 
-		void GLRenderer::Begin(Camera3D& cam, const glm::vec4& clear_color)
+		void GLRenderer::Begin(Scene* scene, Camera3D& cam, const glm::vec4& clear_color)
 		{
-			// bind main renderpass framebuffer
-			s_MainRenderpass.BindFrameBuffer(clear_color);
+			s_CameraView = cam.GetViewMatrix();
+
+			// shadowpass
+			s_DirShadowpass.BeginRender(cam, scene->m_DirLight.m_Direction);
+			{
+				// Query all entities that have both TransformComponent and StaticMeshComponent
+				auto view = scene->m_Registry.view<TransformComponent, StaticMeshComponent>();
+
+				// Iterate over all matching entities
+				view.each([&](TransformComponent& transform, StaticMeshComponent& mesh)
+					{
+						s_DirShadowpass.m_SimpleDepthShader.Bind();
+						s_DirShadowpass.m_SimpleDepthShader.SetMat4("model", transform.GetTransformMatrix());
+
+						// draw meshes
+						for (size_t i = 0; i < mesh.m_Mesh.m_SubMeshes.size(); i++)
+						{
+							auto submesh = mesh.m_Mesh.m_SubMeshes[i];
+
+							mesh.m_Mesh.GetVertexArray().Bind();
+							PIX3D::GL::GLCommands::DrawIndexedBaseVertex(PIX3D::GL::Primitive::TRIANGLES, submesh.IndicesCount, submesh.BaseIndex, submesh.BaseVertex);
+						}
+					});
+			}
+			s_DirShadowpass.EndRender();
 
 			// save camera position to send later to shader
 			s_CameraPosition = cam.GetPosition();
@@ -112,6 +136,9 @@ namespace PIX3D
 			data.SkyboxView = SkyboxView;
 
 			s_CameraUnifromBuffer.Update({ &data, sizeof(data) });
+			
+			// bind main renderpass framebuffer
+			s_MainRenderpass.BindFrameBuffer(clear_color);
 		}
 
 		void GLRenderer::RenderMesh(Scene* scene, const glm::mat4& model, StaticMesh& mesh, IBLMaps& ibl_maps, int point_lights_count)
@@ -130,6 +157,12 @@ namespace PIX3D
 			s_Model3DShader.SetVec4("u_DirLightColor", scene->m_DirLight.m_Color);
 			s_Model3DShader.SetFloat("u_DirLightIntensity", scene->m_DirLight.m_Intensity);
 			s_Model3DShader.SetBool("u_HasDirLight", scene->m_HasDirectionalLight);
+
+			s_Model3DShader.SetMat4("u_View", s_CameraView);
+			for (size_t i = 0; i < s_DirShadowpass.m_ShadowCascadeLevels.size(); ++i)
+			{
+				s_Model3DShader.SetFloat("u_CascadePlaneDistances[" + std::to_string(i) + "]", s_DirShadowpass.m_ShadowCascadeLevels[i]);
+			}
 
 			// IBL stuff
 			glActiveTexture(GL_TEXTURE0 + 0);
@@ -167,6 +200,10 @@ namespace PIX3D
 
 				s_Model3DShader.SetInt("EmissiveTexture", 7);
 				mat.EmissiveTexture.Bind(7);
+
+				s_Model3DShader.SetInt("u_DirShadowMap", 8);
+				glActiveTexture(GL_TEXTURE0 + 8);
+				glBindTexture(GL_TEXTURE_2D_ARRAY, s_DirShadowpass.m_LightDepthMaps);
 
 				auto submesh = submeshes[i];
 			

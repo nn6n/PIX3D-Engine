@@ -40,6 +40,9 @@ namespace PIX3D
 
 		CameraData GetCameraData() { return m_CameraData; }
 
+		float GetNearPlane() { return m_CameraData.NearPlane; }
+		float GetFarPlane() { return m_CameraData.FarPlane; }
+
 	private:
 		CameraData m_CameraData;
 

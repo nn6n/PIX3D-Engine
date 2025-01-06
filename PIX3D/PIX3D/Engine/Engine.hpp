@@ -156,6 +156,8 @@ namespace PIX3D
 
 		inline static ApplicationSpecs GetApplicationSpecs() { return s_AppSpecs; }
 
+		inline static EngineSpecs GetEngineSpecs() { return s_EngineSpecs; }
+
 		inline static void CloseApplication() { glfwSetWindowShouldClose((GLFWwindow*)s_Platform->GetNativeWindowHandel(), 1); }
 
 		inline static float GetDeltaTime() { return s_DeltaTime; }

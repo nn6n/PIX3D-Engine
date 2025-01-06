@@ -1,11 +1,12 @@
 #include "PixEditor.h"
 #include <Graphics/Transform.h>
+#include "Layers/EditorLayer.h"
 
 #include <imgui.h>
 
 void PixEditor::OnStart()
 {
-	m_LayerManager.init(new LauncherLayer());
+	m_LayerManager.init(new EditorLayer());
 	m_LayerManager.OnStart();
 }
 

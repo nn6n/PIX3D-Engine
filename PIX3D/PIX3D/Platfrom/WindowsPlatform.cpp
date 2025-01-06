@@ -11,6 +11,8 @@
 
 #pragma comment(lib, "Shell32.lib")
 
+#define GLFW_INCLUDE_VULKAN
+
 namespace
 {
     bool FirstMouse = true;
@@ -99,19 +101,33 @@ namespace PIX3D
 
     void WindowsPlatformLayer::CreatWindow(uint32_t width, uint32_t height, const char* title, bool resizable)
     {
-        if (!glfwInit())
-            std::cout << "Failed To Initialize GLFW!\n";
+        // init glfw
+        PIX_ASSERT_MSG(glfwInit(), "Failed To Initialize GLFW!");
 
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        glfwWindowHint(GLFW_RESIZABLE, resizable);
-        glfwWindowHint(GLFW_SAMPLES, 8);
+        // check for graphics api
+        auto EngineSpecs = Engine::GetEngineSpecs();
 
+        if (EngineSpecs.API == GraphicsAPI::OPENGL) // opengl
+        {
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+            glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+            glfwWindowHint(GLFW_RESIZABLE, resizable);
+            glfwWindowHint(GLFW_SAMPLES, 8);
+        }
+        if (EngineSpecs.API == GraphicsAPI::VULKAN) // vulkan
+        {
+            glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+            glfwWindowHint(GLFW_RESIZABLE, resizable);
+        }
+
+        // create window
         m_NativeWindowHandel = glfwCreateWindow(width, height, title, NULL, NULL);
 
-        PIX_ASSERT(m_NativeWindowHandel);
+        // assert window creation
+        PIX_ASSERT_MSG(m_NativeWindowHandel, "Failed To Create GLFW Window!");
 
+        // set callbacks
         glfwSetWindowSizeCallback((GLFWwindow*)m_NativeWindowHandel, WindowResizeCallBack);
         glfwSetKeyCallback((GLFWwindow*)m_NativeWindowHandel, KeyboardCallBack);
         glfwSetCursorPosCallback((GLFWwindow*)m_NativeWindowHandel, CursorPositionCallBack);

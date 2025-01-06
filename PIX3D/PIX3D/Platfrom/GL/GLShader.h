@@ -15,6 +15,7 @@ namespace PIX3D
             ~GLShader();
 
             bool LoadFromFile(const std::string& vertexPath, const std::string& fragmentPath);
+            bool LoadFromFile(const std::string& vertexPath, const std::string& fragmentPath, const std::string& geometrypath);
 
             bool LoadFromString(const std::string& vertexCode, const std::string& fragmentCode);
 

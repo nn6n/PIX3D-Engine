@@ -118,7 +118,7 @@ namespace PIX3D
 		{
 		}
 
-		glm::vec3 m_Direction = { 0.0f, -1.0f, 0.0f };
+		glm::vec3 m_Direction = { 0.3f, -1.0f, 0.2f };
 		glm::vec4 m_Color = { 1.0f, 1.0f, 1.0f, 1.0f };
 		float m_Intensity = 1.0f;
 	};

@@ -1,19 +1,11 @@
 {
     "Entities": [
         {
-            "SpriteComponent": {
-                "Color": [
-                    0.49420857429504395,
-                    1.0,
-                    0.0,
-                    1.0
-                ],
-                "Flip": true,
-                "TexturePath": "F:\\Projects\\PIX3D Engine\\Editor\\res\\city.png",
-                "TilingFactor": 1.0
+            "StaticMeshComponent": {
+                "MeshPath": "F:\\Projects\\PIX3D Engine\\Example Game\\Assets\\sponza\\sponza.glb"
             },
             "TagComponent": {
-                "Tag": "New Sprite"
+                "Tag": "New Mesh"
             },
             "TransformComponent": {
                 "Position": [
@@ -27,8 +19,44 @@
                     0.0
                 ],
                 "Scale": [
-                    5.0,
-                    2.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "DirectionalLightComponent": {
+                "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "Direction": [
+                    -0.10000000149011612,
+                    1.0,
+                    -0.30000001192092896
+                ],
+                "Intensity": 1.0
+            },
+            "TagComponent": {
+                "Tag": "Dir Light"
+            },
+            "TransformComponent": {
+                "Position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "Rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "Scale": [
+                    1.0,
+                    1.0,
                     1.0
                 ]
             }
